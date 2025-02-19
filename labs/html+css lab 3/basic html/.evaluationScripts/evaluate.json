@@ -1,0 +1,88 @@
+{
+    "data": [
+        {
+            "testid": "Basic-Features/HTML Tag",
+            "score": 1,
+            "status": "success",
+            "maximum marks": 1,
+            "message": "html tag present"
+        },
+        {
+            "testid": "Basic-Features/Title Tag",
+            "score": 1,
+            "status": "success",
+            "maximum marks": 1,
+            "message": "title tag present"
+        },
+        {
+            "testid": "Text/H1",
+            "score": 1,
+            "status": "success",
+            "maximum marks": 1,
+            "message": "h1 tag present"
+        },
+        {
+            "testid": "Text/H2",
+            "score": 1,
+            "status": "success",
+            "maximum marks": 1,
+            "message": "h2 tag present"
+        },
+        {
+            "testid": "Text/Paragraphs",
+            "score": 1,
+            "status": "success",
+            "maximum marks": 1,
+            "message": "p tag present"
+        },
+        {
+            "testid": "List/ul",
+            "score": 1,
+            "status": "success",
+            "maximum marks": 1,
+            "message": "ul tag present"
+        },
+        {
+            "testid": "Table/Table Heading",
+            "score": 1,
+            "status": "success",
+            "maximum marks": 1,
+            "message": "th tag present"
+        },
+        {
+            "testid": "Table/Table Row",
+            "score": 1,
+            "status": "success",
+            "maximum marks": 1,
+            "message": "tr tag present"
+        },
+        {
+            "testid": "Table/Table Data",
+            "score": 1,
+            "status": "success",
+            "maximum marks": 1,
+            "message": "td tag present"
+        },
+        {
+            "testid": "Email/href",
+            "score": 1,
+            "status": "success",
+            "maximum marks": 1,
+            "message": "href tag present"
+        },
+        {
+            "testid": "Email/mailto",
+            "score": 1,
+            "status": "success",
+            "maximum marks": 1,
+            "message": "mailto present"
+        },
+        {
+            "testid": "Footer/footer",
+            "score": 1,
+            "status": "success",
+            "maximum marks": 1,
+            "message": "footer tag present"
+        }
+    ]
+}

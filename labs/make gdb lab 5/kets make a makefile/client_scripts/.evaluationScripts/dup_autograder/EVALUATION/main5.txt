@@ -1,0 +1,4 @@
+Sum: 9
+Max: 4
+4th Element: 2
+Sum11

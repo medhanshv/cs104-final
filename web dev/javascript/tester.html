@@ -1,0 +1,23 @@
+<!DOCTYPE html> 
+<html>
+    <head>
+        <title>testing JavaScript</title>
+        <script>
+                document.querySelector("form").addEventListener("submit", () =>
+                {
+                    const name = document.querySelector('#name').value;
+                    alert(`hello ${name}!!!`);
+                }
+                )
+
+        </script>
+    </head>
+    <body>
+        <h1>hello  </h1>
+        <form>
+            <input autofocus id="name" placeholder="name dalde" type="text">
+            <input type="submit">
+        </form>
+
+    </body>
+</html>
