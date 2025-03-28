@@ -1,0 +1,1 @@
+['sundar', 'pita', 'pedh', 'paani', 'maa', 'ladki', 'bhai', 'bhagwan']

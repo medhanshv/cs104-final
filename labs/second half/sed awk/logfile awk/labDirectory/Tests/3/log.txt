@@ -1,0 +1,127 @@
+Produced 0 by master 1
+Produced 1 by master 3
+Produced 2 by master 3
+Produced 3 by master 3
+Produced 4 by master 3
+Produced 5 by master 3
+Produced 6 by master 3
+Consumed 6 by worker 0
+Consumed 5 by worker 0
+Consumed 4 by worker 0
+Consumed 3 by worker 0
+Consumed 2 by worker 0
+Consumed 1 by worker 0
+Consumed 0 by worker 0
+Produced 7 by master 6
+Produced 8 by master 4
+Produced 9 by master 6
+Produced 10 by master 6
+Produced 11 by master 6
+Produced 12 by master 6
+Consumed 12 by worker 3
+Consumed 11 by worker 3
+Consumed 10 by worker 3
+Consumed 9 by worker 3
+Consumed 8 by worker 3
+Consumed 7 by worker 3
+Produced 13 by master 4
+Consumed 13 by worker 3
+Produced 14 by master 0
+Produced 15 by master 3
+Produced 16 by master 3
+Produced 17 by master 3
+Produced 18 by master 3
+Produced 19 by master 3
+Produced 20 by master 3
+Consumed 20 by worker 5
+Consumed 19 by worker 5
+Consumed 18 by worker 5
+Consumed 17 by worker 5
+Consumed 16 by worker 5
+Consumed 15 by worker 5
+Consumed 14 by worker 5
+Produced 21 by master 3
+Produced 22 by master 3
+Produced 23 by master 3
+Produced 24 by master 3
+Produced 25 by master 3
+Produced 26 by master 3
+Produced 27 by master 3
+Consumed 27 by worker 1
+Produced 28 by master 0
+Consumed 28 by worker 1
+Consumed 26 by worker 1
+Consumed 25 by worker 1
+Consumed 24 by worker 1
+Consumed 23 by worker 1
+Consumed 22 by worker 1
+Consumed 21 by worker 1
+Produced 29 by master 4
+Consumed 29 by worker 4
+Produced 30 by master 5
+Consumed 30 by worker 2
+Produced 31 by master 2
+Consumed 31 by worker 5
+Produced 32 by master 2
+Consumed 32 by worker 5
+Produced 33 by master 2
+Produced 34 by master 2
+Produced 35 by master 2
+Produced 36 by master 2
+Produced 37 by master 3
+Consumed 37 by worker 2
+Consumed 36 by worker 7
+Consumed 35 by worker 7
+Consumed 34 by worker 8
+Produced 38 by master 2
+Consumed 38 by worker 5
+Consumed 33 by worker 5
+Produced 39 by master 2
+Produced 40 by master 2
+Produced 41 by master 2
+Produced 42 by master 2
+Produced 43 by master 2
+Produced 44 by master 2
+Consumed 44 by worker 2
+Produced 45 by master 0
+Produced 46 by master 0
+Consumed 46 by worker 8
+Produced 47 by master 3
+Consumed 47 by worker 8
+Consumed 45 by worker 9
+Consumed 43 by worker 9
+Consumed 42 by worker 9
+Consumed 41 by worker 9
+Consumed 40 by worker 9
+Consumed 39 by worker 9
+Produced 48 by master 1
+Consumed 48 by worker 1
+Produced 49 by master 1
+Master 1 exiting
+Worker 8 exiting
+Consumed 49 by worker 8
+Worker 4 exiting
+Worker 2 exiting
+Master 0 exiting
+Worker 10 exiting
+Worker 5 exiting
+Worker 7 exiting
+Worker 11 exiting
+Worker 9 exiting
+Worker 6 exiting
+Worker 0 exiting
+Master 2 exiting
+Worker 1 exiting
+Worker 3 exiting
+Worker 14 exiting
+Worker 13 exiting
+Worker 12 exiting
+Worker 15 exiting
+Worker 16 exiting
+Worker 17 exiting
+Worker 19 exiting
+Worker 18 exiting
+Master 6 exiting
+Master 5 exiting
+Master 4 exiting
+Master 3 exiting

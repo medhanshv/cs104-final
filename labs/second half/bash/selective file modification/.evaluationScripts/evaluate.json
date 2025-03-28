@@ -1,0 +1,11 @@
+{
+    "data": [
+        {
+            "testid": -1,
+            "status": "failed",
+            "score": 0,
+            "maximum marks": 0,
+            "message": "Default Autograder Message!"
+        }
+    ]
+}

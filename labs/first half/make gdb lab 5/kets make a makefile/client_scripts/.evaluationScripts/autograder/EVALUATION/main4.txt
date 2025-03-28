@@ -1,0 +1,4 @@
+Product: 16
+Max: 4
+4th Element: 2
+Sum11

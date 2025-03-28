@@ -1,0 +1,1 @@
+python3 language.py 2 hindi english

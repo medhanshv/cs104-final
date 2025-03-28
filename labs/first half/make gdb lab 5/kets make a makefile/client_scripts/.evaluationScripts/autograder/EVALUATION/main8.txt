@@ -1,0 +1,3 @@
+Index: 3
+Element: 10
+Sum: 26

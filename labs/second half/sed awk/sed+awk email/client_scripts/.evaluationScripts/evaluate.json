@@ -1,0 +1,18 @@
+{
+    "data": [
+        {
+            "testid": "1",
+            "status": "success",
+            "score": 1,
+            "maximum marks": 1,
+            "message": "Correct output."
+        },
+        {
+            "testid": "1",
+            "status": "success",
+            "score": 1,
+            "maximum marks": 1,
+            "message": "Correct output."
+        }
+    ]
+}

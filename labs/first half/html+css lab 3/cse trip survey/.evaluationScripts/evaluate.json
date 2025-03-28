@@ -1,0 +1,53 @@
+{
+    "data": [
+        {
+            "testid": "Files",
+            "status": "success",
+            "score": 0,
+            "maximum marks": 0,
+            "message": "All files are present!"
+        },
+        {
+            "testid": "Title",
+            "status": "success",
+            "score": 0.25,
+            "maximum marks": 0.25,
+            "message": "Page title is correct."
+        },
+        {
+            "testid": "Heading",
+            "status": "success",
+            "score": 0.25,
+            "maximum marks": 0.25,
+            "message": "<h1> heading is correct."
+        },
+        {
+            "testid": "Q1 <div>",
+            "status": "success",
+            "score": 1.0,
+            "maximum marks": 1,
+            "message": "<div> correctly built for Q1."
+        },
+        {
+            "testid": "Q2 <div>",
+            "status": "success",
+            "score": 1.0,
+            "maximum marks": 1,
+            "message": "<div> correctly built for Q2."
+        },
+        {
+            "testid": "Internal CSS",
+            "status": "success",
+            "score": 1.0,
+            "maximum marks": 1,
+            "message": "Internal CSS done correctly."
+        },
+        {
+            "testid": "External CSS",
+            "status": "success",
+            "score": 1,
+            "maximum marks": 1,
+            "message": "External CSS done correctly."
+        }
+    ]
+}

@@ -1,0 +1,25 @@
+{
+    "data": [
+        {
+            "testid": 1,
+            "status": "success",
+            "score": 2,
+            "maximum marks": 2,
+            "message": "Script Executed Successfully. valid.txt correct. sorted.txt correct. "
+        },
+        {
+            "testid": 2,
+            "status": "success",
+            "score": 2,
+            "maximum marks": 2,
+            "message": "Script Executed Successfully. valid.txt correct. sorted.txt correct. "
+        },
+        {
+            "testid": 3,
+            "status": "success",
+            "score": 2,
+            "maximum marks": 2,
+            "message": "Script Executed Successfully. valid.txt correct. sorted.txt correct. "
+        }
+    ]
+}

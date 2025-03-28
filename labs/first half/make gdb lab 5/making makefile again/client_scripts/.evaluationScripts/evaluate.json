@@ -1,0 +1,11 @@
+{
+    "data": [
+        {
+            "testid": "1",
+            "status": "success",
+            "score": 4.0,
+            "maximum marks": 4,
+            "message": "All public tests passed"
+        }
+    ]
+}

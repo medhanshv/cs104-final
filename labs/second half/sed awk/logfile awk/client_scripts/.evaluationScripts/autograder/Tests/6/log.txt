@@ -1,0 +1,24 @@
+Produced 0 by master 0
+Consumed 1 by worker 0
+Produced 1 by master 1
+Consumed 0 by worker 0
+Produced 2 by master 1
+Produced 3 by master 1
+Consumed 3 by worker 0
+Produced 4 by master 0
+Consumed 4 by worker 0
+Consumed 2 by worker 0
+Produced 5 by master 0
+Produced 6 by master 0
+Worker 0 exiting
+Master 0 exiting
+Consumed 6 by worker 1
+Produced 7 by master 1
+Consumed 7 by worker 1
+Consumed 5 by worker 1
+Produced 8 by master 1
+Produced 9 by master 1
+Consumed 9 by worker 1
+Consumed 8 by worker 1
+Master 1 exiting
+Worker 1 exiting

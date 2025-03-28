@@ -1,0 +1,1 @@
+[('brother', 'bhai'), ('god', 'bhagwan'), ('mother', 'maa'), ('tree', 'pedh'), ('water', 'paani')]
