@@ -1,6 +1,0 @@
-hemrajmeena11 1 22b3983@iitb.ac.in submission.sh 
-rishabhbhardwaj2 1 22b3333@iitb.ac.in submission.sh 
-parthivsen69 3 22b1055@iitb.ac.in submission.sh
-stevesmith93 0 22b2810@iitb.ac.in sub,ission.sh
-csainz55 4 23b1023@iitb.ac.in  submission.sh
-diljith01 3	22b1024@iitb.ac.in submission.sh

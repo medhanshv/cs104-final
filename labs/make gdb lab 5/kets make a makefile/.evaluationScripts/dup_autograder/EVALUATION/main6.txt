@@ -1,4 +1,0 @@
-sum: 9
-Min: 1
-4th Element: 2
-Sum11

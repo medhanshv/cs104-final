@@ -1,3 +1,0 @@
-Index: 1
-Element: 2
-Product: 24

@@ -1,4 +1,0 @@
-Sum: 15
-Max: 5
-2nd Element2
-Sum: 15
