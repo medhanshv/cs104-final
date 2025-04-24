@@ -1,6 +1,7 @@
 k_series_list=[2, 3, 5, 5, 7, 7] #This will store all the numbers of k series
 #Initializing it with some numbers makes our work much easier
-
+import time
+start_time = time.time()
 def isPrime(n):
     if n==1:
         return False
@@ -34,3 +35,5 @@ for i in range(0, q):
     print(k_series_list[query-1])
 
 f.close()
+
+print("--- %s ms ---" % (1000*(time.time() - start_time)))

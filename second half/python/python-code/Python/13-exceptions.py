@@ -1,3 +1,4 @@
+
 # Basic try-except block
 #enter 0 or some string and check
 try:

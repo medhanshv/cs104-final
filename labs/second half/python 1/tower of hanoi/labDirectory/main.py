@@ -42,5 +42,4 @@ def move(n):
         a,b=b,a
         move(n-1)
         a,b=b,a
-
 move(n)

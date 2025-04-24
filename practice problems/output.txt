@@ -1,0 +1,48 @@
+starting w 1 2 5 4 3 2 12 9
+called merge sort
+arr1 is 1 2 5 4
+arr2 is 3 2 12 9
+called merge sort
+arr1 is 1 2
+arr2 is 5 4
+called merge sort
+sort1 is 1 2
+called merge sort
+sort2 is 4 5
+called merge
+num is 2
+arr1 for merging is 1 2
+arr2 for merging is 4 5
+appended 1
+appended 2
+appended 4 last ka
+appended 5 last ka
+sort1 is 1 2 4 5
+called merge sort
+arr1 is 3 2
+arr2 is 12 9
+called merge sort
+sort1 is 2 3
+called merge sort
+sort2 is 9 12
+called merge
+num is 2
+arr1 for merging is 2 3
+arr2 for merging is 9 12
+appended 2
+appended 3
+appended 9 last ka
+appended 12 last ka
+sort2 is 2 3 9 12
+called merge
+num is 4
+arr1 for merging is 1 2 4 5
+arr2 for merging is 2 3 9 12
+appended 1
+appended 2 twice
+appended 2 cuz less
+appended 3 cuz less
+appended 4
+appended 5
+appended 9 last ka
+appended 12 last ka

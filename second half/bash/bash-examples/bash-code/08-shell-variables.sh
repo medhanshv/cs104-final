@@ -44,3 +44,8 @@ echo "Last argument of the last command: $_"
 # Running another command to show $_ updates
 echo "Hello World"
 echo "Now, last argument of the last command is: $_"
+var="Hello World"
+echo $var
+echo $_
+echo "$var"
+echo $_

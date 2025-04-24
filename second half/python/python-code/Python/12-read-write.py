@@ -4,7 +4,7 @@
 file = open("file.txt", "r")
 print("\nReading file line by line")
 for line in file:
-    print(line, end="")
+    print(line)
 file.close()
 
 
