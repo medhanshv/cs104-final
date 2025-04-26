@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>File /inet/udp (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="File /inet/udp (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="File /inet/udp (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Comparing-Protocols.html" rel="up" title="Comparing Protocols">
+<link href="File-_002finet_002ftcp.html" rel="prev" title="File /inet/tcp">
+<style type="text/css">
+<!--
+div.example {margin-left: 3.2em}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="File-_002finet_002fudp">
+<div class="nav-panel">
+<p>
+Previous: <a href="File-_002finet_002ftcp.html" accesskey="p" rel="prev"><samp class="file">/inet/tcp</samp></a>, Up: <a href="Comparing-Protocols.html" accesskey="u" rel="up">Comparing Protocols</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="g_t_002finet_002fudp">2.1.2.2 <samp class="file">/inet/udp</samp></h4>
+<a class="index-entry-id" id="index-_002finet_002fudp-special-files-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-files-2"></a>
+<a class="index-entry-id" id="index-UDP-_0028User-Datagram-Protocol_0029"></a>
+<p>The server and client programs that use UDP are almost identical to their TCP counterparts;
+only the <var class="var">protocol</var> has changed. As before, it does matter which side
+starts first. The receiving side blocks and waits for the sender.
+In this case, the receiver/client has to be started first:
+</p>
+<div class="example">
+<pre class="example-preformatted"># Server
+BEGIN {
+  print strftime() |&amp; &quot;/inet/udp/8888/0/0&quot;
+  close(&quot;/inet/udp/8888/0/0&quot;)
+}
+</pre></div>
+
+<p>The receiver is almost identical to the TCP receiver:
+</p>
+<div class="example">
+<pre class="example-preformatted"># Client
+BEGIN {
+  print &quot;hi!&quot; |&amp; &quot;/inet/udp/0/localhost/8888&quot;
+  &quot;/inet/udp/0/localhost/8888&quot; |&amp; getline
+  print $0
+  close(&quot;/inet/udp/0/localhost/8888&quot;)
+}
+</pre></div>
+
+<p>In the case of UDP, the initial <code class="code">print</code> command is the one
+that actually sends data so that there is a connection.
+UDP and &ldquo;connection&rdquo; sounds strange to anyone
+who has learned that UDP is a connectionless protocol.
+Here, &ldquo;connection&rdquo; means that the <code class="code">connect()</code> system call
+has completed its work and completed the &ldquo;association&rdquo;
+between a certain socket and an IP address. Thus there are
+subtle differences between <code class="code">connect()</code> for TCP and UDP;
+see the man page for details.<a class="footnote" id="DOCF5" href="File-_002finet_002fudp.html#FOOT5"><sup>5</sup></a>
+</p>
+<p>UDP cannot guarantee that the datagrams at the receiving end will arrive in exactly
+the same order they were sent. Some datagrams could be
+lost, some doubled, and some could arrive out of order.
+But no overhead is necessary to
+accomplish this. This unreliable behavior is good enough for tasks
+such as data acquisition, logging, and even stateless services like
+the original versions of NFS.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT5" href="File-_002finet_002fudp.html#DOCF5">(5)</a></h5>
+<p>This subtlety
+is just one of many details that are hidden in the socket
+API, invisible and intractable for the <code class="command">gawk</code> user.
+The developers are currently considering how to rework the
+network facilities to make them easier to understand and use.</p>
+</div>
+
+
+
+</body>
+</html>

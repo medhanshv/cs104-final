@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Common Extensions (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Common Extensions (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Common Extensions (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Language-History.html" rel="up" title="Language History">
+<link href="Ranges-and-Locales.html" rel="next" title="Ranges and Locales">
+<link href="Feature-History.html" rel="prev" title="Feature History">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="appendixsec-level-extent" id="Common-Extensions">
+<div class="nav-panel">
+<p>
+Next: <a href="Ranges-and-Locales.html" accesskey="n" rel="next">Regexp Ranges and Locales: A Long Sad Story</a>, Previous: <a href="Feature-History.html" accesskey="p" rel="prev">History of <code class="command">gawk</code> Features</a>, Up: <a href="Language-History.html" accesskey="u" rel="up">The Evolution of the <code class="command">awk</code> Language</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="appendixsec" id="Common-Extensions-Summary"><span>A.7 Common Extensions Summary<a class="copiable-link" href="Common-Extensions.html#Common-Extensions-Summary"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-extensions-Brian-Kernighan_0027s-awk-1"></a>
+<a class="index-entry-id" id="index-extensions-mawk"></a>
+<p>The following table summarizes the common extensions supported
+by <code class="command">gawk</code>, Brian Kernighan&rsquo;s <code class="command">awk</code>, and <code class="command">mawk</code>,
+the three most widely used freely available versions of <code class="command">awk</code>
+(see <a class="pxref" href="Other-Versions.html">Other Freely Available <code class="command">awk</code> Implementations</a>).
+</p>
+<table class="multitable">
+<thead><tr><th>Feature</th><th>BWK <code class="command">awk</code></th><th><code class="command">mawk</code></th><th><code class="command">gawk</code></th><th>Now standard</th></tr></thead>
+<tbody><tr><td><code class="code">**</code> and <code class="code">**=</code> operators</td><td>X</td><td></td><td>X</td><td></td></tr>
+<tr><td>&lsquo;<samp class="samp">\x</samp>&rsquo; escape sequence</td><td>X</td><td>X</td><td>X</td><td></td></tr>
+<tr><td>&lsquo;<samp class="samp">\u</samp>&rsquo; escape sequence</td><td>X</td><td></td><td>X</td><td></td></tr>
+<tr><td><samp class="file">/dev/stdin</samp> special file</td><td>X</td><td>X</td><td>X</td><td></td></tr>
+<tr><td><samp class="file">/dev/stdout</samp> special file</td><td>X</td><td>X</td><td>X</td><td></td></tr>
+<tr><td><samp class="file">/dev/stderr</samp> special file</td><td>X</td><td>X</td><td>X</td><td></td></tr>
+<tr><td><code class="code">BINMODE</code> variable</td><td></td><td>X</td><td>X</td><td></td></tr>
+<tr><td>CSV support</td><td>X</td><td></td><td>X</td><td></td></tr>
+<tr><td><code class="code">FS</code> as null string</td><td>X</td><td>X</td><td>X</td><td></td></tr>
+<tr><td><code class="code">delete</code> without subscript</td><td>X</td><td>X</td><td>X</td><td>X</td></tr>
+<tr><td><code class="code">fflush()</code> function</td><td>X</td><td>X</td><td>X</td><td>X</td></tr>
+<tr><td><code class="code">func</code> keyword</td><td>X</td><td></td><td>X</td><td></td></tr>
+<tr><td><code class="code">length()</code> of an array</td><td>X</td><td>X</td><td>X</td><td></td></tr>
+<tr><td><code class="code">nextfile</code> statement</td><td>X</td><td>X</td><td>X</td><td>X</td></tr>
+<tr><td><code class="code">RS</code> as regexp</td><td>X</td><td>X</td><td>X</td><td></td></tr>
+<tr><td>Time-related functions</td><td></td><td>X</td><td>X</td><td></td></tr>
+</tbody>
+</table>
+
+</div>
+
+
+
+</body>
+</html>

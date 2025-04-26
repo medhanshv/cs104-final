@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Advanced Features (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Advanced Features (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Advanced Features (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Internationalization.html" rel="next" title="Internationalization">
+<link href="Sample-Programs.html" rel="prev" title="Sample Programs">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.center {text-align:center}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="part-level-extent" id="Part-III_003a-Moving-Beyond-Standard-awk-with-gawk">
+<div class="nav-panel">
+<p>
+Next: <a href="Internationalization.html" accesskey="n" rel="next">Internationalization with <code class="command">gawk</code></a>, Previous: <a href="Sample-Programs.html" accesskey="p" rel="prev">Practical <code class="command">awk</code> Programs</a>, Up: <a href="index.html" accesskey="u" rel="up">General Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h1 class="part"><span>Part III:<br>Moving Beyond Standard <code class="command">awk</code> with <code class="command">gawk</code><a class="copiable-link" href="Advanced-Features.html#Part-III_003a-Moving-Beyond-Standard-awk-with-gawk"> &para;</a></span></h1>
+<hr>
+
+
+<ul class="mini-toc">
+<li><a href="Advanced-Features.html#Advanced-Features" accesskey="1">Advanced Features of <code class="command">gawk</code></a></li>
+<li><a href="Internationalization.html" accesskey="2">Internationalization with <code class="command">gawk</code></a></li>
+<li><a href="Debugger.html" accesskey="3">Debugging <code class="command">awk</code> Programs</a></li>
+<li><a href="Namespaces.html" accesskey="4">Namespaces in <code class="command">gawk</code></a></li>
+<li><a href="Arbitrary-Precision-Arithmetic.html" accesskey="5">Arithmetic and Arbitrary-Precision Arithmetic with <code class="command">gawk</code></a></li>
+<li><a href="Dynamic-Extensions.html" accesskey="6">Writing Extensions for <code class="command">gawk</code></a></li>
+</ul>
+<div class="chapter-level-extent" id="Advanced-Features">
+<h2 class="chapter" id="Advanced-Features-of-gawk"><span>12 Advanced Features of <code class="command">gawk</code><a class="copiable-link" href="Advanced-Features.html#Advanced-Features-of-gawk"> &para;</a></span></h2>
+<a class="index-entry-id" id="index-gawk-features-advanced"></a>
+<a class="index-entry-id" id="index-advanced-features-gawk"></a>
+<a class="index-entry-id" id="index-Langston_002c-Peter"></a>
+<a class="index-entry-id" id="index-English_002c-Steve"></a>
+<blockquote class="quotation">
+<p><i class="i">Write documentation as if whoever reads it is
+a violent psychopath who knows where you live.</i>
+</p></blockquote>
+<div class="center">&mdash; <em class="emph">Steve English, as quoted by Peter Langston</em>
+</div>
+<p>This chapter discusses advanced features in <code class="command">gawk</code>.
+It&rsquo;s a bit of a &ldquo;grab bag&rdquo; of items that are otherwise unrelated
+to each other.
+First, we look at a command-line option that allows <code class="command">gawk</code> to recognize
+nondecimal numbers in input data, not just in <code class="command">awk</code>
+programs.
+Then, <code class="command">gawk</code>&rsquo;s special features for sorting arrays are presented.
+Next, two-way I/O, discussed briefly in earlier parts of this
+Web page, is described in full detail, along with the basics
+of TCP/IP networking.  We then see how <code class="command">gawk</code>
+can <em class="dfn">profile</em> an <code class="command">awk</code> program, making it possible to tune
+it for performance.
+Next, we present an experimental feature that allows you to preserve
+the values of <code class="command">awk</code> variables and arrays between runs of <code class="command">gawk</code>.
+Finally, we discuss the philosophy behind <code class="command">gawk</code>&rsquo;s extension
+mechanism.
+</p>
+<p>Additional advanced features are discussed in separate chapters of their
+own:
+</p>
+<ul class="itemize mark-bullet">
+<li><a class="ref" href="Internationalization.html">Internationalization with <code class="command">gawk</code></a>, discusses how to internationalize
+your <code class="command">awk</code> programs, so that they can speak multiple
+national languages.
+
+</li><li><a class="ref" href="Debugger.html">Debugging <code class="command">awk</code> Programs</a>, describes <code class="command">gawk</code>&rsquo;s built-in command-line
+debugger for debugging <code class="command">awk</code> programs.
+
+</li><li><a class="ref" href="Arbitrary-Precision-Arithmetic.html">Arithmetic and Arbitrary-Precision Arithmetic with <code class="command">gawk</code></a>, describes how you can use
+<code class="command">gawk</code> to perform arbitrary-precision arithmetic.
+
+</li><li><a class="ref" href="Dynamic-Extensions.html">Writing Extensions for <code class="command">gawk</code></a>,
+discusses the ability to dynamically add new built-in functions to
+<code class="command">gawk</code>.
+</li></ul>
+
+
+<ul class="mini-toc">
+<li><a href="Nondecimal-Data.html" accesskey="1">Allowing Nondecimal Input Data</a></li>
+<li><a href="Boolean-Typed-Values.html" accesskey="2">Boolean Typed Values</a></li>
+<li><a href="Array-Sorting.html" accesskey="3">Controlling Array Traversal and Array Sorting</a></li>
+<li><a href="Two_002dway-I_002fO.html" accesskey="4">Two-Way Communications with Another Process</a></li>
+<li><a href="TCP_002fIP-Networking.html" accesskey="5">Using <code class="command">gawk</code> for Network Programming</a></li>
+<li><a href="Profiling.html" accesskey="6">Profiling Your <code class="command">awk</code> Programs</a></li>
+<li><a href="Persistent-Memory.html" accesskey="7">Preserving Data Between Runs</a></li>
+<li><a href="Extension-Philosophy.html" accesskey="8">Builtin Features versus Extensions</a></li>
+<li><a href="Advanced-Features-Summary.html" accesskey="9">Summary</a></li>
+</ul>
+</div>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Internationalization.html">Internationalization with <code class="command">gawk</code></a>, Previous: <a href="Sample-Programs.html">Practical <code class="command">awk</code> Programs</a>, Up: <a href="index.html">General Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

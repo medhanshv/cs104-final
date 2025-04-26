@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Using Variables (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Using Variables (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Using Variables (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Variables.html" rel="up" title="Variables">
+<link href="Assignment-Options.html" rel="next" title="Assignment Options">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Using-Variables">
+<div class="nav-panel">
+<p>
+Next: <a href="Assignment-Options.html" accesskey="n" rel="next">Assigning Variables on the Command Line</a>, Up: <a href="Variables.html" accesskey="u" rel="up">Variables</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Using-Variables-in-a-Program"><span>6.1.3.1 Using Variables in a Program<a class="copiable-link" href="Using-Variables.html#Using-Variables-in-a-Program"> &para;</a></span></h4>
+
+<p>Variables let you give names to values and refer to them later.  Variables
+have already been used in many of the examples.  The name of a variable
+must be a sequence of letters, digits, or underscores, and it may not begin
+with a digit.
+Here, a <em class="dfn">letter</em> is any one of the 52 upper- and lowercase
+English letters.  Other characters that may be defined as letters
+in non-English locales are not valid in variable names.
+Case is significant in variable names; <code class="code">a</code> and <code class="code">A</code>
+are distinct variables.
+</p>
+<p>A variable name is a valid expression by itself; it represents the
+variable&rsquo;s current value.  Variables are given new values with
+<em class="dfn">assignment operators</em>, <em class="dfn">increment operators</em>, and
+<em class="dfn">decrement operators</em>
+(see <a class="pxref" href="Assignment-Ops.html">Assignment Expressions</a>).
+In addition, the <code class="code">sub()</code> and <code class="code">gsub()</code> functions can
+change a variable&rsquo;s value, and the <code class="code">match()</code>, <code class="code">split()</code>,
+and <code class="code">patsplit()</code> functions can change the contents of their
+array parameters (see <a class="pxref" href="String-Functions.html">String-Manipulation Functions</a>).
+</p>
+<a class="index-entry-id" id="index-variables-built_002din"></a>
+<a class="index-entry-id" id="index-variables-initializing"></a>
+<p>A few variables have special built-in meanings, such as <code class="code">FS</code> (the
+field separator) and <code class="code">NF</code> (the number of fields in the current input
+record).  See <a class="xref" href="Built_002din-Variables.html">Predefined Variables</a> for a list of the predefined variables.
+These predefined variables can be used and assigned just like all other
+variables, but their values are also used or changed automatically by
+<code class="command">awk</code>.  All predefined variables&rsquo; names are entirely uppercase.
+</p>
+<p>Variables in <code class="command">awk</code> can be assigned either numeric or string values.
+The kind of value a variable holds can change over the life of a program.
+By default, variables are initialized to the empty string, which
+is zero if converted to a number.  There is no need to explicitly
+initialize a variable in <code class="command">awk</code>,
+which is what you would do in C and in most other traditional languages.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Assignment-Options.html">Assigning Variables on the Command Line</a>, Up: <a href="Variables.html">Variables</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

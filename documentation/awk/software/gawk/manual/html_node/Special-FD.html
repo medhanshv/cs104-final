@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Special FD (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Special FD (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Special FD (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Printing.html" rel="up" title="Printing">
+<link href="Special-Files.html" rel="next" title="Special Files">
+<link href="Redirection.html" rel="prev" title="Redirection">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Special-FD">
+<div class="nav-panel">
+<p>
+Next: <a href="Special-Files.html" accesskey="n" rel="next">Special File names in <code class="command">gawk</code></a>, Previous: <a href="Redirection.html" accesskey="p" rel="prev">Redirecting Output of <code class="code">print</code> and <code class="code">printf</code></a>, Up: <a href="Printing.html" accesskey="u" rel="up">Printing Output</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Special-Files-for-Standard-Preopened-Data-Streams"><span>5.7 Special Files for Standard Preopened Data Streams<a class="copiable-link" href="Special-FD.html#Special-Files-for-Standard-Preopened-Data-Streams"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-standard-input-1"></a>
+<a class="index-entry-id" id="index-input-standard-1"></a>
+<a class="index-entry-id" id="index-standard-output"></a>
+<a class="index-entry-id" id="index-output-standard"></a>
+<a class="index-entry-id" id="index-error-output"></a>
+<a class="index-entry-id" id="index-standard-error"></a>
+<a class="index-entry-id" id="index-file-descriptors"></a>
+<a class="index-entry-id" id="index-files-descriptors"></a>
+
+<p>Running programs conventionally have three input and output streams
+already available to them for reading and writing.  These are known
+as the <em class="dfn">standard input</em>, <em class="dfn">standard output</em>, and <em class="dfn">standard
+error output</em>.  These open streams (and any other open files or pipes)
+are often referred to by the technical term <em class="dfn">file descriptors</em>.
+</p>
+<p>These streams are, by default, connected to your keyboard and screen, but
+they are often redirected with the shell, via the &lsquo;<samp class="samp">&lt;</samp>&rsquo;, &lsquo;<samp class="samp">&lt;&lt;</samp>&rsquo;,
+&lsquo;<samp class="samp">&gt;</samp>&rsquo;, &lsquo;<samp class="samp">&gt;&gt;</samp>&rsquo;, &lsquo;<samp class="samp">&gt;&amp;</samp>&rsquo;, and &lsquo;<samp class="samp">|</samp>&rsquo; operators.  Standard error
+is typically used for writing error messages; the reason there are two separate
+streams, standard output and standard error, is so that they can be
+redirected separately.
+</p>
+<a class="index-entry-id" id="index-differences-in-awk-and-gawk-error-messages"></a>
+<a class="index-entry-id" id="index-error-handling"></a>
+<p>In traditional implementations of <code class="command">awk</code>, the only way to write an error
+message to standard error in an <code class="command">awk</code> program is as follows:
+</p>
+<div class="example">
+<pre class="example-preformatted">print &quot;Serious error detected!&quot; | &quot;cat 1&gt;&amp;2&quot;
+</pre></div>
+
+<p>This works by opening a pipeline to a shell command that can access the
+standard error stream that it inherits from the <code class="command">awk</code> process.
+This is far from elegant, and it also requires a
+separate process.  So people writing <code class="command">awk</code> programs often
+don&rsquo;t do this.  Instead, they send the error messages to the
+screen, like this:
+</p>
+<div class="example">
+<pre class="example-preformatted">print &quot;Serious error detected!&quot; &gt; &quot;/dev/tty&quot;
+</pre></div>
+
+<p>(<samp class="file">/dev/tty</samp> is a special file supplied by the operating system
+that is connected to your keyboard and screen. It represents the
+&ldquo;terminal,&rdquo;<a class="footnote" id="DOCF29" href="Special-FD.html#FOOT29"><sup>29</sup></a> which on modern systems is a keyboard
+and screen, not a serial console.)
+This generally has the same effect, but not always: although the
+standard error stream is usually the screen, it can be redirected; when
+that happens, writing to the screen is not correct.  In fact, if
+<code class="command">awk</code> is run from a background job, it may not have a
+terminal at all.
+Then opening <samp class="file">/dev/tty</samp> fails.
+</p>
+<p><code class="command">gawk</code>, BWK <code class="command">awk</code>, and <code class="command">mawk</code> provide
+special file names for accessing the three standard streams.
+If the file name matches one of these special names when <code class="command">gawk</code>
+(or one of the others) redirects input or output, then it directly uses
+the descriptor that the file name stands for.  These special
+file names work for all operating systems that <code class="command">gawk</code>
+has been ported to, not just those that are POSIX-compliant:
+</p>
+<a class="index-entry-id" id="index-common-extensions-_002fdev_002fstdin-special-file"></a>
+<a class="index-entry-id" id="index-common-extensions-_002fdev_002fstdout-special-file"></a>
+<a class="index-entry-id" id="index-common-extensions-_002fdev_002fstderr-special-file"></a>
+<a class="index-entry-id" id="index-extensions-common-_002fdev_002fstdin-special-file"></a>
+<a class="index-entry-id" id="index-extensions-common-_002fdev_002fstdout-special-file"></a>
+<a class="index-entry-id" id="index-extensions-common-_002fdev_002fstderr-special-file"></a>
+<a class="index-entry-id" id="index-file-names-standard-streams-in-gawk"></a>
+<a class="index-entry-id" id="index-_002fdev_002f_2026-special-files"></a>
+<a class="index-entry-id" id="index-files-_002fdev_002f_2026-special-files"></a>
+<a class="index-entry-id" id="index-_002fdev_002ffd_002fN-special-files-_0028gawk_0029"></a>
+<dl class="table">
+<dt><samp class="file">/dev/stdin</samp></dt>
+<dd><p>The standard input (file descriptor 0).
+</p>
+</dd>
+<dt><samp class="file">/dev/stdout</samp></dt>
+<dd><p>The standard output (file descriptor 1).
+</p>
+</dd>
+<dt><samp class="file">/dev/stderr</samp></dt>
+<dd><p>The standard error output (file descriptor 2).
+</p></dd>
+</dl>
+
+<p>With these facilities,
+the proper way to write an error message then becomes:
+</p>
+<div class="example">
+<pre class="example-preformatted">print &quot;Serious error detected!&quot; &gt; &quot;/dev/stderr&quot;
+</pre></div>
+
+<a class="index-entry-id" id="index-troubleshooting-double-quotes-with-file-names"></a>
+<p>Note the use of double quotes around the file name.
+Like with any other redirection, the value must be a string.
+It is a common error to omit the double quotes, which leads
+to confusing results.
+</p>
+<p><code class="command">gawk</code> does not treat these file names as special when
+in POSIX-compatibility mode. However, because BWK <code class="command">awk</code>
+supports them, <code class="command">gawk</code> does support them even when
+invoked with the <samp class="option">--traditional</samp> option (see <a class="pxref" href="Options.html">Command-Line Options</a>).
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT29" href="Special-FD.html#DOCF29">(29)</a></h5>
+<p>The &ldquo;tty&rdquo; in <samp class="file">/dev/tty</samp> stands for
+&ldquo;Teletype,&rdquo; a serial terminal.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Special-Files.html">Special File names in <code class="command">gawk</code></a>, Previous: <a href="Redirection.html">Redirecting Output of <code class="code">print</code> and <code class="code">printf</code></a>, Up: <a href="Printing.html">Printing Output</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

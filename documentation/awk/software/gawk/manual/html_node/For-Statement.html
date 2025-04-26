@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>For Statement (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="For Statement (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="For Statement (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Statements.html" rel="up" title="Statements">
+<link href="Switch-Statement.html" rel="next" title="Switch Statement">
+<link href="Do-Statement.html" rel="prev" title="Do Statement">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="For-Statement">
+<div class="nav-panel">
+<p>
+Next: <a href="Switch-Statement.html" accesskey="n" rel="next">The <code class="code">switch</code> Statement</a>, Previous: <a href="Do-Statement.html" accesskey="p" rel="prev">The <code class="code">do</code>-<code class="code">while</code> Statement</a>, Up: <a href="Statements.html" accesskey="u" rel="up">Control Statements in Actions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="The-for-Statement"><span>7.4.4 The <code class="code">for</code> Statement<a class="copiable-link" href="For-Statement.html#The-for-Statement"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-for-statement"></a>
+<a class="index-entry-id" id="index-loops-for-iterative"></a>
+
+<p>The <code class="code">for</code> statement makes it more convenient to count iterations of a
+loop.  The general form of the <code class="code">for</code> statement looks like this:
+</p>
+<div class="example">
+<pre class="example-preformatted">for (<var class="var">initialization</var>; <var class="var">condition</var>; <var class="var">increment</var>)
+  <var class="var">body</var>
+</pre></div>
+
+<p>The <var class="var">initialization</var>, <var class="var">condition</var>, and <var class="var">increment</var> parts are
+arbitrary <code class="command">awk</code> expressions, and <var class="var">body</var> stands for any
+<code class="command">awk</code> statement.
+</p>
+<p>The <code class="code">for</code> statement starts by executing <var class="var">initialization</var>.
+Then, as long
+as the <var class="var">condition</var> is true, it repeatedly executes <var class="var">body</var> and then
+<var class="var">increment</var>.  Typically, <var class="var">initialization</var> sets a variable to
+either zero or one, <var class="var">increment</var> adds one to it, and <var class="var">condition</var>
+compares it against the desired number of iterations.
+For example:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk '
+{
+    for (i = 1; i &lt;= 3; i++)
+        print $i
+}' inventory-shipped
+</pre></div>
+
+<p>This prints the first three fields of each input record, with one
+input field per output line.
+</p>
+<p>C and C++ programmers might expect to be able to use the comma
+operator to set more than one variable in the <var class="var">initialization</var>
+part of the <code class="code">for</code> loop, or to increment multiple variables in the
+<var class="var">increment</var> part of the loop, like so:
+</p>
+<div class="example">
+<pre class="example-preformatted">for (i = 0, j = length(a); i &lt; j; i++, j--) ...   <i class="i">C/C++, not awk!</i>
+</pre></div>
+
+<p>You cannot do this; the comma operator is not supported in <code class="command">awk</code>.
+There are workarounds, but they are nonobvious and can lead to
+code that is difficult to read and understand. It is best, therefore,
+to simply write additional initializations as separate statements
+preceding the <code class="code">for</code> loop and to place additional increment statements
+at the end of the loop&rsquo;s body.
+</p>
+<p>Most often, <var class="var">increment</var> is an increment expression, as in the earlier
+example.  But this is not required; it can be any expression
+whatsoever.  For example, the following statement prints all the powers of two
+between 1 and 100:
+</p>
+<div class="example">
+<pre class="example-preformatted">for (i = 1; i &lt;= 100; i *= 2)
+    print i
+</pre></div>
+
+<p>If there is nothing to be done, any of the three expressions in the
+parentheses following the <code class="code">for</code> keyword may be omitted.  Thus,
+&lsquo;<samp class="samp">for&nbsp;(;&nbsp;x&nbsp;&gt;&nbsp;0;)</samp>&rsquo;<!-- /@w --> is equivalent to &lsquo;<samp class="samp">while&nbsp;(x&nbsp;&gt;&nbsp;0)</samp>&rsquo;<!-- /@w -->.  If the
+<var class="var">condition</var> is omitted, it is treated as true, effectively
+yielding an <em class="dfn">infinite loop</em> (i.e., a loop that never terminates).
+</p>
+<p>In most cases, a <code class="code">for</code> loop is an abbreviation for a <code class="code">while</code>
+loop, as shown here:
+</p>
+<div class="example">
+<pre class="example-preformatted"><var class="var">initialization</var>
+while (<var class="var">condition</var>) {
+  <var class="var">body</var>
+  <var class="var">increment</var>
+}
+</pre></div>
+
+<a class="index-entry-id" id="index-loops-continue-statement-and"></a>
+<p>The only exception is when the <code class="code">continue</code> statement
+(see <a class="pxref" href="Continue-Statement.html">The <code class="code">continue</code> Statement</a>) is used
+inside the loop. Changing a <code class="code">for</code> statement to a <code class="code">while</code>
+statement in this way can change the effect of the <code class="code">continue</code>
+statement inside the loop.
+</p>
+<p>The <code class="command">awk</code> language has a <code class="code">for</code> statement in addition to a
+<code class="code">while</code> statement because a <code class="code">for</code> loop is often both less work to
+type and more natural to think of.  Counting the number of iterations is
+very common in loops.  It can be easier to think of this counting as part
+of looping rather than as something to do inside the loop.
+</p>
+<a class="index-entry-id" id="index-in-operator-2"></a>
+<p>There is an alternative version of the <code class="code">for</code> loop, for iterating over
+all the indices of an array:
+</p>
+<div class="example">
+<pre class="example-preformatted">for (i in array)
+    <var class="var">do something with</var> array[i]
+</pre></div>
+
+<p>See <a class="xref" href="Scanning-an-Array.html">Scanning All Elements of an Array</a>
+for more information on this version of the <code class="code">for</code> loop.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Switch-Statement.html">The <code class="code">switch</code> Statement</a>, Previous: <a href="Do-Statement.html">The <code class="code">do</code>-<code class="code">while</code> Statement</a>, Up: <a href="Statements.html">Control Statements in Actions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

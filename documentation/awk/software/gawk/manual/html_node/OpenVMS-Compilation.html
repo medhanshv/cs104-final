@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>OpenVMS Compilation (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="OpenVMS Compilation (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="OpenVMS Compilation (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="OpenVMS-Installation.html" rel="up" title="OpenVMS Installation">
+<link href="OpenVMS-Dynamic-Extensions.html" rel="next" title="OpenVMS Dynamic Extensions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="appendixsubsubsec-level-extent" id="OpenVMS-Compilation">
+<div class="nav-panel">
+<p>
+Next: <a href="OpenVMS-Dynamic-Extensions.html" accesskey="n" rel="next">Compiling <code class="command">gawk</code> Dynamic Extensions on OpenVMS</a>, Up: <a href="OpenVMS-Installation.html" accesskey="u" rel="up">Compiling and Installing <code class="command">gawk</code> on OpenVMS</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="appendixsubsubsec" id="Compiling-gawk-on-OpenVMS"><span>B.3.2.1 Compiling <code class="command">gawk</code> on OpenVMS<a class="copiable-link" href="OpenVMS-Compilation.html#Compiling-gawk-on-OpenVMS"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-compiling-gawk-for-OpenVMS"></a>
+
+<p>To compile <code class="command">gawk</code> under OpenVMS, there is a <code class="code">DCL</code> command procedure
+that issues all the necessary <code class="code">CC</code> and <code class="code">LINK</code> commands. There is
+also a <samp class="file">Makefile</samp> for use with the <code class="code">MMS</code> and <code class="code">MMK</code> utilities.
+From the source directory, use either:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">@[.vms]vmsbuild.com</kbd>
+</pre></div>
+
+<p>or:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">MMS/DESCRIPTION=[.vms]descrip.mms gawk</kbd>
+</pre></div>
+
+<p>or:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">MMK/DESCRIPTION=[.vms]descrip.mms gawk</kbd>
+</pre></div>
+
+<p>Note that the <code class="command">vmsbuild.com</code> method of building is no longer being
+maintained and is planned to be removed in the future.
+</p>
+<p><code class="command">MMK</code> is an open source, free, near-clone of <code class="command">MMS</code> and
+can better handle ODS-5 volumes with upper- and lowercase file names.
+<code class="command">MMK</code> is available from <a class="uref" href="https://github.com/endlesssoftware/mmk">https://github.com/endlesssoftware/mmk</a>.
+</p>
+<p>With ODS-5 volumes and extended parsing enabled, the case of the target
+parameter may need to be exact.
+</p>
+<p><code class="command">gawk</code> has been tested using these VMS Software, Inc.
+Community editions:
+</p>
+<ul class="itemize mark-bullet">
+<li>HP C V7.3-010 on OpenVMS Alpha V8.4-2L1.
+
+</li><li>HP C V7.3-020 on OpenVMS IA64 V8.4-2L3.<a class="footnote" id="DOCF119" href="OpenVMS-Compilation.html#FOOT119"><sup>119</sup></a>
+</li></ul>
+
+<p>Due to HPE cancelling the Hobbyist licensing program, no more testing is
+being done on older releases of OpenVMS.
+</p>
+<p>See <a class="xref" href="OpenVMS-GNV.html">The OpenVMS GNV Project</a> for information on building
+<code class="command">gawk</code> as a PCSI kit that is compatible with the GNV product.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT119" href="OpenVMS-Compilation.html#DOCF119">(119)</a></h5>
+<p>The IA64 architecture
+is also known as &ldquo;Itanium.&rdquo;</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Debugger Invocation (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Debugger Invocation (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Debugger Invocation (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Sample-Debugging-Session.html" rel="up" title="Sample Debugging Session">
+<link href="Finding-The-Bug.html" rel="next" title="Finding The Bug">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Debugger-Invocation">
+<div class="nav-panel">
+<p>
+Next: <a href="Finding-The-Bug.html" accesskey="n" rel="next">Finding the Bug</a>, Up: <a href="Sample-Debugging-Session.html" accesskey="u" rel="up">Sample <code class="command">gawk</code> Debugging Session</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="How-to-Start-the-Debugger"><span>14.2.1 How to Start the Debugger<a class="copiable-link" href="Debugger-Invocation.html#How-to-Start-the-Debugger"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-starting-the-debugger"></a>
+<a class="index-entry-id" id="index-debugger-how-to-start"></a>
+
+<p>Starting the debugger is almost exactly like running <code class="command">gawk</code> normally,
+except you have to pass an additional option, <samp class="option">--debug</samp>, or the
+corresponding short option, <samp class="option">-D</samp>.  The file(s) containing the
+program and any supporting code are given on the command line as arguments
+to one or more <samp class="option">-f</samp> options. (<code class="command">gawk</code> is not designed
+to debug command-line programs, only programs contained in files.)
+In our case, we invoke the debugger like this:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk -D -f getopt.awk -f join.awk -f uniq.awk -- -1 inputfile</kbd>
+</pre></div>
+
+<a class="index-entry-id" id="index-AWKPATH-environment-variable-5"></a>
+<a class="index-entry-id" id="index-environment-variables-AWKPATH-5"></a>
+<p>where both <samp class="file">getopt.awk</samp> and <samp class="file">uniq.awk</samp> are in <code class="env">$AWKPATH</code>.
+(Experienced users of GDB or similar debuggers should note that
+this syntax is slightly different from what you are used to.
+With the <code class="command">gawk</code> debugger, you give the arguments for running the program
+in the command line to the debugger rather than as part of the <code class="code">run</code>
+command at the debugger prompt.)
+The <samp class="option">--</samp> ends <code class="command">gawk</code>&rsquo;s command line options. It&rsquo;s not
+strictly necessary here, but it is needed if an option to the <code class="command">awk</code>
+program conflicts with a <code class="command">gawk</code> option.
+The <samp class="option">-1</samp> is an option to <samp class="file">uniq.awk</samp>.
+</p>
+<a class="index-entry-id" id="index-debugger-prompt"></a>
+<p>Instead of immediately running the program on <samp class="file">inputfile</samp>, as
+<code class="command">gawk</code> would ordinarily do, the debugger merely loads all
+the program source files, compiles them internally, and then gives
+us a prompt:
+</p>
+<div class="example">
+<pre class="example-preformatted">gawk&gt;
+</pre></div>
+
+<p>from which we can issue commands to the debugger.  At this point, no
+code has been executed.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Finding-The-Bug.html">Finding the Bug</a>, Up: <a href="Sample-Debugging-Session.html">Sample <code class="command">gawk</code> Debugging Session</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>Datagram Communications (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="Datagram Communications (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="Datagram Communications (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Introduction.html" rel="up" title="Introduction">
+<link href="The-TCP_002fIP-Protocols.html" rel="next" title="The TCP/IP Protocols">
+<link href="Stream-Communications.html" rel="prev" title="Stream Communications">
+<style type="text/css">
+<!--
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Datagram-Communications">
+<div class="nav-panel">
+<p>
+Next: <a href="The-TCP_002fIP-Protocols.html" accesskey="n" rel="next">The Internet Protocols</a>, Previous: <a href="Stream-Communications.html" accesskey="p" rel="prev">Reliable Byte-streams (Phone Calls)</a>, Up: <a href="Introduction.html" accesskey="u" rel="up">Networking Concepts</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Best_002deffort-Datagrams-_0028Mailed-Letters_0029">1.2 Best-effort Datagrams (Mailed Letters)</h3>
+
+<p>Suppose you mail three different documents to your office on the
+other side of the country on two different days.  Doing so
+entails the following.
+</p>
+<ol class="enumerate">
+<li> Each document travels in its own envelope.
+
+</li><li> Each envelope contains both the sender and the
+recipient address.
+
+</li><li> Each envelope may travel a different route to its destination.
+
+</li><li> The envelopes may arrive in a different order from the one
+in which they were sent.
+
+</li><li> One or more may get lost in the mail.
+(Although, fortunately, this does not occur very often.)
+
+</li><li> In a computer network, one or more <em class="dfn">packets</em>
+may also arrive multiple times.  (This doesn&rsquo;t happen
+with the postal system!)
+
+</li></ol>
+
+<p>The important characteristics of datagram communications, like
+those of the postal system are thus:
+</p>
+<ul class="itemize mark-bullet">
+<li>Delivery is &ldquo;best effort;&rdquo; the data may never get there.
+
+</li><li>Each message is self-contained, including the source and
+destination addresses.
+
+</li><li>Delivery is <em class="emph">not</em> sequenced; packets may arrive out
+of order, and/or multiple times.
+
+</li><li>Unlike the phone system, overhead is considerably lower.
+It is not necessary to set up the call first.
+</li></ul>
+
+<p>The price the user pays for the lower overhead of datagram communications
+is exactly the lower reliability; it is often necessary for user-level
+protocols that use datagram communications to add their own reliability
+features on top of the basic communications.
+</p>
+</div>
+
+
+
+</body>
+</html>

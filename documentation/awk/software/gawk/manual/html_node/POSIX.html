@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>POSIX (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="POSIX (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="POSIX (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Language-History.html" rel="up" title="Language History">
+<link href="BTL.html" rel="next" title="BTL">
+<link href="SVR4.html" rel="prev" title="SVR4">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="appendixsec-level-extent" id="POSIX">
+<div class="nav-panel">
+<p>
+Next: <a href="BTL.html" accesskey="n" rel="next">Extensions in Brian Kernighan&rsquo;s <code class="command">awk</code></a>, Previous: <a href="SVR4.html" accesskey="p" rel="prev">Changes Between SVR3.1 and SVR4</a>, Up: <a href="Language-History.html" accesskey="u" rel="up">The Evolution of the <code class="command">awk</code> Language</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="appendixsec" id="Changes-Between-SVR4-and-POSIX-awk"><span>A.3 Changes Between SVR4 and POSIX <code class="command">awk</code><a class="copiable-link" href="POSIX.html#Changes-Between-SVR4-and-POSIX-awk"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-awk-versions-of-changes-between-SVR4-and-POSIX-awk"></a>
+<a class="index-entry-id" id="index-POSIX-awk-changes-in-awk-versions"></a>
+
+<p>The POSIX Command Language and Utilities standard for <code class="command">awk</code> (1992)
+introduced the following changes into the language:
+</p>
+<ul class="itemize mark-bullet">
+<li>The use of <samp class="option">-W</samp> for implementation-specific options
+(see <a class="pxref" href="Options.html">Command-Line Options</a>)
+
+</li><li>The use of <code class="code">CONVFMT</code> for controlling the conversion of numbers
+to strings (see <a class="pxref" href="Conversion.html">Conversion of Strings and Numbers</a>)
+
+</li><li>The concept of a numeric string and tighter comparison rules to go
+with it (see <a class="pxref" href="Typing-and-Comparison.html">Variable Typing and Comparison Expressions</a>)
+
+</li><li>The use of predefined variables as function parameter names is forbidden
+(see <a class="pxref" href="Definition-Syntax.html">Function Definition Syntax</a>)
+
+</li><li>More complete documentation of many of the previously undocumented
+features of the language
+</li></ul>
+
+<p>In 2012, a number of extensions that had been commonly available for
+many years were finally added to POSIX. They are:
+</p>
+<ul class="itemize mark-bullet">
+<li>The <code class="code">fflush()</code> built-in function for flushing buffered output
+(see <a class="pxref" href="I_002fO-Functions.html">Input/Output Functions</a>)
+
+</li><li>The <code class="code">nextfile</code> statement
+(see <a class="pxref" href="Nextfile-Statement.html">The <code class="code">nextfile</code> Statement</a>)
+
+</li><li>The ability to delete all of an array at once with &lsquo;<samp class="samp">delete <var class="var">array</var></samp>&rsquo;
+(see <a class="pxref" href="Delete.html">The <code class="code">delete</code> Statement</a>)
+
+</li></ul>
+
+<p>See <a class="xref" href="Common-Extensions.html">Common Extensions Summary</a> for a list of common extensions
+not permitted by the POSIX standard.
+</p>
+<p>The 2018 POSIX standard can be found online at
+<a class="url" href="https://pubs.opengroup.org/onlinepubs/9699919799/">https://pubs.opengroup.org/onlinepubs/9699919799/</a>.
+</p>
+
+</div>
+
+
+
+</body>
+</html>

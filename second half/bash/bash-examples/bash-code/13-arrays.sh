@@ -22,7 +22,10 @@ done
 
 # Remove an element
 unset fruits[1]
+fruits[50]="jelly"
+fruits[4]="tsp"
 echo "After removing Banana: ${fruits[@]}"
+echo "At place 5?:${fruits[6]}pp"
 echo ""
 
 # --- Associative Array ---

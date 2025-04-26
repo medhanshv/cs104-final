@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>File /inet/tcp (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="File /inet/tcp (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="File /inet/tcp (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Comparing-Protocols.html" rel="up" title="Comparing Protocols">
+<link href="File-_002finet_002fudp.html" rel="next" title="File /inet/udp">
+<link href="Comparing-Protocols.html" rel="prev" title="Comparing Protocols">
+<style type="text/css">
+<!--
+div.example {margin-left: 3.2em}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="File-_002finet_002ftcp">
+<div class="nav-panel">
+<p>
+Next: <a href="File-_002finet_002fudp.html" accesskey="n" rel="next"><samp class="file">/inet/udp</samp></a>, Previous: <a href="Comparing-Protocols.html" accesskey="p" rel="prev">Comparing Protocols</a>, Up: <a href="Comparing-Protocols.html" accesskey="u" rel="up">Comparing Protocols</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="g_t_002finet_002ftcp">2.1.2.1 <samp class="file">/inet/tcp</samp></h4>
+<a class="index-entry-id" id="index-_002finet_002ftcp-special-files-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-files-1"></a>
+<a class="index-entry-id" id="index-TCP-_0028Transmission-Control-Protocol_0029-1"></a>
+<p>Once again, always use TCP.
+(Use UDP when low overhead is a necessity.)
+The first example is the sender
+program:
+</p>
+<div class="example">
+<pre class="example-preformatted"># Server
+BEGIN {
+  print strftime() |&amp; &quot;/inet/tcp/8888/0/0&quot;
+  close(&quot;/inet/tcp/8888/0/0&quot;)
+}
+</pre></div>
+
+<p>The receiver is very simple:
+</p>
+<div class="example">
+<pre class="example-preformatted"># Client
+BEGIN {
+  &quot;/inet/tcp/0/localhost/8888&quot; |&amp; getline
+  print $0
+  close(&quot;/inet/tcp/0/localhost/8888&quot;)
+}
+</pre></div>
+
+<p>TCP guarantees that the bytes arrive at the receiving end in exactly
+the same order that they were sent. No byte is lost
+(except for broken connections), doubled, or out of order. Some
+overhead is necessary to accomplish this, but this is the price to pay for
+a reliable service.
+It does matter which side starts first. The sender/server has to be started
+first, and it waits for the receiver to read a line.
+</p>
+</div>
+
+
+
+</body>
+</html>

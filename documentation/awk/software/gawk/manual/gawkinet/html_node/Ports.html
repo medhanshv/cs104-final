@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>Ports (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="Ports (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="Ports (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="The-TCP_002fIP-Protocols.html" rel="up" title="The TCP/IP Protocols">
+<link href="Basic-Protocols.html" rel="prev" title="Basic Protocols">
+<style type="text/css">
+<!--
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Ports">
+<div class="nav-panel">
+<p>
+Previous: <a href="Basic-Protocols.html" accesskey="p" rel="prev">The Basic Internet Protocols</a>, Up: <a href="The-TCP_002fIP-Protocols.html" accesskey="u" rel="up">The Internet Protocols</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="TCP-and-UDP-Ports">1.3.2 TCP and UDP Ports</h4>
+
+<p>In the postal system, the address on an envelope indicates a physical
+location, such as a residence or office building.  But there may be
+more than one person at the location; thus you have to further quantify
+the recipient by putting a person or company name on the envelope.
+</p>
+<p>In the phone system, one phone number may represent an entire company,
+in which case you need a person&rsquo;s extension number in order to
+reach that individual directly.  Or, when you call a home, you have to
+say, &ldquo;May I please speak to ...&rdquo; before talking to the person directly.
+</p>
+<p>IP networking provides the concept of addressing.  An IP address represents
+a particular computer, but no more.  In order to reach the mail service
+on a system, or the FTP or WWW service on a system, you must have some
+way to further specify which service you want.  In the Internet Protocol suite,
+this is done with <em class="dfn">port numbers</em>, which represent the services, much
+like an extension number used with a phone number.
+</p>
+<p>Port numbers are 16-bit integers.  Unix and Unix-like systems reserve ports
+below 1024 for &ldquo;well known&rdquo; services, such as SMTP, FTP, and HTTP.
+Numbers 1024 and above may be used by any application, although there is no
+promise made that a particular port number is always available.
+</p>
+</div>
+
+
+
+</body>
+</html>

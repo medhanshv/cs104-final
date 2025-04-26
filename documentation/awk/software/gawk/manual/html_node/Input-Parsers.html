@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Input Parsers (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Input Parsers (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Input Parsers (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Registration-Functions.html" rel="up" title="Registration Functions">
+<link href="Output-Wrappers.html" rel="next" title="Output Wrappers">
+<link href="Extension-Version-String.html" rel="prev" title="Extension Version String">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Input-Parsers">
+<div class="nav-panel">
+<p>
+Next: <a href="Output-Wrappers.html" accesskey="n" rel="next">Customized Output Wrappers</a>, Previous: <a href="Extension-Version-String.html" accesskey="p" rel="prev">Registering An Extension Version String</a>, Up: <a href="Registration-Functions.html" accesskey="u" rel="up">Registration Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Customized-Input-Parsers"><span>17.4.6.4 Customized Input Parsers<a class="copiable-link" href="Input-Parsers.html#Customized-Input-Parsers"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-customized-input-parser"></a>
+
+<p>By default, <code class="command">gawk</code> reads text files as its input. It uses the value
+of <code class="code">RS</code> to find the end of an input record, and then uses <code class="code">FS</code>
+(or <code class="code">FIELDWIDTHS</code> or <code class="code">FPAT</code>) to split it into fields (see <a class="pxref" href="Reading-Files.html">Reading Input Files</a>).
+Additionally, it sets the value of <code class="code">RT</code> (see <a class="pxref" href="Built_002din-Variables.html">Predefined Variables</a>).
+</p>
+<p>If you want, you can provide your own custom input parser.  An input
+parser&rsquo;s job is to return a record to the <code class="command">gawk</code> record-processing
+code, along with indicators for the value and length of the data to be
+used for <code class="code">RT</code>, if any.
+</p>
+<p>To provide an input parser, you must first provide two functions
+(where <var class="var">XXX</var> is a prefix name for your extension):
+</p>
+<dl class="table">
+<dt><code class="code">awk_bool_t <var class="var">XXX</var>_can_take_file(const awk_input_buf_t *iobuf);</code></dt>
+<dd><p>This function examines the information available in <code class="code">iobuf</code>
+(which we discuss shortly).  Based on the information there, it
+decides if the input parser should be used for this file.
+If so, it should return true. Otherwise, it should return false.
+It should not change any state (variable values, etc.) within <code class="command">gawk</code>.
+</p>
+</dd>
+<dt><code class="code">awk_bool_t <var class="var">XXX</var>_take_control_of(awk_input_buf_t *iobuf);</code></dt>
+<dd><p>When <code class="command">gawk</code> decides to hand control of the file over to the
+input parser, it calls this function.  This function in turn must fill
+in certain fields in the <code class="code">awk_input_buf_t</code> structure and ensure
+that certain conditions are true.  It should then return true. If an
+error of some kind occurs, it should not fill in any fields and should
+return false; then <code class="command">gawk</code> will not use the input parser.
+The details are presented shortly.
+</p></dd>
+</dl>
+
+<p>Your extension should package these functions inside an
+<code class="code">awk_input_parser_t</code>, which looks like this:
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">typedef struct awk_input_parser {
+    const char *name;   /* name of parser */
+    awk_bool_t (*can_take_file)(const awk_input_buf_t *iobuf);
+    awk_bool_t (*take_control_of)(awk_input_buf_t *iobuf);
+    awk_const struct awk_input_parser *awk_const next;   /* for gawk */
+} awk_input_parser_t;
+</pre></div></div>
+
+<p>The fields are:
+</p>
+<dl class="table">
+<dt><code class="code">const char *name;</code></dt>
+<dd><p>The name of the input parser. This is a regular C string.
+</p>
+</dd>
+<dt><code class="code">awk_bool_t (*can_take_file)(const awk_input_buf_t *iobuf);</code></dt>
+<dd><p>A pointer to your <code class="code"><var class="var">XXX</var>_can_take_file()</code> function.
+</p>
+</dd>
+<dt><code class="code">awk_bool_t (*take_control_of)(awk_input_buf_t *iobuf);</code></dt>
+<dd><p>A pointer to your <code class="code"><var class="var">XXX</var>_take_control_of()</code> function.
+</p>
+</dd>
+<dt><code class="code">awk_const struct input_parser *awk_const next;</code></dt>
+<dd><p>This is for use by <code class="command">gawk</code>;
+therefore it is marked <code class="code">awk_const</code> so that the extension cannot
+modify it.
+</p></dd>
+</dl>
+
+<p>The steps are as follows:
+</p>
+<ol class="enumerate">
+<li> Create a <code class="code">static awk_input_parser_t</code> variable and initialize it
+appropriately.
+
+</li><li> When your extension is loaded, register your input parser with
+<code class="command">gawk</code> using the <code class="code">register_input_parser()</code> API function
+(described next).
+</li></ol>
+
+<p>An <code class="code">awk_input_buf_t</code> looks like this:
+</p>
+<div class="example">
+<pre class="example-preformatted">typedef struct awk_input {
+    const char *name;       /* filename */
+    int fd;                 /* file descriptor */
+#define INVALID_HANDLE (-1)
+    void *opaque;           /* private data for input parsers */
+    int (*get_record)(char **out, struct awk_input *iobuf,
+                      int *errcode, char **rt_start, size_t *rt_len,
+                      const awk_fieldwidth_info_t **field_width);
+    ssize_t (*read_func)();
+    void (*close_func)(struct awk_input *iobuf);
+    struct stat sbuf;       /* stat buf */
+} awk_input_buf_t;
+</pre></div>
+
+<p>The fields can be divided into two categories: those for use (initially,
+at least) by <code class="code"><var class="var">XXX</var>_can_take_file()</code>, and those for use by
+<code class="code"><var class="var">XXX</var>_take_control_of()</code>.  The first group of fields and their uses
+are as follows:
+</p>
+<dl class="table">
+<dt><code class="code">const char *name;</code></dt>
+<dd><p>The name of the file.
+</p>
+</dd>
+<dt><code class="code">int fd;</code></dt>
+<dd><p>A file descriptor for the file.  <code class="command">gawk</code> attempts to open
+the file for reading using the <code class="code">open()</code> system call. If it was
+able to open the file, then <code class="code">fd</code> will <em class="emph">not</em> be equal to
+<code class="code">INVALID_HANDLE</code>. Otherwise, it will.
+</p>
+<p>An extension can decide that it doesn&rsquo;t want to use the open file descriptor
+provided by <code class="command">gawk</code>. In such a case it can close the file and
+set <code class="code">fd</code> to <code class="code">INVALID_HANDLE</code>, or it can leave it alone and
+keep it&rsquo;s own file descriptor in private data pointed to by the
+<code class="code">opaque</code> pointer (see further in this list). In any case, if
+the file descriptor is valid, it should <em class="emph">not</em> just overwrite the
+value with something else; doing so would cause a resource leak.
+</p>
+</dd>
+<dt><code class="code">struct stat sbuf;</code></dt>
+<dd><p>If the file descriptor is valid, then <code class="command">gawk</code> will have filled
+in this structure via a call to the <code class="code">fstat()</code> system call.
+Otherwise, if the <code class="code">lstat()</code> system call is available, it will
+use that. If <code class="code">lstat()</code> is not available, then it uses <code class="code">stat()</code>.
+</p>
+<p>Getting the file&rsquo;s information allows extensions to check the type of
+the file even if it could not be opened.  This occurs, for example,
+on Windows systems when trying to use <code class="code">open()</code> on a directory.
+</p>
+<p>If <code class="command">gawk</code> was not able to get the file information, then
+<code class="code">sbuf</code> will be zeroed out. In particular, extension code
+can check if &lsquo;<samp class="samp">sbuf.st_mode == 0</samp>&rsquo;. If that&rsquo;s true, then there
+is no information in <code class="code">sbuf</code>.
+</p></dd>
+</dl>
+
+<p>The <code class="code"><var class="var">XXX</var>_can_take_file()</code> function should examine these
+fields and decide if the input parser should be used for the file.
+The decision can be made based upon <code class="command">gawk</code> state (the value
+of a variable defined previously by the extension and set by
+<code class="command">awk</code> code), the name of the
+file, whether or not the file descriptor is valid, the information
+in the <code class="code">struct stat</code>, or any combination of these factors.
+</p>
+<p>Once <code class="code"><var class="var">XXX</var>_can_take_file()</code> has returned true, and
+<code class="command">gawk</code> has decided to use your input parser, it calls
+<code class="code"><var class="var">XXX</var>_take_control_of()</code>.  That function then fills
+either the <code class="code">get_record</code> field or the <code class="code">read_func</code> field in
+the <code class="code">awk_input_buf_t</code>.  It must also ensure that <code class="code">fd</code> is <em class="emph">not</em>
+set to <code class="code">INVALID_HANDLE</code>.  The following list describes the fields that
+may be filled by <code class="code"><var class="var">XXX</var>_take_control_of()</code>:
+</p>
+<dl class="table">
+<dt><code class="code">void *opaque;</code></dt>
+<dd><p>This is used to hold any state information needed by the input parser
+for this file.  It is &ldquo;opaque&rdquo; to <code class="command">gawk</code>.  The input parser
+is not required to use this pointer.
+</p>
+</dd>
+<dt><code class="code">int&nbsp;(*get_record)(char&nbsp;**out,</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;struct&nbsp;awk_input *iobuf,</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *errcode,</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;char **rt_start,</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;size_t *rt_len,</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const awk_fieldwidth_info_t **field_width);</code></dt>
+<dd><p>This function pointer should point to a function that creates the input
+records.  Said function is the core of the input parser.  Its behavior
+is described in the text following this list.
+</p>
+</dd>
+<dt><code class="code">ssize_t (*read_func)(int, void *, size_t);</code></dt>
+<dd><p>This function pointer should point to a function that has the
+same behavior as the standard POSIX <code class="code">read()</code> system call.
+It is an alternative to the <code class="code">get_record</code> pointer.  Its behavior
+is also described in the text following this list.
+</p>
+</dd>
+<dt><code class="code">void (*close_func)(struct awk_input *iobuf);</code></dt>
+<dd><p>This function pointer should point to a function that does
+the &ldquo;teardown.&rdquo; It should release any resources allocated by
+<code class="code"><var class="var">XXX</var>_take_control_of()</code>.  It may also close the file. If it
+does so, it should set the <code class="code">fd</code> field to <code class="code">INVALID_HANDLE</code>.
+</p>
+<p>If <code class="code">fd</code> is still not <code class="code">INVALID_HANDLE</code> after the call to this
+function, <code class="command">gawk</code> calls the regular <code class="code">close()</code> system call.
+</p>
+<p>Having a &ldquo;teardown&rdquo; function is optional. If your input parser does
+not need it, do not set this field.  Then, <code class="command">gawk</code> calls the
+regular <code class="code">close()</code> system call on the file descriptor, so it should
+be valid.
+</p></dd>
+</dl>
+
+<p>The <code class="code"><var class="var">XXX</var>_get_record()</code> function does the work of creating
+input records.  The parameters are as follows:
+</p>
+<dl class="table">
+<dt><code class="code">char **out</code></dt>
+<dd><p>This is a pointer to a <code class="code">char *</code> variable that is set to point
+to the record.  <code class="command">gawk</code> makes its own copy of the data, so
+your extension must manage this storage.
+</p>
+</dd>
+<dt><code class="code">struct awk_input *iobuf</code></dt>
+<dd><p>This is the <code class="code">awk_input_buf_t</code> for the file.  Two of its fields should
+be used by your extension: <code class="code">fd</code> for reading data, and <code class="code">opaque</code>
+for managing any private state.
+</p>
+</dd>
+<dt><code class="code">int *errcode</code></dt>
+<dd><p>If an error occurs, <code class="code">*errcode</code> should be set to an appropriate
+code from <code class="code">&lt;errno.h&gt;</code>.
+</p>
+</dd>
+<dt><code class="code">char **rt_start</code></dt>
+<dt><code class="code">size_t *rt_len</code></dt>
+<dd><p>If the concept of a &ldquo;record terminator&rdquo; makes sense, then
+<code class="code">*rt_start</code> should be set to point to the data to be used for
+<code class="code">RT</code>, and <code class="code">*rt_len</code> should be set to the length of the
+data. Otherwise, <code class="code">*rt_len</code> should be set to zero.
+Here too, <code class="command">gawk</code> makes its own copy of this data, so your
+extension must manage this storage.
+</p>
+</dd>
+<dt><code class="code">const awk_fieldwidth_info_t **field_width</code></dt>
+<dd><p>If <code class="code">field_width</code> is not <code class="code">NULL</code>, then <code class="code">*field_width</code> will be initialized
+to <code class="code">NULL</code>, and the function may set it to point to a structure
+supplying field width information to override the default
+field parsing mechanism. Note that this structure will not
+be copied by <code class="command">gawk</code>; it must persist at least until the next call
+to <code class="code">get_record</code> or <code class="code">close_func</code>. Note also that <code class="code">field_width</code> is
+<code class="code">NULL</code> when <code class="code">getline</code> is assigning the results to a variable, thus
+field parsing is not needed.
+</p>
+<p>If the parser sets <code class="code">*field_width</code>,
+then <code class="command">gawk</code> uses this layout to parse the input record,
+and the <code class="code">PROCINFO[&quot;FS&quot;]</code> value will be <code class="code">&quot;API&quot;</code> while this record
+is active in <code class="code">$0</code>.
+The <code class="code">awk_fieldwidth_info_t</code> data structure
+is described below.
+</p></dd>
+</dl>
+
+<p>The return value is the length of the buffer pointed to by
+<code class="code">*out</code>, or <code class="code">EOF</code> if end-of-file was reached or an
+error occurred.
+</p>
+<p>It is guaranteed that <code class="code">errcode</code> is a valid pointer, so there is no
+need to test for a <code class="code">NULL</code> value.  <code class="command">gawk</code> sets <code class="code">*errcode</code>
+to zero, so there is no need to set it unless an error occurs.
+</p>
+<p>If an error does occur, the function should return <code class="code">EOF</code> and set
+<code class="code">*errcode</code> to a value greater than zero.  In that case, if <code class="code">*errcode</code>
+does not equal zero, <code class="command">gawk</code> automatically updates
+the <code class="code">ERRNO</code> variable based on the value of <code class="code">*errcode</code>.
+(In general, setting &lsquo;<samp class="samp">*errcode = errno</samp>&rsquo; should do the right thing.)
+</p>
+<p>As an alternative to supplying a function that returns an input record,
+you may instead supply a function that simply reads bytes, and let
+<code class="command">gawk</code> parse the data into records.  If you do so, the data
+should be returned in the multibyte encoding of the current locale.
+Such a function should follow the same behavior as the <code class="code">read()</code>
+system call, and you fill in the <code class="code">read_func</code> pointer with its
+address in the <code class="code">awk_input_buf_t</code> structure.
+</p>
+<p>By default, <code class="command">gawk</code> sets the <code class="code">read_func</code> pointer to
+point to the <code class="code">read()</code> system call. So your extension need not
+set this field explicitly.
+</p>
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> You must choose one method or the other: either a function that
+returns a record, or one that returns raw data.  In particular,
+if you supply a function to get a record, <code class="command">gawk</code> will
+call it, and will never call the raw read function.
+</p></blockquote>
+
+<p><code class="command">gawk</code> ships with a sample extension that reads directories,
+returning records for each entry in a directory (see <a class="pxref" href="Extension-Sample-Readdir.html">Reading Directories</a>).  You may wish to use that code as a guide for writing
+your own input parser.
+</p>
+<p>When writing an input parser, you should think about (and document)
+how it is expected to interact with <code class="command">awk</code> code.  You may want
+it to always be called, and to take effect as appropriate (as the
+<code class="code">readdir</code> extension does).  Or you may want it to take effect
+based upon the value of an <code class="command">awk</code> variable, as the XML extension
+from the <code class="code">gawkextlib</code> project does (see <a class="pxref" href="gawkextlib.html">The <code class="code">gawkextlib</code> Project</a>).
+In the latter case, code in a <code class="code">BEGINFILE</code> rule
+can look at <code class="code">FILENAME</code> and <code class="code">ERRNO</code> to decide whether or
+not to activate your input parser (see <a class="pxref" href="BEGINFILE_002fENDFILE.html">The <code class="code">BEGINFILE</code> and <code class="code">ENDFILE</code> Special Patterns</a>).
+</p>
+<p>If you would like to override the default field parsing mechanism for a given
+record, then you must populate an <code class="code">awk_fieldwidth_info_t</code> structure,
+which looks like this:
+</p>
+<div class="example">
+<pre class="example-preformatted">typedef struct {
+        awk_bool_t     use_chars; /* false ==&gt; use bytes */
+        size_t         nf;        /* number of fields in record (NF) */
+        struct awk_field_info {
+                size_t skip;      /* amount to skip before field starts */
+                size_t len;       /* length of field */
+        } fields[1];              /* actual dimension should be nf */
+} awk_fieldwidth_info_t;
+</pre></div>
+
+<p>The fields are:
+</p>
+<dl class="table">
+<dt><code class="code">awk_bool_t use_chars;</code></dt>
+<dd><p>Set this to <code class="code">awk_true</code> if the field lengths are specified in terms
+of potentially multi-byte characters, and set it to <code class="code">awk_false</code> if
+the lengths are in terms of bytes.
+Performance will be better if the values are supplied in
+terms of bytes.
+</p>
+</dd>
+<dt><code class="code">size_t nf;</code></dt>
+<dd><p>Set this to the number of fields in the input record, i.e. <code class="code">NF</code>.
+</p>
+</dd>
+<dt><code class="code">struct awk_field_info fields[nf];</code></dt>
+<dd><p>This is a variable-length array whose actual dimension should be <code class="code">nf</code>.
+For each field, the <code class="code">skip</code> element should be set to the number
+of characters or bytes, as controlled by the <code class="code">use_chars</code> flag,
+to skip before the start of this field. The <code class="code">len</code> element provides
+the length of the field. The values in <code class="code">fields[0]</code> provide the information
+for <code class="code">$1</code>, and so on through the <code class="code">fields[nf-1]</code> element containing the information for <code class="code">$NF</code>.
+</p></dd>
+</dl>
+
+<p>A convenience macro <code class="code">awk_fieldwidth_info_size(numfields)</code> is provided to
+calculate the appropriate size of a variable-length
+<code class="code">awk_fieldwidth_info_t</code> structure containing <code class="code">numfields</code> fields. This can
+be used as an argument to <code class="code">malloc()</code> or in a union to allocate space
+statically. Please refer to the <code class="code">readdir_test</code> sample extension for an
+example.
+</p>
+<p>You register your input parser with the following function:
+</p>
+<dl class="table">
+<dt><code class="code">void register_input_parser(awk_input_parser_t *input_parser);</code></dt>
+<dd><p>Register the input parser pointed to by <code class="code">input_parser</code> with
+<code class="command">gawk</code>.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Output-Wrappers.html">Customized Output Wrappers</a>, Previous: <a href="Extension-Version-String.html">Registering An Extension Version String</a>, Up: <a href="Registration-Functions.html">Registration Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

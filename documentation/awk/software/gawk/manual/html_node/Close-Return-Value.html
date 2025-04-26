@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Close Return Value (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Close Return Value (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Close Return Value (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Close-Files-And-Pipes.html" rel="up" title="Close Files And Pipes">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Close-Return-Value">
+<div class="nav-panel">
+<p>
+Up: <a href="Close-Files-And-Pipes.html" accesskey="u" rel="up">Closing Input and Output Redirections</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Using-close_0028_0029_0027s-Return-Value"><span>5.9.1 Using <code class="code">close()</code>&rsquo;s Return Value<a class="copiable-link" href="Close-Return-Value.html#Using-close_0028_0029_0027s-Return-Value"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-dark-corner-close_0028_0029-function"></a>
+<a class="index-entry-id" id="index-close_0028_0029-function-return-value"></a>
+<a class="index-entry-id" id="index-return-value_002c-close_0028_0029-function"></a>
+<a class="index-entry-id" id="index-differences-in-awk-and-gawk-close_0028_0029-function-1"></a>
+<a class="index-entry-id" id="index-Unix-awk-close_0028_0029-function-and"></a>
+
+<p>In many older versions of Unix <code class="command">awk</code>, the <code class="code">close()</code> function
+is actually a statement.
+(d.c.)
+It is a syntax error to try and use the return
+value from <code class="code">close()</code>:
+</p>
+<div class="example">
+<pre class="example-preformatted">command = &quot;...&quot;
+command | getline info
+retval = close(command)  # syntax error in many Unix awks
+</pre></div>
+
+<a class="index-entry-id" id="index-gawk-ERRNO-variable-in-1"></a>
+<a class="index-entry-id" id="index-ERRNO-variable-with-close_0028_0029-function"></a>
+<p><code class="command">gawk</code> treats <code class="code">close()</code> as a function.
+The return value is &minus;1 if the argument names something
+that was never opened with a redirection, or if there is
+a system problem closing the file or process.
+In these cases, <code class="command">gawk</code> sets the predefined variable
+<code class="code">ERRNO</code> to a string describing the problem.
+</p>
+<p>In <code class="command">gawk</code>, starting with version 4.2, when closing a pipe or
+coprocess (input or output), the return value is the exit status of the
+command, as described in <a class="ref" href="Close-Return-Value.html#table_002dclose_002dpipe_002dreturn_002dvalues">Table 5.1</a>.<a class="footnote" id="DOCF31" href="Close-Return-Value.html#FOOT31"><sup>31</sup></a> Otherwise, it is the return value from the system&rsquo;s <code class="code">close()</code>
+or <code class="code">fclose()</code> C functions when closing input or output files,
+respectively.  This value is zero if the close succeeds, or &minus;1
+if it fails.
+Recent versions of BWK <code class="command">awk</code> also return the same values
+from <code class="command">close()</code>.
+</p>
+<div class="float" id="table_002dclose_002dpipe_002dreturn_002dvalues">
+<table class="multitable">
+<thead><tr><th width="50%">Situation</th><th width="50%">Return value from <code class="code">close()</code></th></tr></thead>
+<tbody><tr><td width="50%">Normal exit of command</td><td width="50%">Command&rsquo;s exit status</td></tr>
+<tr><td width="50%">Death by signal of command</td><td width="50%">256 + number of murderous signal</td></tr>
+<tr><td width="50%">Death by signal of command with core dump</td><td width="50%">512 + number of murderous signal</td></tr>
+<tr><td width="50%">Some kind of error</td><td width="50%">&minus;1</td></tr>
+</tbody>
+</table>
+<div class="caption"><p><strong class="strong">Table 5.1: </strong>Return values from <code class="code">close()</code> of a pipe</p></div></div>
+<a class="index-entry-id" id="index-POSIX-mode-5"></a>
+<p>The POSIX standard is very vague; it says that <code class="code">close()</code>
+returns zero on success and a nonzero value otherwise.  In general,
+different implementations vary in what they report when closing
+pipes; thus, the return value cannot be used portably.
+(d.c.)
+In POSIX mode (see <a class="pxref" href="Options.html">Command-Line Options</a>), <code class="command">gawk</code> just returns zero
+when closing a pipe.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT31" href="Close-Return-Value.html#DOCF31">(31)</a></h5>
+<p>Prior
+to version 4.2, the return value from closing a pipe or co-process
+was the full 16-bit exit value as defined by the <code class="code">wait()</code> system
+call.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Up: <a href="Close-Files-And-Pipes.html">Closing Input and Output Redirections</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

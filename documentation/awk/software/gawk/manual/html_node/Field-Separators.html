@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Field Separators (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Field Separators (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Field Separators (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Reading-Files.html" rel="up" title="Reading Files">
+<link href="Constant-Size.html" rel="next" title="Constant Size">
+<link href="Changing-Fields.html" rel="prev" title="Changing Fields">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Field-Separators">
+<div class="nav-panel">
+<p>
+Next: <a href="Constant-Size.html" accesskey="n" rel="next">Reading Fixed-Width Data</a>, Previous: <a href="Changing-Fields.html" accesskey="p" rel="prev">Changing the Contents of a Field</a>, Up: <a href="Reading-Files.html" accesskey="u" rel="up">Reading Input Files</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Specifying-How-Fields-Are-Separated"><span>4.5 Specifying How Fields Are Separated<a class="copiable-link" href="Field-Separators.html#Specifying-How-Fields-Are-Separated"> &para;</a></span></h3>
+
+
+<a class="index-entry-id" id="index-FS-variable"></a>
+<a class="index-entry-id" id="index-fields-separating"></a>
+<a class="index-entry-id" id="index-field-separator"></a>
+<a class="index-entry-id" id="index-fields-separating-1"></a>
+<p>The <em class="dfn">field separator</em>, which is either a single character or a regular
+expression, controls the way <code class="command">awk</code> splits an input record into fields.
+<code class="command">awk</code> scans the input record for character sequences that
+match the separator; the fields themselves are the text between the matches.
+</p>
+<p>In the examples that follow, we use the bullet symbol (&bull;) to
+represent spaces in the output.
+If the field separator is &lsquo;<samp class="samp">oo</samp>&rsquo;, then the following line:
+</p>
+<div class="example">
+<pre class="example-preformatted">moo goo gai pan
+</pre></div>
+
+<p>is split into three fields: &lsquo;<samp class="samp">m</samp>&rsquo;, &lsquo;<samp class="samp">&bull;g</samp>&rsquo;, and
+&lsquo;<samp class="samp">&bull;gai&bull;pan</samp>&rsquo;.
+Note the leading spaces in the values of the second and third fields.
+</p>
+<a class="index-entry-id" id="index-troubleshooting-awk-uses-FS-not-IFS"></a>
+<p>The field separator is represented by the predefined variable <code class="code">FS</code>.
+Shell programmers take note:  <code class="command">awk</code> does <em class="emph">not</em> use the
+name <code class="code">IFS</code> that is used by the POSIX-compliant shells (such as
+the Unix Bourne shell, <code class="command">sh</code>, or Bash).
+</p>
+<a class="index-entry-id" id="index-FS-variable-changing-value-of"></a>
+<p>The value of <code class="code">FS</code> can be changed in the <code class="command">awk</code> program with the
+assignment operator, &lsquo;<samp class="samp">=</samp>&rsquo; (see <a class="pxref" href="Assignment-Ops.html">Assignment Expressions</a>).
+Often, the right time to do this is at the beginning of execution
+before any input has been processed, so that the very first record
+is read with the proper separator.  To do this, use the special
+<code class="code">BEGIN</code> pattern
+(see <a class="pxref" href="BEGIN_002fEND.html">The <code class="code">BEGIN</code> and <code class="code">END</code> Special Patterns</a>).
+For example, here we set the value of <code class="code">FS</code> to the string
+<code class="code">&quot;:&quot;</code>:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk 'BEGIN { FS = &quot;:&quot; } ; { print $2 }'
+</pre></div>
+
+<a class="index-entry-id" id="index-BEGIN-pattern"></a>
+<p>Given the input line:
+</p>
+<div class="example">
+<pre class="example-preformatted">John Q. Smith: 29 Oak St.: Walamazoo: MI 42139
+</pre></div>
+
+<p>this <code class="command">awk</code> program extracts and prints the string
+&lsquo;<samp class="samp">&bull;29&bull;Oak&bull;St.</samp>&rsquo;.
+</p>
+<a class="index-entry-id" id="index-field-separator-choice-of"></a>
+<a class="index-entry-id" id="index-regular-expressions-as-field-separators"></a>
+<a class="index-entry-id" id="index-field-separator-regular-expression-as"></a>
+<p>Sometimes the input data contains separator characters that don&rsquo;t
+separate fields the way you thought they would.  For instance, the
+person&rsquo;s name in the example we just used might have a title or
+suffix attached, such as:
+</p>
+<div class="example">
+<pre class="example-preformatted">John Q. Smith: LXIX: 29 Oak St.: Walamazoo: MI 42139
+</pre></div>
+
+<p>The same program would extract &lsquo;<samp class="samp">&bull;LXIX</samp>&rsquo; instead of
+&lsquo;<samp class="samp">&bull;29&bull;Oak&bull;St.</samp>&rsquo;.
+If you were expecting the program to print the
+address, you would be surprised.  The moral is to choose your data layout and
+separator characters carefully to prevent such problems.
+(If the data is not in a form that is easy to process, perhaps you
+can massage it first with a separate <code class="command">awk</code> program.)
+</p>
+
+<ul class="mini-toc">
+<li><a href="Default-Field-Splitting.html" accesskey="1">Whitespace Normally Separates Fields</a></li>
+<li><a href="Regexp-Field-Splitting.html" accesskey="2">Using Regular Expressions to Separate Fields</a></li>
+<li><a href="Single-Character-Fields.html" accesskey="3">Making Each Character a Separate Field</a></li>
+<li><a href="Comma-Separated-Fields.html" accesskey="4">Working With Comma Separated Value Files</a></li>
+<li><a href="Command-Line-Field-Separator.html" accesskey="5">Setting <code class="code">FS</code> from the Command Line</a></li>
+<li><a href="Full-Line-Fields.html" accesskey="6">Making the Full Line Be a Single Field</a></li>
+<li><a href="Field-Splitting-Summary.html" accesskey="7">Field-Splitting Summary</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Constant-Size.html">Reading Fixed-Width Data</a>, Previous: <a href="Changing-Fields.html">Changing the Contents of a Field</a>, Up: <a href="Reading-Files.html">Reading Input Files</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

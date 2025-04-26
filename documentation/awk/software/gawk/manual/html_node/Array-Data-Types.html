@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Array Data Types (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Array Data Types (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Array Data Types (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Array-Manipulation.html" rel="up" title="Array Manipulation">
+<link href="Array-Functions.html" rel="next" title="Array Functions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Array-Data-Types">
+<div class="nav-panel">
+<p>
+Next: <a href="Array-Functions.html" accesskey="n" rel="next">Array Functions</a>, Up: <a href="Array-Manipulation.html" accesskey="u" rel="up">Array Manipulation</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Array-Data-Types-1"><span>17.4.12.1 Array Data Types<a class="copiable-link" href="Array-Data-Types.html#Array-Data-Types-1"> &para;</a></span></h4>
+
+<p>The data types associated with arrays are as follows:
+</p>
+<dl class="table">
+<dt><code class="code">typedef void *awk_array_t;</code></dt>
+<dd><p>If you request the value of an array variable, you get back an
+<code class="code">awk_array_t</code> value. This value is opaque<a class="footnote" id="DOCF113" href="Array-Data-Types.html#FOOT113"><sup>113</sup></a> to the extension; it uniquely identifies the array but can
+only be used by passing it into API functions or receiving it from API
+functions. This is very similar to way &lsquo;<samp class="samp">FILE *</samp>&rsquo; values are used
+with the <code class="code">&lt;stdio.h&gt;</code> library routines.
+</p>
+</dd>
+<dt><code class="code">typedef struct awk_element {</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;/* convenience linked list pointer, not used by gawk */</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;struct awk_element *next;</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;enum {</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AWK_ELEMENT_DEFAULT = 0,&nbsp;&nbsp;/* set by gawk */</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AWK_ELEMENT_DELETE = 1&nbsp;&nbsp;&nbsp;&nbsp;/* set by extension */</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;} flags;</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;awk_value_t    index;</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;awk_value_t    value;</code></dt>
+<dt><code class="code">} awk_element_t;</code></dt>
+<dd><p>The <code class="code">awk_element_t</code> is a &ldquo;flattened&rdquo;
+array element. <code class="command">awk</code> produces an array of these
+inside the <code class="code">awk_flat_array_t</code> (see the next item).
+Individual elements may be marked for deletion. New elements must be added
+individually, one at a time, using the separate API for that purpose.
+The fields are as follows:
+</p>
+<dl class="table">
+<dt><code class="code">struct awk_element *next;</code></dt>
+<dd><p>This pointer is for the convenience of extension writers.  It allows
+an extension to create a linked list of new elements that can then be
+added to an array in a loop that traverses the list.
+</p>
+</dd>
+<dt><code class="code">enum { &hellip; } flags;</code></dt>
+<dd><p>A set of flag values that convey information between the extension
+and <code class="command">gawk</code>.  Currently there is only one: <code class="code">AWK_ELEMENT_DELETE</code>.
+Setting it causes <code class="command">gawk</code> to delete the
+element from the original array upon release of the flattened array.
+</p>
+</dd>
+<dt><code class="code">index</code></dt>
+<dt><code class="code">value</code></dt>
+<dd><p>The index and value of the element, respectively.
+<em class="emph">All</em> memory pointed to by <code class="code">index</code> and <code class="code">value</code> belongs to <code class="command">gawk</code>.
+</p></dd>
+</dl>
+
+</dd>
+<dt><code class="code">typedef struct awk_flat_array {</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;awk_const void *awk_const opaque1;&nbsp;&nbsp;&nbsp;&nbsp;/* for use by gawk */</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;awk_const void *awk_const opaque2;&nbsp;&nbsp;&nbsp;&nbsp;/* for use by gawk */</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;awk_const size_t count;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* how many elements */</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;awk_element_t elements[1];&nbsp;&nbsp;/* will be extended */</code></dt>
+<dt><code class="code">} awk_flat_array_t;</code></dt>
+<dd><p>This is a flattened array. When an extension gets one of these
+from <code class="command">gawk</code>, the <code class="code">elements</code> array is of actual
+size <code class="code">count</code>.
+The <code class="code">opaque1</code> and <code class="code">opaque2</code> pointers are for use by <code class="command">gawk</code>;
+therefore they are marked <code class="code">awk_const</code> so that the extension cannot
+modify them.
+</p></dd>
+</dl>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT113" href="Array-Data-Types.html#DOCF113">(113)</a></h5>
+<p>It is also
+a &ldquo;cookie,&rdquo; but the <code class="command">gawk</code> developers did not wish to overuse this
+term.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Array-Functions.html">Array Functions</a>, Up: <a href="Array-Manipulation.html">Array Manipulation</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

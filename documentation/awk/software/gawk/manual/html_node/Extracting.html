@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Extracting (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Extracting (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Extracting (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Gawk-Distribution.html" rel="up" title="Gawk Distribution">
+<link href="Distribution-contents.html" rel="next" title="Distribution contents">
+<link href="Getting.html" rel="prev" title="Getting">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="appendixsubsec-level-extent" id="Extracting">
+<div class="nav-panel">
+<p>
+Next: <a href="Distribution-contents.html" accesskey="n" rel="next">Contents of the <code class="command">gawk</code> Distribution</a>, Previous: <a href="Getting.html" accesskey="p" rel="prev">Getting the <code class="command">gawk</code> Distribution</a>, Up: <a href="Gawk-Distribution.html" accesskey="u" rel="up">The <code class="command">gawk</code> Distribution</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="appendixsubsec" id="Extracting-the-Distribution"><span>B.1.2 Extracting the Distribution<a class="copiable-link" href="Extracting.html#Extracting-the-Distribution"> &para;</a></span></h4>
+<p><code class="command">gawk</code> is distributed as several <code class="command">tar</code> files compressed with
+different compression programs: <code class="command">gzip</code>, <code class="command">bzip2</code>,
+and <code class="command">xz</code>. For simplicity, the rest of these instructions assume
+you are using the one compressed with the GNU Gzip program (<code class="command">gzip</code>).
+</p>
+<p>Once you have the distribution (e.g.,
+<samp class="file">gawk-5.3.1.tar.gz</samp>),
+use <code class="command">gzip</code> to expand the
+file and then use <code class="command">tar</code> to extract it.  You can use the following
+pipeline to produce the <code class="command">gawk</code> distribution:
+</p>
+<div class="example">
+<pre class="example-preformatted">gzip -d -c gawk-5.3.1.tar.gz | tar -xvpf -
+</pre></div>
+
+<p>On a system with GNU <code class="command">tar</code>, you can let <code class="command">tar</code>
+do the decompression for you:
+</p>
+<div class="example">
+<pre class="example-preformatted">tar -xvpzf gawk-5.3.1.tar.gz
+</pre></div>
+
+<p>Extracting the archive
+creates a directory named <samp class="file">gawk-5.3.1</samp>
+in the current directory.
+</p>
+<p>The distribution file name is of the form
+<samp class="file">gawk-<var class="var">V</var>.<var class="var">R</var>.<var class="var">P</var>.tar.gz</samp>.
+The <var class="var">V</var> represents the major version of <code class="command">gawk</code>,
+the <var class="var">R</var> represents the current release of version <var class="var">V</var>, and
+the <var class="var">P</var> represents a <em class="dfn">patch level</em>, meaning that minor bugs have
+been fixed in the release.  The current patch level is 1,
+but when retrieving distributions, you should get the version with the highest
+version, release, and patch level.  (Note, however, that patch levels greater than
+or equal to 60 denote &ldquo;beta&rdquo; or nonproduction software; you might not want
+to retrieve such a version unless you don&rsquo;t mind experimenting.)
+If you are not on a Unix or GNU/Linux system, you need to make other arrangements
+for getting and extracting the <code class="command">gawk</code> distribution.  You should consult
+a local expert.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Distribution-contents.html">Contents of the <code class="command">gawk</code> Distribution</a>, Previous: <a href="Getting.html">Getting the <code class="command">gawk</code> Distribution</a>, Up: <a href="Gawk-Distribution.html">The <code class="command">gawk</code> Distribution</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

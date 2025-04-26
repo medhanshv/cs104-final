@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Array Intro (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Array Intro (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Array Intro (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Array-Basics.html" rel="up" title="Array Basics">
+<link href="Reference-to-Elements.html" rel="next" title="Reference to Elements">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.center {text-align:center}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Array-Intro">
+<div class="nav-panel">
+<p>
+Next: <a href="Reference-to-Elements.html" accesskey="n" rel="next">Referring to an Array Element</a>, Up: <a href="Array-Basics.html" accesskey="u" rel="up">The Basics of Arrays</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Introduction-to-Arrays"><span>8.1.1 Introduction to Arrays<a class="copiable-link" href="Array-Intro.html#Introduction-to-Arrays"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Wall_002c-Larry"></a>
+<blockquote class="quotation">
+<p><i class="i">Doing linear scans over an associative array is like trying to club someone
+to death with a loaded Uzi.</i>
+</p></blockquote>
+<div class="center">&mdash; <em class="emph">Larry Wall</em>
+</div>
+<p>The <code class="command">awk</code> language provides one-dimensional arrays
+for storing groups of related strings or numbers.
+Every <code class="command">awk</code> array must have a name.  Array names have the same
+syntax as variable names; any valid variable name would also be a valid
+array name.  But one name cannot be used in both ways (as an array and
+as a variable) in the same <code class="command">awk</code> program.
+</p>
+<p>Arrays in <code class="command">awk</code> superficially resemble arrays in other programming
+languages, but there are fundamental differences.  In <code class="command">awk</code>, it
+isn&rsquo;t necessary to specify the size of an array before starting to use it.
+Additionally, any number or string, not just consecutive integers,
+may be used as an array index.
+</p>
+<p>In most other languages, arrays must be <em class="dfn">declared</em> before use,
+including a specification of
+how many elements or components they contain.  In such languages, the
+declaration causes a contiguous block of memory to be allocated for that
+many elements.  Usually, an index in the array must be a nonnegative integer.
+For example, the index zero specifies the first element in the array, which is
+actually stored at the beginning of the block of memory.  Index one
+specifies the second element, which is stored in memory right after the
+first element, and so on.  It is impossible to add more elements to the
+array, because it has room only for as many elements as given in
+the declaration.
+(Some languages allow arbitrary starting and ending
+indices&mdash;e.g., &lsquo;<samp class="samp">15 .. 27</samp>&rsquo;&mdash;but the size of the array is still fixed when
+the array is declared.)
+</p>
+<p>A contiguous array of four elements might look like
+<a class="ref" href="Array-Intro.html#figure_002darray_002delements">Figure 8.1</a>,
+conceptually, if the element values are eight, <code class="code">&quot;foo&quot;</code>,
+<code class="code">&quot;&quot;</code>, and 30.
+</p>
+<div class="float" id="figure_002darray_002delements">
+<div class="center"><img class="image" src="gawk_array-elements.png" alt="A Contiguous Array">
+</div><div class="caption"><p><strong class="strong">Figure 8.1: </strong>A contiguous array</p></div></div>
+
+<p>Only the values are stored; the indices are implicit from the order of
+the values. Here, eight is the value at index zero, because eight appears in the
+position with zero elements before it.
+</p>
+<a class="index-entry-id" id="index-arrays-indexing"></a>
+<a class="index-entry-id" id="index-indexing-arrays"></a>
+<a class="index-entry-id" id="index-associative-arrays"></a>
+<a class="index-entry-id" id="index-arrays-associative"></a>
+<p>Arrays in <code class="command">awk</code> are different&mdash;they are <em class="dfn">associative</em>.  This means
+that each array is a collection of pairs&mdash;an index and its corresponding
+array element value:
+</p>
+<table class="multitable">
+<thead><tr><th width="10%"></th><th width="10%">Index</th><th width="10%">Value</th></tr></thead>
+<tbody><tr><td width="10%"></td><td width="10%"><code class="code">3</code></td><td width="10%"><code class="code">30</code></td></tr>
+<tr><td width="10%"></td><td width="10%"><code class="code">1</code></td><td width="10%"><code class="code">&quot;foo&quot;</code></td></tr>
+<tr><td width="10%"></td><td width="10%"><code class="code">0</code></td><td width="10%"><code class="code">8</code></td></tr>
+<tr><td width="10%"></td><td width="10%"><code class="code">2</code></td><td width="10%"><code class="code">&quot;&quot;</code></td></tr>
+</tbody>
+</table>
+
+
+<p>The pairs are shown in jumbled order because their order is
+irrelevant.<a class="footnote" id="DOCF44" href="Array-Intro.html#FOOT44"><sup>44</sup></a>
+</p>
+<p>One advantage of associative arrays is that new pairs can be added
+at any time.  For example, suppose a tenth element is added to the array
+whose value is <code class="code">&quot;number&nbsp;ten&quot;</code><!-- /@w -->.  The result is:
+</p>
+<table class="multitable">
+<thead><tr><th width="10%"></th><th width="10%">Index</th><th width="20%">Value</th></tr></thead>
+<tbody><tr><td width="10%"></td><td width="10%"><code class="code">10</code></td><td width="20%"><code class="code">&quot;number ten&quot;</code></td></tr>
+<tr><td width="10%"></td><td width="10%"><code class="code">3</code></td><td width="20%"><code class="code">30</code></td></tr>
+<tr><td width="10%"></td><td width="10%"><code class="code">1</code></td><td width="20%"><code class="code">&quot;foo&quot;</code></td></tr>
+<tr><td width="10%"></td><td width="10%"><code class="code">0</code></td><td width="20%"><code class="code">8</code></td></tr>
+<tr><td width="10%"></td><td width="10%"><code class="code">2</code></td><td width="20%"><code class="code">&quot;&quot;</code></td></tr>
+</tbody>
+</table>
+
+
+<a class="index-entry-id" id="index-sparse-arrays"></a>
+<a class="index-entry-id" id="index-arrays-sparse"></a>
+<p>Now the array is <em class="dfn">sparse</em>, which just means some indices are missing.
+It has elements 0&ndash;3 and 10, but doesn&rsquo;t have elements 4, 5, 6, 7, 8, or 9.
+</p>
+<p>Another consequence of associative arrays is that the indices don&rsquo;t
+have to be nonnegative integers.  Any number, or even a string, can be
+an index.  For example, the following is an array that translates words from
+English to French:
+</p>
+<table class="multitable">
+<thead><tr><th width="10%"></th><th width="10%">Index</th><th width="10%">Value</th></tr></thead>
+<tbody><tr><td width="10%"></td><td width="10%"><code class="code">&quot;dog&quot;</code></td><td width="10%"><code class="code">&quot;chien&quot;</code></td></tr>
+<tr><td width="10%"></td><td width="10%"><code class="code">&quot;cat&quot;</code></td><td width="10%"><code class="code">&quot;chat&quot;</code></td></tr>
+<tr><td width="10%"></td><td width="10%"><code class="code">&quot;one&quot;</code></td><td width="10%"><code class="code">&quot;un&quot;</code></td></tr>
+<tr><td width="10%"></td><td width="10%"><code class="code">1</code></td><td width="10%"><code class="code">&quot;un&quot;</code></td></tr>
+</tbody>
+</table>
+
+
+<p>Here we decided to translate the number one in both spelled-out and
+numeric form&mdash;thus illustrating that a single array can have both
+numbers and strings as indices.
+(In fact, array subscripts are always strings.
+There are some subtleties to how numbers work when used as
+array subscripts; this is discussed in more detail in
+<a class="ref" href="Numeric-Array-Subscripts.html">Using Numbers to Subscript Arrays</a>.)
+Here, the number <code class="code">1</code> isn&rsquo;t double-quoted, because <code class="command">awk</code>
+automatically converts it to a string.
+</p>
+<a class="index-entry-id" id="index-gawk-IGNORECASE-variable-in-2"></a>
+<a class="index-entry-id" id="index-case-sensitivity-array-indices-and"></a>
+<a class="index-entry-id" id="index-arrays-IGNORECASE-variable-and"></a>
+<a class="index-entry-id" id="index-IGNORECASE-variable-array-indices-and"></a>
+<p>The value of <code class="code">IGNORECASE</code> has no effect upon array subscripting.
+The identical string value used to store an array element must be used
+to retrieve it.
+When <code class="command">awk</code> creates an array (e.g., with the <code class="code">split()</code>
+built-in function),
+that array&rsquo;s indices are consecutive integers starting at one.
+(See <a class="xref" href="String-Functions.html">String-Manipulation Functions</a>.)
+</p>
+<p><code class="command">awk</code>&rsquo;s arrays are efficient&mdash;the time to access an element
+is independent of the number of elements in the array.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT44" href="Array-Intro.html#DOCF44">(44)</a></h5>
+<p>The ordering will vary among <code class="command">awk</code>
+implementations, which typically use hash tables to store array elements
+and values.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Reference-to-Elements.html">Referring to an Array Element</a>, Up: <a href="Array-Basics.html">The Basics of Arrays</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

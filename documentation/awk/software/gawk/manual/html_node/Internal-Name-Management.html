@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Internal Name Management (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Internal Name Management (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Internal Name Management (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Namespaces.html" rel="up" title="Namespaces">
+<link href="Namespace-Example.html" rel="next" title="Namespace Example">
+<link href="Naming-Rules.html" rel="prev" title="Naming Rules">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Internal-Name-Management">
+<div class="nav-panel">
+<p>
+Next: <a href="Namespace-Example.html" accesskey="n" rel="next">Namespace Example</a>, Previous: <a href="Naming-Rules.html" accesskey="p" rel="prev">Namespace and Component Naming Rules</a>, Up: <a href="Namespaces.html" accesskey="u" rel="up">Namespaces in <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Internal-Name-Management-1"><span>15.6 Internal Name Management<a class="copiable-link" href="Internal-Name-Management.html#Internal-Name-Management-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-name-management"></a>
+<a class="index-entry-id" id="index-awk-namespace-identifier-name-storage"></a>
+<a class="index-entry-id" id="index-awk-namespace-use-for-indirect-function-calls"></a>
+<p>For backwards compatibility, all identifiers in the <code class="code">awk</code> namespace
+are stored internally as unadorned identifiers (that is, without a
+leading &lsquo;<samp class="samp">awk::</samp>&rsquo;).  This is mainly relevant
+when using such identifiers as indices for <code class="code">SYMTAB</code>, <code class="code">FUNCTAB</code>,
+and <code class="code">PROCINFO[&quot;identifiers&quot;]</code> (see <a class="pxref" href="Auto_002dset.html">Built-in Variables That Convey Information</a>), and for use in
+indirect function calls (see <a class="pxref" href="Indirect-Calls.html">Indirect Function Calls</a>).
+</p>
+<p>In program code, to refer to variables and functions in the <code class="code">awk</code>
+namespace from another namespace, you must still use the &lsquo;<samp class="samp">awk::</samp>&rsquo;
+prefix. For example:
+</p>
+<div class="example">
+<pre class="example-preformatted">@namespace &quot;awk&quot;          <i class="i">This is the default namespace</i>
+
+BEGIN {
+    Title = &quot;My Report&quot;   <i class="i">Qualified name is</i> awk::Title
+}
+
+@namespace &quot;report&quot;       <i class="i">Now in</i> report <i class="i">namespace</i>
+
+function compute()        <i class="i">This is really</i> report::compute()
+{
+    print awk::Title      <i class="i">But would be</i> SYMTAB[&quot;Title&quot;]
+    ...
+}
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

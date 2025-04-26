@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>String Extraction (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="String Extraction (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="String Extraction (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Translator-i18n.html" rel="up" title="Translator i18n">
+<link href="Printf-Ordering.html" rel="next" title="Printf Ordering">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="String-Extraction">
+<div class="nav-panel">
+<p>
+Next: <a href="Printf-Ordering.html" accesskey="n" rel="next">Rearranging <code class="code">printf</code> Arguments</a>, Up: <a href="Translator-i18n.html" accesskey="u" rel="up">Translating <code class="command">awk</code> Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Extracting-Marked-Strings"><span>13.4.1 Extracting Marked Strings<a class="copiable-link" href="String-Extraction.html#Extracting-Marked-Strings"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-strings-extracting"></a>
+<a class="index-entry-id" id="index-_002d_002dgen_002dpot-option-1"></a>
+<a class="index-entry-id" id="index-command-line-options-string-extraction"></a>
+<a class="index-entry-id" id="index-string-extraction-_0028internationalization_0029"></a>
+<a class="index-entry-id" id="index-marked-string-extraction-_0028internationalization_0029"></a>
+<a class="index-entry-id" id="index-extraction_002c-of-marked-strings-_0028internationalization_0029"></a>
+
+<a class="index-entry-id" id="index-_002d_002dgen_002dpot-option-2"></a>
+<p>Once your <code class="command">awk</code> program is working, and all the strings have
+been marked and you&rsquo;ve set (and perhaps bound) the text domain,
+it is time to produce translations.
+First, use the <samp class="option">--gen-pot</samp> command-line option to create
+the initial <samp class="file">.pot</samp> file:
+</p>
+<div class="example">
+<pre class="example-preformatted">gawk --gen-pot -f guide.awk &gt; guide.pot
+</pre></div>
+
+<a class="index-entry-id" id="index-xgettext-utility"></a>
+<p>When run with <samp class="option">--gen-pot</samp>, <code class="command">gawk</code> does not execute your
+program.  Instead, it parses it as usual and prints all marked strings
+to standard output in the format of a GNU <code class="command">gettext</code> Portable Object
+file.  Also included in the output are any constant strings that
+appear as the first argument to <code class="code">dcgettext()</code> or as the first and
+second argument to <code class="code">dcngettext()</code>.<a class="footnote" id="DOCF93" href="String-Extraction.html#FOOT93"><sup>93</sup></a>
+You should distribute the generated <samp class="file">.pot</samp> file with
+your <code class="command">awk</code> program; translators will eventually use it
+to provide you translations that you can also then distribute.
+See <a class="xref" href="I18N-Example.html">A Simple Internationalization Example</a>
+for the full list of steps to go through to create and test
+translations for <code class="command">guide</code>.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT93" href="String-Extraction.html#DOCF93">(93)</a></h5>
+<p>The
+<code class="command">xgettext</code> utility that comes with GNU
+<code class="command">gettext</code> can handle <samp class="file">.awk</samp> files.</p>
+</div>
+
+
+
+</body>
+</html>

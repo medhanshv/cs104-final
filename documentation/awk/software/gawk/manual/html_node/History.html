@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>History (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="History (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="History (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Preface.html" rel="up" title="Preface">
+<link href="Names.html" rel="next" title="Names">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="unnumberedsec-level-extent" id="History">
+<div class="nav-panel">
+<p>
+Next: <a href="Names.html" accesskey="n" rel="next">A Rose by Any Other Name</a>, Up: <a href="Preface.html" accesskey="u" rel="up">Preface</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="unnumberedsec" id="History-of-awk-and-gawk"><span>History of <code class="command">awk</code> and <code class="command">gawk</code><a class="copiable-link" href="History.html#History-of-awk-and-gawk"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-recipe-for-a-programming-language"></a>
+<a class="index-entry-id" id="index-programming-language_002c-recipe-for"></a>
+<a class="index-entry-id" id="index-sidebar-Recipe-for-a-Programming-Language"></a>
+<table class="cartouche" border="1"><tr><th>
+Recipe for a Programming Language</th></tr><tr><td>
+
+<table class="multitable">
+<tbody><tr><td></td><td>1 part  <code class="code">egrep</code></td><td>1 part  <code class="code">snobol</code></td></tr>
+<tr><td></td><td>2 parts <code class="code">ed</code></td><td>3 parts C</td></tr>
+</tbody>
+</table>
+
+<p>Blend all parts well using <code class="code">lex</code> and <code class="code">yacc</code>.
+Document minimally and release.
+</p>
+<p>After eight years, add another part <code class="code">egrep</code> and two
+more parts C.  Document very well and release.
+</p>
+<p>After 35 more years, add Unicode and CSV support, sprinkle lightly with
+a few choice features from <code class="command">gawk</code>, document very well again,
+and release.
+</p></td></tr></table>
+
+<a class="index-entry-id" id="index-Aho_002c-Alfred"></a>
+<a class="index-entry-id" id="index-Weinberger_002c-Peter"></a>
+<a class="index-entry-id" id="index-Kernighan_002c-Brian"></a>
+<a class="index-entry-id" id="index-awk-history-of"></a>
+<p>The name <code class="command">awk</code> comes from the initials of its designers: Alfred V.
+Aho, Peter J. Weinberger, and Brian W. Kernighan.  The original version of
+<code class="command">awk</code> was written in 1977 at AT&amp;T Bell Laboratories.
+In 1985, a new version made the programming
+language more powerful, introducing user-defined functions, multiple input
+streams, and computed regular expressions.
+This new version became widely available with Unix System V
+Release 3.1 (1987).
+The version in System V Release 4 (1989) added some new features and cleaned
+up the behavior in some of the &ldquo;dark corners&rdquo; of the language.
+The specification for <code class="command">awk</code> in the POSIX Command Language
+and Utilities standard further clarified the language.
+Both the <code class="command">gawk</code> designers and the original <code class="command">awk</code> designers at Bell Laboratories
+provided feedback for the POSIX specification.
+</p>
+<a class="index-entry-id" id="index-Rubin_002c-Paul"></a>
+<a class="index-entry-id" id="index-Fenlason_002c-Jay"></a>
+<a class="index-entry-id" id="index-Trueman_002c-David"></a>
+<p>Paul Rubin wrote <code class="command">gawk</code> in 1986.
+Jay Fenlason completed it, with advice from Richard Stallman.  John Woods
+contributed parts of the code as well.  In 1988 and 1989, David Trueman, with
+help from me, thoroughly reworked <code class="command">gawk</code> for compatibility
+with the newer <code class="command">awk</code>.
+Circa 1994, I became the primary maintainer.
+Current development focuses on bug fixes,
+performance improvements, standards compliance, and, occasionally, new features.
+</p>
+<p>In May 1997, J&uuml;rgen Kahrs felt the need for network access
+from <code class="command">awk</code>, and with a little help from me, set about adding
+features to do this for <code class="command">gawk</code>.  At that time, he also
+wrote the bulk of
+<cite class="cite">TCP/IP Internetworking with <code class="command">gawk</code></cite>
+(a separate document, available as part of the <code class="command">gawk</code> distribution).
+His code finally became part of the main <code class="command">gawk</code> distribution
+with <code class="command">gawk</code> version 3.1.
+</p>
+<p>John Haque rewrote the <code class="command">gawk</code> internals, in the process providing
+an <code class="command">awk</code>-level debugger. This version became available as
+<code class="command">gawk</code> version 4.0 in 2011.
+</p>
+<p>See <a class="xref" href="Contributors.html">Major Contributors to <code class="command">gawk</code></a>
+for a full list of those who have made important contributions to <code class="command">gawk</code>.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Names.html">A Rose by Any Other Name</a>, Up: <a href="Preface.html">Preface</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

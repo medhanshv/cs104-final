@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>awk split records (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="awk split records (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="awk split records (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Records.html" rel="up" title="Records">
+<link href="gawk-split-records.html" rel="next" title="gawk split records">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="awk-split-records">
+<div class="nav-panel">
+<p>
+Next: <a href="gawk-split-records.html" accesskey="n" rel="next">Record Splitting with <code class="command">gawk</code></a>, Up: <a href="Records.html" accesskey="u" rel="up">How Input Is Split into Records</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Record-Splitting-with-Standard-awk"><span>4.1.1 Record Splitting with Standard <code class="command">awk</code><a class="copiable-link" href="awk-split-records.html#Record-Splitting-with-Standard-awk"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-separators-for-records"></a>
+<a class="index-entry-id" id="index-record-separators"></a>
+<p>Records are separated by a character called the <em class="dfn">record separator</em>.
+By default, the record separator is the newline character.
+This is why records are, by default, single lines.
+To use a different character for the record separator,
+simply assign that character to the predefined variable <code class="code">RS</code>.
+</p>
+<a class="index-entry-id" id="index-record-separators-newlines-as"></a>
+<a class="index-entry-id" id="index-newlines-as-record-separators"></a>
+<a class="index-entry-id" id="index-RS-variable"></a>
+<p>Like any other variable,
+the value of <code class="code">RS</code> can be changed in the <code class="command">awk</code> program
+with the assignment operator, &lsquo;<samp class="samp">=</samp>&rsquo;
+(see <a class="pxref" href="Assignment-Ops.html">Assignment Expressions</a>).
+The new record-separator character should be enclosed in quotation marks,
+which indicate a string constant.  Often, the right time to do this is
+at the beginning of execution, before any input is processed,
+so that the very first record is read with the proper separator.
+To do this, use the special <code class="code">BEGIN</code> pattern
+(see <a class="pxref" href="BEGIN_002fEND.html">The <code class="code">BEGIN</code> and <code class="code">END</code> Special Patterns</a>).
+For example:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk 'BEGIN { RS = &quot;u&quot; }
+     { print $0 }' mail-list
+</pre></div>
+
+<p>changes the value of <code class="code">RS</code> to &lsquo;<samp class="samp">u</samp>&rsquo;, before reading any input.
+The new value is a string whose first character is the letter &ldquo;u&rdquo;; as a result, records
+are separated by the letter &ldquo;u&rdquo;.  Then the input file is read, and the second
+rule in the <code class="command">awk</code> program (the action with no pattern) prints each
+record.  Because each <code class="code">print</code> statement adds a newline at the end of
+its output, this <code class="command">awk</code> program copies the input
+with each &lsquo;<samp class="samp">u</samp>&rsquo; changed to a newline.  Here are the results of running
+the program on <samp class="file">mail-list</samp>:
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">$ <kbd class="kbd">awk 'BEGIN { RS = &quot;u&quot; }</kbd>
+&gt;      <kbd class="kbd">{ print $0 }' mail-list</kbd>
+</pre></div><pre class="example-preformatted">-| Amelia       555-5553     amelia.zodiac
+-| sq
+-| e@gmail.com    F
+-| Anthony      555-3412     anthony.assert
+-| ro@hotmail.com   A
+-| Becky        555-7685     becky.algebrar
+-| m@gmail.com      A
+-| Bill         555-1675     bill.drowning@hotmail.com       A
+-| Broderick    555-0542     broderick.aliq
+-| otiens@yahoo.com R
+-| Camilla      555-2912     camilla.inf
+-| sar
+-| m@skynet.be     R
+-| Fabi
+-| s       555-1234     fabi
+-| s.
+-| ndevicesim
+-| s@
+-| cb.ed
+-|     F
+-| J
+-| lie        555-6699     j
+-| lie.perscr
+-| tabor@skeeve.com   F
+-| Martin       555-6480     martin.codicib
+-| s@hotmail.com    A
+-| Sam
+-| el       555-3430     sam
+-| el.lanceolis@sh
+-| .ed
+-|         A
+-| Jean-Pa
+-| l    555-2127     jeanpa
+-| l.campanor
+-| m@ny
+-| .ed
+-|      R
+-|
+</pre></div>
+
+<p>Note that the entry for the name &lsquo;<samp class="samp">Bill</samp>&rsquo; is not split.
+In the original data file
+(see <a class="pxref" href="Sample-Data-Files.html">Data files for the Examples</a>),
+the line looks like this:
+</p>
+<div class="example">
+<pre class="example-preformatted">Bill         555-1675     bill.drowning@hotmail.com       A
+</pre></div>
+
+<p>It contains no &lsquo;<samp class="samp">u</samp>&rsquo;, so there is no reason to split the record,
+unlike the others, which each have one or more occurrences of the &lsquo;<samp class="samp">u</samp>&rsquo;.
+In fact, this record is treated as part of the previous record;
+the newline separating them in the output
+is the original newline in the data file, not the one added by
+<code class="command">awk</code> when it printed the record!
+</p>
+<a class="index-entry-id" id="index-record-separators-changing"></a>
+<a class="index-entry-id" id="index-separators-for-records-1"></a>
+<p>Another way to change the record separator is on the command line,
+using the variable-assignment feature
+(see <a class="pxref" href="Other-Arguments.html">Other Command-Line Arguments</a>):
+</p>
+<div class="example">
+<pre class="example-preformatted">awk '{ print $0 }' RS=&quot;u&quot; mail-list
+</pre></div>
+
+<p>This sets <code class="code">RS</code> to &lsquo;<samp class="samp">u</samp>&rsquo; before processing <samp class="file">mail-list</samp>.
+</p>
+<p>Using an alphabetic character such as &lsquo;<samp class="samp">u</samp>&rsquo; for the record separator
+is highly likely to produce strange results.
+Using an unusual character such as &lsquo;<samp class="samp">/</samp>&rsquo; is more likely to
+produce correct behavior in the majority of cases, but there
+are no guarantees. The moral is: Know Your Data.
+</p>
+<p><code class="command">gawk</code> allows <code class="code">RS</code> to be a full regular expression
+(discussed shortly; see <a class="pxref" href="gawk-split-records.html">Record Splitting with <code class="command">gawk</code></a>).  Even so, using
+a regular expression metacharacter, such as &lsquo;<samp class="samp">.</samp>&rsquo; as the single
+character in the value of <code class="code">RS</code> has no special effect: it is
+treated literally. This is required for backwards compatibility with
+both Unix <code class="command">awk</code> and with POSIX.
+</p>
+<a class="index-entry-id" id="index-dark-corner-input-files"></a>
+<p>Reaching the end of an input file terminates the current input record,
+even if the last character in the file is not the character in <code class="code">RS</code>.
+(d.c.)
+</p>
+<a class="index-entry-id" id="index-null-strings"></a>
+<a class="index-entry-id" id="index-strings-empty"></a>
+<p>The empty string <code class="code">&quot;&quot;</code> (a string without any characters)
+has a special meaning
+as the value of <code class="code">RS</code>. It means that records are separated
+by one or more blank lines and nothing else.
+See <a class="xref" href="Multiple-Line.html">Multiple-Line Records</a> for more details.
+</p>
+<p>If you change the value of <code class="code">RS</code> in the middle of an <code class="command">awk</code> run,
+the new value is used to delimit subsequent records, but the record
+currently being processed, as well as records already processed, are not
+affected.
+</p>
+<a class="index-entry-id" id="index-gawk-RT-variable-in"></a>
+<a class="index-entry-id" id="index-RT-variable"></a>
+<a class="index-entry-id" id="index-records-terminating"></a>
+<a class="index-entry-id" id="index-terminating-records"></a>
+<a class="index-entry-id" id="index-differences-in-awk-and-gawk-record-separators"></a>
+<a class="index-entry-id" id="index-differences-in-awk-and-gawk-RS_002fRT-variables"></a>
+<a class="index-entry-id" id="index-regular-expressions-as-record-separators"></a>
+<a class="index-entry-id" id="index-record-separators-regular-expressions-as"></a>
+<a class="index-entry-id" id="index-separators-for-records-regular-expressions-as"></a>
+<p>After the end of the record has been determined, <code class="command">gawk</code>
+sets the variable <code class="code">RT</code> to the text in the input that matched
+<code class="code">RS</code>.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="gawk-split-records.html">Record Splitting with <code class="command">gawk</code></a>, Up: <a href="Records.html">How Input Is Split into Records</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

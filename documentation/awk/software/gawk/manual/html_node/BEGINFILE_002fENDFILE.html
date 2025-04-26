@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>BEGINFILE/ENDFILE (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="BEGINFILE/ENDFILE (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="BEGINFILE/ENDFILE (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Pattern-Overview.html" rel="up" title="Pattern Overview">
+<link href="Empty.html" rel="next" title="Empty">
+<link href="BEGIN_002fEND.html" rel="prev" title="BEGIN/END">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="BEGINFILE_002fENDFILE">
+<div class="nav-panel">
+<p>
+Next: <a href="Empty.html" accesskey="n" rel="next">The Empty Pattern</a>, Previous: <a href="BEGIN_002fEND.html" accesskey="p" rel="prev">The <code class="code">BEGIN</code> and <code class="code">END</code> Special Patterns</a>, Up: <a href="Pattern-Overview.html" accesskey="u" rel="up">Pattern Elements</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="The-BEGINFILE-and-ENDFILE-Special-Patterns"><span>7.1.5 The <code class="code">BEGINFILE</code> and <code class="code">ENDFILE</code> Special Patterns<a class="copiable-link" href="BEGINFILE_002fENDFILE.html#The-BEGINFILE-and-ENDFILE-Special-Patterns"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-BEGINFILE-pattern"></a>
+<a class="index-entry-id" id="index-ENDFILE-pattern"></a>
+<a class="index-entry-id" id="index-differences-in-awk-and-gawk-BEGINFILE_002fENDFILE-patterns"></a>
+
+<p>This section describes a <code class="command">gawk</code>-specific feature.
+</p>
+<p>Two special kinds of rule, <code class="code">BEGINFILE</code> and <code class="code">ENDFILE</code>, give
+you &ldquo;hooks&rdquo; into <code class="command">gawk</code>&rsquo;s command-line file processing loop.
+As with the <code class="code">BEGIN</code> and <code class="code">END</code> rules
+(see <a class="pxref" href="BEGIN_002fEND.html">The <code class="code">BEGIN</code> and <code class="code">END</code> Special Patterns</a>),
+<code class="code">BEGINFILE</code> rules in a program execute in the order they are
+read by <code class="command">gawk</code>. Similarly, all <code class="code">ENDFILE</code> rules also execute in
+the order they are read.
+</p>
+<p>The bodies of the <code class="code">BEGINFILE</code> rules execute just before
+<code class="command">gawk</code> reads the first record from a file.  <code class="code">FILENAME</code>
+is set to the name of the current file, and <code class="code">FNR</code> is set to zero.
+</p>
+<p>Prior to version 5.1.1 of <code class="command">gawk</code>, as an accident of the
+implementation, <code class="code">$0</code> and the fields retained any previous values
+they had in <code class="code">BEGINFILE</code> rules.  Starting with version
+5.1.1, <code class="code">$0</code> and the fields are cleared, since no record has been
+read yet from the file that is about to be processed.
+</p>
+<p>The <code class="code">BEGINFILE</code> rule provides you the opportunity to accomplish two tasks
+that would otherwise be difficult or impossible to perform:
+</p>
+<ul class="itemize mark-bullet">
+<li>You can test if the file is readable.  Normally, it is a fatal error if a
+file named on the command line cannot be opened for reading.  However,
+you can bypass the fatal error and move on to the next file on the
+command line.
+
+<a class="index-entry-id" id="index-gawk-ERRNO-variable-in-2"></a>
+<a class="index-entry-id" id="index-ERRNO-variable-with-BEGINFILE-pattern"></a>
+<a class="index-entry-id" id="index-nextfile-statement-BEGINFILE_002fENDFILE-patterns-and"></a>
+<p>You do this by checking if the <code class="code">ERRNO</code> variable is not the empty
+string; if so, then <code class="command">gawk</code> was not able to open the file. In
+this case, your program can execute the <code class="code">nextfile</code> statement
+(see <a class="pxref" href="Nextfile-Statement.html">The <code class="code">nextfile</code> Statement</a>).  This causes <code class="command">gawk</code> to skip
+the file entirely.  Otherwise, <code class="command">gawk</code> exits with the usual
+fatal error.
+</p>
+</li><li>If you have written extensions that modify the record handling (by
+inserting an &ldquo;input parser&rdquo;; see <a class="pxref" href="Input-Parsers.html">Customized Input Parsers</a>), you can invoke
+them at this point, before <code class="command">gawk</code> has started processing the file.
+(This is a <em class="emph">very</em> advanced feature, currently used only by the
+<a class="uref" href="https://sourceforge.net/projects/gawkextlib"><code class="code">gawkextlib</code> project</a>.)
+</li></ul>
+
+<p>The <code class="code">ENDFILE</code> rule is called when <code class="command">gawk</code> has finished processing
+the last record in an input file.  For the last input file,
+it will be called before any <code class="code">END</code> rules.
+The <code class="code">ENDFILE</code> rule is executed even for empty input files.
+</p>
+<p>Normally, when an error occurs when reading input in the normal
+input-processing loop, the error is fatal.  However, if a <code class="code">BEGINFILE</code>
+rule is present, the error becomes non-fatal, and instead <code class="code">ERRNO</code>
+is set.  This makes it possible to catch and process I/O errors at the
+level of the <code class="command">awk</code> program.
+</p>
+<a class="index-entry-id" id="index-next-statement-BEGINFILE_002fENDFILE-patterns-and"></a>
+<p>The <code class="code">next</code> statement (see <a class="pxref" href="Next-Statement.html">The <code class="code">next</code> Statement</a>) is not allowed inside
+either a <code class="code">BEGINFILE</code> or an <code class="code">ENDFILE</code> rule.  The <code class="code">nextfile</code>
+statement is allowed only inside a
+<code class="code">BEGINFILE</code> rule, not inside an <code class="code">ENDFILE</code> rule.
+</p>
+<a class="index-entry-id" id="index-getline-function-BEGINFILE_002fENDFILE-patterns-and"></a>
+<p>The <code class="code">getline</code> function (see <a class="pxref" href="Getline.html">Explicit Input with <code class="code">getline</code></a>) is restricted inside
+both <code class="code">BEGINFILE</code> and <code class="code">ENDFILE</code>: only redirected
+forms of <code class="code">getline</code> are allowed.
+</p>
+<p><code class="code">BEGINFILE</code> and <code class="code">ENDFILE</code> are <code class="command">gawk</code> extensions.
+In most other <code class="command">awk</code> implementations, or if <code class="command">gawk</code> is in
+compatibility mode (see <a class="pxref" href="Options.html">Command-Line Options</a>), they are not special.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Empty.html">The Empty Pattern</a>, Previous: <a href="BEGIN_002fEND.html">The <code class="code">BEGIN</code> and <code class="code">END</code> Special Patterns</a>, Up: <a href="Pattern-Overview.html">Pattern Elements</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

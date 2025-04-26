@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Nonconstant Fields (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Nonconstant Fields (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Nonconstant Fields (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Reading-Files.html" rel="up" title="Reading Files">
+<link href="Changing-Fields.html" rel="next" title="Changing Fields">
+<link href="Fields.html" rel="prev" title="Fields">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Nonconstant-Fields">
+<div class="nav-panel">
+<p>
+Next: <a href="Changing-Fields.html" accesskey="n" rel="next">Changing the Contents of a Field</a>, Previous: <a href="Fields.html" accesskey="p" rel="prev">Examining Fields</a>, Up: <a href="Reading-Files.html" accesskey="u" rel="up">Reading Input Files</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Nonconstant-Field-Numbers"><span>4.3 Nonconstant Field Numbers<a class="copiable-link" href="Nonconstant-Fields.html#Nonconstant-Field-Numbers"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-fields-numbers"></a>
+<a class="index-entry-id" id="index-field-numbers"></a>
+
+<p>A field number need not be a constant.  Any expression in
+the <code class="command">awk</code> language can be used after a &lsquo;<samp class="samp">$</samp>&rsquo; to refer to a
+field.  The value of the expression specifies the field number.  If the
+value is a string, rather than a number, it is converted to a number.
+Consider this example:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk '{ print $NR }'
+</pre></div>
+
+<p>Recall that <code class="code">NR</code> is the number of records read so far: one in the
+first record, two in the second, and so on.  So this example prints the first
+field of the first record, the second field of the second record, and so
+on.  For the twentieth record, field number 20 is printed; most likely,
+the record has fewer than 20 fields, so this prints a blank line.
+Here is another example of using expressions as field numbers:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk '{ print $(2*2) }' mail-list
+</pre></div>
+
+<p><code class="command">awk</code> evaluates the expression &lsquo;<samp class="samp">(2*2)</samp>&rsquo; and uses
+its value as the number of the field to print.  The &lsquo;<samp class="samp">*</samp>&rsquo;
+represents multiplication, so the expression &lsquo;<samp class="samp">2*2</samp>&rsquo; evaluates to four.
+The parentheses are used so that the multiplication is done before the
+&lsquo;<samp class="samp">$</samp>&rsquo; operation; they are necessary whenever there is a binary
+operator<a class="footnote" id="DOCF23" href="Nonconstant-Fields.html#FOOT23"><sup>23</sup></a>
+in the field-number expression.  This example, then, prints the
+type of relationship (the fourth field) for every line of the file
+<samp class="file">mail-list</samp>.  (All of the <code class="command">awk</code> operators are listed, in
+order of decreasing precedence, in
+<a class="ref" href="Precedence.html">Operator Precedence (How Operators Nest)</a>.)
+</p>
+<p>If the field number you compute is zero, you get the entire record.
+Thus, &lsquo;<samp class="samp">$(2-2)</samp>&rsquo; has the same value as <code class="code">$0</code>.  Negative field
+numbers are not allowed; trying to reference one usually terminates
+the program.  (The POSIX standard does not define
+what happens when you reference a negative field number.  <code class="command">gawk</code>
+notices this and terminates your program.  Other <code class="command">awk</code>
+implementations may behave differently.)
+</p>
+<p>As mentioned in <a class="ref" href="Fields.html">Examining Fields</a>,
+<code class="command">awk</code> stores the current record&rsquo;s number of fields in the built-in
+variable <code class="code">NF</code> (also see <a class="pxref" href="Built_002din-Variables.html">Predefined Variables</a>).  Thus, the expression
+<code class="code">$NF</code> is not a special feature&mdash;it is the direct consequence of
+evaluating <code class="code">NF</code> and using its value as a field number.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT23" href="Nonconstant-Fields.html#DOCF23">(23)</a></h5>
+<p>A <em class="dfn">binary operator</em>, such as &lsquo;<samp class="samp">*</samp>&rsquo; for
+multiplication, is one that takes two operands. The distinction
+is required because <code class="command">awk</code> also has unary (one-operand)
+and ternary (three-operand) operators.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Changing-Fields.html">Changing the Contents of a Field</a>, Previous: <a href="Fields.html">Examining Fields</a>, Up: <a href="Reading-Files.html">Reading Input Files</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

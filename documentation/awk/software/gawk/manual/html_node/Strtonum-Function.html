@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Strtonum Function (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Strtonum Function (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Strtonum Function (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="General-Functions.html" rel="up" title="General Functions">
+<link href="Assert-Function.html" rel="next" title="Assert Function">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Strtonum-Function">
+<div class="nav-panel">
+<p>
+Next: <a href="Assert-Function.html" accesskey="n" rel="next">Assertions</a>, Up: <a href="General-Functions.html" accesskey="u" rel="up">General Programming</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Converting-Strings-to-Numbers"><span>10.2.1 Converting Strings to Numbers<a class="copiable-link" href="Strtonum-Function.html#Converting-Strings-to-Numbers"> &para;</a></span></h4>
+
+<p>The <code class="code">strtonum()</code> function (see <a class="pxref" href="String-Functions.html">String-Manipulation Functions</a>)
+is a <code class="command">gawk</code> extension.  The following function
+provides an implementation for other versions of <code class="command">awk</code>:
+</p>
+<div class="example">
+<pre class="example-preformatted"># mystrtonum --- convert string to number
+
+function mystrtonum(str,        ret, n, i, k, c)
+{
+    if (str ~ /^0[0-7]*$/) {
+        # octal
+        n = length(str)
+        ret = 0
+        for (i = 1; i &lt;= n; i++) {
+            c = substr(str, i, 1)
+            # index() returns 0 if c not in string,
+            # includes c == &quot;0&quot;
+            k = index(&quot;1234567&quot;, c)
+
+            ret = ret * 8 + k
+        }
+    } else if (str ~ /^0[xX][[:xdigit:]]+$/) {
+        # hexadecimal
+        str = substr(str, 3)    # lop off leading 0x
+        n = length(str)
+        ret = 0
+        for (i = 1; i &lt;= n; i++) {
+            c = substr(str, i, 1)
+            c = tolower(c)
+            # index() returns 0 if c not in string,
+            # includes c == &quot;0&quot;
+            k = index(&quot;123456789abcdef&quot;, c)
+
+            ret = ret * 16 + k
+        }
+    } else if (str ~ \
+  /^[-+]?([0-9]+([.][0-9]*([Ee][0-9]+)?)?|([.][0-9]+([Ee][-+]?[0-9]+)?))$/) {
+        # decimal number, possibly floating point
+        ret = str + 0
+    } else
+        ret = &quot;NOT-A-NUMBER&quot;
+
+    return ret
+}
+
+# BEGIN {     # gawk test harness
+#     a[1] = &quot;25&quot;
+#     a[2] = &quot;.31&quot;
+#     a[3] = &quot;0123&quot;
+#     a[4] = &quot;0xdeadBEEF&quot;
+#     a[5] = &quot;123.45&quot;
+#     a[6] = &quot;1.e3&quot;
+#     a[7] = &quot;1.32&quot;
+#     a[8] = &quot;1.32E2&quot;
+#
+#     for (i = 1; i in a; i++)
+#         print a[i], strtonum(a[i]), mystrtonum(a[i])
+# }
+</pre></div>
+
+<p>The function first looks for C-style octal numbers (base 8).
+If the input string matches a regular expression describing octal
+numbers, then <code class="code">mystrtonum()</code> loops through each character in the
+string.  It sets <code class="code">k</code> to the index in <code class="code">&quot;1234567&quot;</code> of the current
+octal digit.
+The return value will either be the same number as the digit, or zero
+if the character is not there, which will be true for a &lsquo;<samp class="samp">0</samp>&rsquo;.
+This is safe, because the regexp test in the <code class="code">if</code> ensures that
+only octal values are converted.
+</p>
+<p>Similar logic applies to the code that checks for and converts a
+hexadecimal value, which starts with &lsquo;<samp class="samp">0x</samp>&rsquo; or &lsquo;<samp class="samp">0X</samp>&rsquo;.
+The use of <code class="code">tolower()</code> simplifies the computation for finding
+the correct numeric value for each hexadecimal digit.
+</p>
+<p>Finally, if the string matches the (rather complicated) regexp for a
+regular decimal integer or floating-point number, the computation
+&lsquo;<samp class="samp">ret = str + 0</samp>&rsquo; lets <code class="command">awk</code> convert the value to a
+number.
+</p>
+<p>A commented-out test program is included, so that the function can
+be tested with <code class="command">gawk</code> and the results compared to the built-in
+<code class="code">strtonum()</code> function.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Assert-Function.html">Assertions</a>, Up: <a href="General-Functions.html">General Programming</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

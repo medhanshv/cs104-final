@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Print Examples (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Print Examples (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Print Examples (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Printing.html" rel="up" title="Printing">
+<link href="Output-Separators.html" rel="next" title="Output Separators">
+<link href="Print.html" rel="prev" title="Print">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Print-Examples">
+<div class="nav-panel">
+<p>
+Next: <a href="Output-Separators.html" accesskey="n" rel="next">Output Separators</a>, Previous: <a href="Print.html" accesskey="p" rel="prev">The <code class="code">print</code> Statement</a>, Up: <a href="Printing.html" accesskey="u" rel="up">Printing Output</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="print-Statement-Examples"><span>5.2 <code class="code">print</code> Statement Examples<a class="copiable-link" href="Print-Examples.html#print-Statement-Examples"> &para;</a></span></h3>
+
+<p>Each <code class="code">print</code> statement makes at least one line of output.  However, it
+isn&rsquo;t limited to only one line.  If an item value is a string containing a
+newline, the newline is output along with the rest of the string.  A
+single <code class="code">print</code> statement can make any number of lines this way.
+</p>
+<a class="index-entry-id" id="index-newlines-printing"></a>
+<p>The following is an example of printing a string that contains embedded
+newlines
+(the &lsquo;<samp class="samp">\n</samp>&rsquo; is an escape sequence, used to represent the newline
+character; see <a class="pxref" href="Escape-Sequences.html">Escape Sequences</a>):
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">$ <kbd class="kbd">awk 'BEGIN { print &quot;line one\nline two\nline three&quot; }'</kbd>
+-| line one
+-| line two
+-| line three
+</pre></div></div>
+
+<a class="index-entry-id" id="index-fields-printing"></a>
+<p>The next example, which is run on the <samp class="file">inventory-shipped</samp> file,
+prints the first two fields of each input record, with a space between
+them:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">awk '{ print $1, $2 }' inventory-shipped</kbd>
+-| Jan 13
+-| Feb 15
+-| Mar 15
+...
+</pre></div>
+
+<a class="index-entry-id" id="index-print-statement-commas_002c-omitting"></a>
+<a class="index-entry-id" id="index-troubleshooting-print-statement_002c-omitting-commas"></a>
+<p>A common mistake in using the <code class="code">print</code> statement is to omit the comma
+between two items.  This often has the effect of making the items run
+together in the output, with no space.  The reason for this is that
+juxtaposing two string expressions in <code class="command">awk</code> means to concatenate
+them.  Here is the same program, without the comma:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">awk '{ print $1 $2 }' inventory-shipped</kbd>
+-| Jan13
+-| Feb15
+-| Mar15
+...
+</pre></div>
+
+<a class="index-entry-id" id="index-BEGIN-pattern-headings_002c-adding"></a>
+<p>To someone unfamiliar with the <samp class="file">inventory-shipped</samp> file, neither
+example&rsquo;s output makes much sense.  A heading line at the beginning
+would make it clearer.  Let&rsquo;s add some headings to our table of months
+(<code class="code">$1</code>) and green crates shipped (<code class="code">$2</code>).  We do this using
+a <code class="code">BEGIN</code> rule (see <a class="pxref" href="BEGIN_002fEND.html">The <code class="code">BEGIN</code> and <code class="code">END</code> Special Patterns</a>) so that the headings are only
+printed once:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk 'BEGIN {  print &quot;Month Crates&quot;
+              print &quot;----- ------&quot; }
+           {  print $1, $2 }' inventory-shipped
+</pre></div>
+
+<p>When run, the program prints the following:
+</p>
+<div class="example">
+<pre class="example-preformatted">Month Crates
+----- ------
+Jan 13
+Feb 15
+Mar 15
+...
+</pre></div>
+
+<p>The only problem, however, is that the headings and the table data
+don&rsquo;t line up!  We can fix this by printing some spaces between the
+two fields:
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">awk 'BEGIN { print &quot;Month Crates&quot;
+             print &quot;----- ------&quot; }
+           { print $1, &quot;     &quot;, $2 }' inventory-shipped
+</pre></div></div>
+
+<a class="index-entry-id" id="index-printf-statement-columns_002c-aligning"></a>
+<a class="index-entry-id" id="index-columns-aligning"></a>
+<p>Lining up columns this way can get pretty
+complicated when there are many columns to fix.  Counting spaces for two
+or three columns is simple, but any more than this can take up
+a lot of time. This is why the <code class="code">printf</code> statement was
+created (see <a class="pxref" href="Printf.html">Using <code class="code">printf</code> Statements for Fancier Printing</a>);
+one of its specialties is lining up columns of data.
+</p>
+<a class="index-entry-id" id="index-line-continuations-in-print-statement"></a>
+<a class="index-entry-id" id="index-print-statement-line-continuations-and"></a>
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> You can continue either a <code class="code">print</code> or
+<code class="code">printf</code> statement simply by putting a newline after any comma
+(see <a class="pxref" href="Statements_002fLines.html"><code class="command">awk</code> Statements Versus Lines</a>).
+</p></blockquote>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Output-Separators.html">Output Separators</a>, Previous: <a href="Print.html">The <code class="code">print</code> Statement</a>, Up: <a href="Printing.html">Printing Output</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

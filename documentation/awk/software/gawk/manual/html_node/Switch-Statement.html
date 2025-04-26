@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Switch Statement (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Switch Statement (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Switch Statement (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Statements.html" rel="up" title="Statements">
+<link href="Break-Statement.html" rel="next" title="Break Statement">
+<link href="For-Statement.html" rel="prev" title="For Statement">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Switch-Statement">
+<div class="nav-panel">
+<p>
+Next: <a href="Break-Statement.html" accesskey="n" rel="next">The <code class="code">break</code> Statement</a>, Previous: <a href="For-Statement.html" accesskey="p" rel="prev">The <code class="code">for</code> Statement</a>, Up: <a href="Statements.html" accesskey="u" rel="up">Control Statements in Actions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="The-switch-Statement"><span>7.4.5 The <code class="code">switch</code> Statement<a class="copiable-link" href="Switch-Statement.html#The-switch-Statement"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-switch-statement"></a>
+<a class="index-entry-id" id="index-case-keyword"></a>
+<a class="index-entry-id" id="index-default-keyword"></a>
+
+<p>This section describes a <code class="command">gawk</code>-specific feature.
+If <code class="command">gawk</code> is in compatibility mode (see <a class="pxref" href="Options.html">Command-Line Options</a>),
+it is not available.
+</p>
+<p>The <code class="code">switch</code> statement allows the evaluation of an expression and
+the execution of statements based on a <code class="code">case</code> match. Case statements
+are checked for a match in the order they are defined.  If no suitable
+<code class="code">case</code> is found, the <code class="code">default</code> section is executed, if supplied.
+</p>
+<p>Each <code class="code">case</code> contains a single constant, be it numeric, string,
+or regexp.  The <code class="code">switch</code> expression is evaluated, and then each
+<code class="code">case</code>&rsquo;s constant is compared against the result in turn. The
+type of constant determines the comparison: numeric or string do the
+usual comparisons.  A regexp constant (either regular, <code class="code">/foo/</code>, or
+strongly typed, <code class="code">@/foo/</code>) does a regular expression match against
+the string value of the original expression.  The general form of the
+<code class="code">switch</code> statement looks like this:
+</p>
+<div class="example">
+<pre class="example-preformatted">switch (<var class="var">expression</var>) {
+case <var class="var">value or regular expression</var>:
+    <var class="var">case-body</var>
+default:
+    <var class="var">default-body</var>
+}
+</pre></div>
+
+<p>Control flow in
+the <code class="code">switch</code> statement works as it does in C. Once a match to a given
+case is made, the case statement bodies execute until a <code class="code">break</code>,
+<code class="code">continue</code>, <code class="code">next</code>, <code class="code">nextfile</code>, or <code class="code">exit</code> is encountered,
+or the end of the <code class="code">switch</code> statement itself. For example:
+</p>
+<div class="example">
+<pre class="example-preformatted">while ((c = getopt(ARGC, ARGV, &quot;aksx&quot;)) != -1) {
+    switch (c) {
+    case &quot;a&quot;:
+        # report size of all files
+        all_files = TRUE;
+        break
+    case &quot;k&quot;:
+        BLOCK_SIZE = 1024       # 1K block size
+        break
+    case &quot;s&quot;:
+        # do sums only
+        sum_only = TRUE
+        break
+    case &quot;x&quot;:
+        # don't cross filesystems
+        fts_flags = or(fts_flags, FTS_XDEV)
+        break
+    case &quot;?&quot;:
+    default:
+        usage()
+        break
+    }
+}
+</pre></div>
+
+<p>Note that if none of the statements specified here halt execution
+of a matched <code class="code">case</code> statement, execution falls through to the
+next <code class="code">case</code> until execution halts. In this example, the
+<code class="code">case</code> for <code class="code">&quot;?&quot;</code> falls through to the <code class="code">default</code>
+case, which is to call a function named <code class="code">usage()</code>.
+(The <code class="code">getopt()</code> function being called here is
+described in <a class="ref" href="Getopt-Function.html">Processing Command-Line Options</a>.)
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Break-Statement.html">The <code class="code">break</code> Statement</a>, Previous: <a href="For-Statement.html">The <code class="code">for</code> Statement</a>, Up: <a href="Statements.html">Control Statements in Actions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

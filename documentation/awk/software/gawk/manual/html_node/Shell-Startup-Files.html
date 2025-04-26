@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Shell Startup Files (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Shell Startup Files (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Shell Startup Files (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Unix-Installation.html" rel="up" title="Unix Installation">
+<link href="Additional-Configuration-Options.html" rel="next" title="Additional Configuration Options">
+<link href="Quick-Installation.html" rel="prev" title="Quick Installation">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="appendixsubsec-level-extent" id="Shell-Startup-Files">
+<div class="nav-panel">
+<p>
+Next: <a href="Additional-Configuration-Options.html" accesskey="n" rel="next">Additional Configuration Options</a>, Previous: <a href="Quick-Installation.html" accesskey="p" rel="prev">Compiling <code class="command">gawk</code> for Unix-Like Systems</a>, Up: <a href="Unix-Installation.html" accesskey="u" rel="up">Compiling and Installing <code class="command">gawk</code> on Unix-Like Systems</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="appendixsubsec" id="Shell-Startup-Files-1"><span>B.2.2 Shell Startup Files<a class="copiable-link" href="Shell-Startup-Files.html#Shell-Startup-Files-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-AWKPATH-environment-variable-9"></a>
+<a class="index-entry-id" id="index-environment-variables-AWKPATH-9"></a>
+<a class="index-entry-id" id="index-AWKLIBPATH-environment-variable-8"></a>
+<a class="index-entry-id" id="index-environment-variables-AWKLIBPATH-8"></a>
+<p>The distribution contains shell startup files <samp class="file">gawk.sh</samp> and
+<samp class="file">gawk.csh</samp>, containing functions to aid in manipulating
+the <code class="env">AWKPATH</code> and <code class="env">AWKLIBPATH</code> environment variables.
+On a Fedora GNU/Linux system, these files should be installed in <samp class="file">/etc/profile.d</samp>;
+on other platforms, the appropriate location may be different.
+</p>
+<dl class="table">
+<dd>
+<a class="index-entry-id" id="index-gawkpath_005fdefault-shell-function"></a>
+<a class="index-entry-id" id="index-shell-function-gawkpath_005fdefault"></a>
+</dd>
+<dt><code class="command">gawkpath_default</code></dt>
+<dd><p>Reset the <code class="env">AWKPATH</code> environment variable to its default value.
+</p>
+<a class="index-entry-id" id="index-gawkpath_005fprepend-shell-function"></a>
+<a class="index-entry-id" id="index-shell-function-gawkpath_005fprepend"></a>
+</dd>
+<dt><code class="command">gawkpath_prepend</code></dt>
+<dd><p>Add the argument to the front of the <code class="env">AWKPATH</code> environment variable.
+</p>
+<a class="index-entry-id" id="index-gawkpath_005fappend-shell-function"></a>
+<a class="index-entry-id" id="index-shell-function-gawkpath_005fappend"></a>
+</dd>
+<dt><code class="command">gawkpath_append</code></dt>
+<dd><p>Add the argument to the end of the <code class="env">AWKPATH</code> environment variable.
+</p>
+<a class="index-entry-id" id="index-gawklibpath_005fdefault-shell-function"></a>
+<a class="index-entry-id" id="index-shell-function-gawklibpath_005fdefault"></a>
+</dd>
+<dt><code class="command">gawklibpath_default</code></dt>
+<dd><p>Reset the <code class="env">AWKLIBPATH</code> environment variable to its default value.
+</p>
+<a class="index-entry-id" id="index-gawklibpath_005fprepend-shell-function"></a>
+<a class="index-entry-id" id="index-shell-function-gawklibpath_005fprepend"></a>
+</dd>
+<dt><code class="command">gawklibpath_prepend</code></dt>
+<dd><p>Add the argument to the front of the <code class="env">AWKLIBPATH</code> environment variable.
+</p>
+<a class="index-entry-id" id="index-gawklibpath_005fappend-shell-function"></a>
+<a class="index-entry-id" id="index-shell-function-gawklibpath_005fappend"></a>
+</dd>
+<dt><code class="command">gawklibpath_append</code></dt>
+<dd><p>Add the argument to the end of the <code class="env">AWKLIBPATH</code> environment variable.
+</p>
+</dd>
+</dl>
+
+
+</div>
+
+
+
+</body>
+</html>

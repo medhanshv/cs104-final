@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>ARGC and ARGV (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="ARGC and ARGV (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="ARGC and ARGV (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Built_002din-Variables.html" rel="up" title="Built-in Variables">
+<link href="Auto_002dset.html" rel="prev" title="Auto-set">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="ARGC-and-ARGV">
+<div class="nav-panel">
+<p>
+Previous: <a href="Auto_002dset.html" accesskey="p" rel="prev">Built-in Variables That Convey Information</a>, Up: <a href="Built_002din-Variables.html" accesskey="u" rel="up">Predefined Variables</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Using-ARGC-and-ARGV"><span>7.5.3 Using <code class="code">ARGC</code> and <code class="code">ARGV</code><a class="copiable-link" href="ARGC-and-ARGV.html#Using-ARGC-and-ARGV"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-ARGC_002fARGV-variables-how-to-use"></a>
+<a class="index-entry-id" id="index-arguments-command_002dline-2"></a>
+<a class="index-entry-id" id="index-command-line-arguments-3"></a>
+
+<p><a class="ref" href="Auto_002dset.html">Built-in Variables That Convey Information</a>
+presented the following program describing the information contained in <code class="code">ARGC</code>
+and <code class="code">ARGV</code>:
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">$ <kbd class="kbd">awk 'BEGIN {</kbd>
+&gt;        <kbd class="kbd">for (i = 0; i &lt; ARGC; i++)</kbd>
+&gt;            <kbd class="kbd">print ARGV[i]</kbd>
+&gt;      <kbd class="kbd">}' inventory-shipped mail-list</kbd>
+-| awk
+-| inventory-shipped
+-| mail-list
+</pre></div></div>
+
+<p>In this example, <code class="code">ARGV[0]</code> contains &lsquo;<samp class="samp">awk</samp>&rsquo;, <code class="code">ARGV[1]</code>
+contains &lsquo;<samp class="samp">inventory-shipped</samp>&rsquo;, and <code class="code">ARGV[2]</code> contains
+&lsquo;<samp class="samp">mail-list</samp>&rsquo;.
+Notice that the <code class="command">awk</code> program is not entered in <code class="code">ARGV</code>.  The
+other command-line options, with their arguments, are also not
+entered.  This includes variable assignments done with the <samp class="option">-v</samp>
+option (see <a class="pxref" href="Options.html">Command-Line Options</a>).
+Normal variable assignments on the command line <em class="emph">are</em>
+treated as arguments and do show up in the <code class="code">ARGV</code> array.
+Given the following program in a file named <samp class="file">showargs.awk</samp>:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+    printf &quot;A=%d, B=%d\n&quot;, A, B
+    for (i = 0; i &lt; ARGC; i++)
+        printf &quot;\tARGV[%d] = %s\n&quot;, i, ARGV[i]
+}
+END   { printf &quot;A=%d, B=%d\n&quot;, A, B }
+</pre></div>
+
+<p>Running it produces the following:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">awk -v A=1 -f showargs.awk B=2 /dev/null</kbd>
+-| A=1, B=0
+-|        ARGV[0] = awk
+-|        ARGV[1] = B=2
+-|        ARGV[2] = /dev/null
+-| A=1, B=2
+</pre></div>
+
+<p>A program can alter <code class="code">ARGC</code> and the elements of <code class="code">ARGV</code>.
+Each time <code class="command">awk</code> reaches the end of an input file, it uses the next
+element of <code class="code">ARGV</code> as the name of the next input file.  By storing a
+different string there, a program can change which files are read.
+Use <code class="code">&quot;-&quot;</code> to represent the standard input.  Storing
+additional elements and incrementing <code class="code">ARGC</code> causes
+additional files to be read.
+</p>
+<p>If the value of <code class="code">ARGC</code> is decreased, that eliminates input files
+from the end of the list.  By recording the old value of <code class="code">ARGC</code>
+elsewhere, a program can treat the eliminated arguments as
+something other than file names.
+</p>
+<p>To eliminate a file from the middle of the list, store the null string
+(<code class="code">&quot;&quot;</code>) into <code class="code">ARGV</code> in place of the file&rsquo;s name.  As a
+special feature, <code class="command">awk</code> ignores file names that have been
+replaced with the null string.
+Another option is to
+use the <code class="code">delete</code> statement to remove elements from
+<code class="code">ARGV</code> (see <a class="pxref" href="Delete.html">The <code class="code">delete</code> Statement</a>).
+</p>
+<p>All of these actions are typically done in the <code class="code">BEGIN</code> rule,
+before actual processing of the input begins.
+See <a class="xref" href="Split-Program.html">Splitting a Large File into Pieces</a> and
+see <a class="pxref" href="Tee-Program.html">Duplicating Output into Multiple Files</a>
+for examples
+of each way of removing elements from <code class="code">ARGV</code>.
+</p>
+<p>To actually get options into an <code class="command">awk</code> program,
+end the <code class="command">awk</code> options with <samp class="option">--</samp> and then supply
+the <code class="command">awk</code> program&rsquo;s options, in the following manner:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk -f myprog.awk -- -v -q file1 file2 ...
+</pre></div>
+
+<p>The following fragment processes <code class="code">ARGV</code> in order to examine, and
+then remove, the previously mentioned command-line options:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+    for (i = 1; i &lt; ARGC; i++) {
+        if (ARGV[i] == &quot;-v&quot;)
+            verbose = 1
+        else if (ARGV[i] == &quot;-q&quot;)
+            debug = 1
+        else if (ARGV[i] ~ /^-./) {
+            e = sprintf(&quot;%s: unrecognized option -- %c&quot;,
+                    ARGV[0], substr(ARGV[i], 2, 1))
+            print e &gt; &quot;/dev/stderr&quot;
+        } else
+            break
+        delete ARGV[i]
+    }
+}
+</pre></div>
+
+<a class="index-entry-id" id="index-differences-in-awk-and-gawk-ARGC_002fARGV-variables"></a>
+<p>Ending the <code class="command">awk</code> options with <samp class="option">--</samp> isn&rsquo;t
+necessary in <code class="command">gawk</code>. Unless <samp class="option">--posix</samp> has
+been specified, <code class="command">gawk</code> silently puts any unrecognized options
+into <code class="code">ARGV</code> for the <code class="command">awk</code> program to deal with.  As soon
+as it sees an unknown option, <code class="command">gawk</code> stops looking for other
+options that it might otherwise recognize.  The previous command line with
+<code class="command">gawk</code> would be:
+</p>
+<div class="example">
+<pre class="example-preformatted">gawk -f myprog.awk -q -v file1 file2 ...
+</pre></div>
+
+<p>Because <samp class="option">-q</samp> is not a valid <code class="command">gawk</code> option, it and the
+following <samp class="option">-v</samp> are passed on to the <code class="command">awk</code> program.
+(See <a class="xref" href="Getopt-Function.html">Processing Command-Line Options</a> for an <code class="command">awk</code> library function that
+parses command-line options.)
+</p>
+<p>When designing your program, you should choose options that don&rsquo;t
+conflict with <code class="command">gawk</code>&rsquo;s, because it will process any options
+that it accepts before passing the rest of the command line on to
+your program.  Using &lsquo;<samp class="samp">#!</samp>&rsquo; with the <samp class="option">-E</samp> option may help
+(see <a class="pxref" href="Executable-Scripts.html">Executable <code class="command">awk</code> Programs</a>
+and
+see <a class="pxref" href="Options.html">Command-Line Options</a>).
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Auto_002dset.html">Built-in Variables That Convey Information</a>, Up: <a href="Built_002din-Variables.html">Predefined Variables</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

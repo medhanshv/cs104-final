@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Output Exercises (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Output Exercises (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Output Exercises (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Printing.html" rel="up" title="Printing">
+<link href="Output-Summary.html" rel="prev" title="Output Summary">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Output-Exercises">
+<div class="nav-panel">
+<p>
+Previous: <a href="Output-Summary.html" accesskey="p" rel="prev">Summary</a>, Up: <a href="Printing.html" accesskey="u" rel="up">Printing Output</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Exercises-1"><span>5.13 Exercises<a class="copiable-link" href="Output-Exercises.html#Exercises-1"> &para;</a></span></h3>
+
+<ol class="enumerate">
+<li> Rewrite the program:
+
+<div class="example">
+<pre class="example-preformatted">awk 'BEGIN { print &quot;Month Crates&quot;
+             print &quot;----- ------&quot; }
+           { print $1, &quot;     &quot;, $2 }' inventory-shipped
+</pre></div>
+
+<p>from <a class="ref" href="Output-Separators.html">Output Separators</a>, by using a new value of <code class="code">OFS</code>.
+</p>
+</li><li> Use the <code class="code">printf</code> statement to line up the headings and table data
+for the <samp class="file">inventory-shipped</samp> example that was covered in <a class="ref" href="Print.html">The <code class="code">print</code> Statement</a>.
+
+</li><li> What happens if you forget the double quotes when redirecting
+output, as follows:
+
+<div class="example">
+<pre class="example-preformatted">BEGIN { print &quot;Serious error detected!&quot; &gt; /dev/stderr }
+</pre></div>
+
+</li></ol>
+
+
+</div>
+
+
+
+</body>
+</html>

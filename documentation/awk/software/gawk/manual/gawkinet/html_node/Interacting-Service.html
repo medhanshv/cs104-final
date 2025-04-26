@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>Interacting Service (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="Interacting Service (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="Interacting Service (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Using-Networking.html" rel="up" title="Using Networking">
+<link href="Simple-Server.html" rel="next" title="Simple Server">
+<link href="Primitive-Service.html" rel="prev" title="Primitive Service">
+<style type="text/css">
+<!--
+div.example {margin-left: 3.2em}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Interacting-Service">
+<div class="nav-panel">
+<p>
+Next: <a href="Simple-Server.html" accesskey="n" rel="next">A Simple Web Server</a>, Previous: <a href="Primitive-Service.html" accesskey="p" rel="prev">A Primitive Web Service</a>, Up: <a href="Using-Networking.html" accesskey="u" rel="up">Networking With <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="A-Web-Service-with-Interaction">2.9 A Web Service with Interaction</h3>
+<a class="index-entry-id" id="index-gawk-6"></a>
+<a class="index-entry-id" id="index-HTTP-server_002c-core-logic"></a>
+<a class="index-entry-id" id="index-servers-3"></a>
+
+
+<p>Setting up a web service that allows user interaction is more difficult and
+shows us the limits of network access in <code class="command">gawk</code>. In this section,
+we develop  a main program (a <code class="code">BEGIN</code> pattern and its action)
+that will become the core of event-driven execution controlled by a
+graphical user interface (GUI).
+Each HTTP event that the user triggers by some action within the browser
+is received in this central procedure. Parameters and menu choices are
+extracted from this request, and an appropriate measure is taken according to
+the user&rsquo;s choice:
+</p>
+<a class="index-entry-id" id="index-HTTP-server_002c-core-logic-1"></a>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+  if (MyHost == &quot;&quot;) {
+     &quot;uname -n&quot; | getline MyHost
+     close(&quot;uname -n&quot;)
+  }
+  if (MyPort ==  0) MyPort = 8080
+  HttpService = &quot;/inet/tcp/&quot; MyPort &quot;/0/0&quot;
+  MyPrefix    = &quot;http://&quot; MyHost &quot;:&quot; MyPort
+  SetUpServer()
+  while (&quot;awk&quot; != &quot;complex&quot;) {
+    # header lines are terminated this way
+    RS = ORS = &quot;\r\n&quot;
+    Status   = 200          # this means OK
+    Reason   = &quot;OK&quot;
+    Header   = TopHeader
+    Document = TopDoc
+    Footer   = TopFooter
+    if        (GETARG[&quot;Method&quot;] == &quot;GET&quot;) {
+        HandleGET()
+    } else if (GETARG[&quot;Method&quot;] == &quot;HEAD&quot;) {
+        # not yet implemented
+    } else if (GETARG[&quot;Method&quot;] != &quot;&quot;) {
+        print &quot;bad method&quot;, GETARG[&quot;Method&quot;]
+    }
+    Prompt = Header Document Footer
+    print &quot;HTTP/1.0&quot;, Status, Reason       |&amp; HttpService
+    print &quot;Connection: Close&quot;              |&amp; HttpService
+    print &quot;Pragma: no-cache&quot;               |&amp; HttpService
+    len = length(Prompt) + length(ORS)
+    print &quot;Content-length:&quot;, len           |&amp; HttpService
+    print ORS Prompt                       |&amp; HttpService
+    # ignore all the header lines
+    while ((HttpService |&amp; getline) &gt; 0)
+        ;
+    # stop talking to this client
+    close(HttpService)
+    # wait for new client request
+    HttpService |&amp; getline
+    # do some logging
+    print systime(), strftime(), $0
+    # read request parameters
+    CGI_setup($1, $2, $3)
+  }
+}
+</pre></div>
+
+<p>This web server presents menu choices in the form of HTML links.
+Therefore, it has to tell the browser the name of the host it is
+residing on. When starting the server, the user may supply the name
+of the host from the command line with &lsquo;<samp class="samp">gawk -v MyHost=&quot;Rumpelstilzchen&quot;</samp>&rsquo;.
+If the user does not do this, the server looks up the name of the host it is
+running on for later use as a web address in HTML documents. The same
+applies to the port number. These values are inserted later into the
+HTML content of the web pages to refer to the home system.
+</p>
+<p>Each server that is built around this core has to initialize some
+application-dependent variables (such as the default home page) in a function
+<code class="code">SetUpServer()</code>, which is called immediately before entering the
+infinite loop of the server. For now, we will write an instance that
+initiates a trivial interaction.  With this home page, the client user
+can click on two possible choices, and receive the current date either
+in human-readable format or in seconds since 1970:
+</p>
+<div class="example">
+<pre class="example-preformatted">function SetUpServer() {
+  TopHeader = &quot;&lt;HTML&gt;&lt;HEAD&gt;&quot;
+  TopHeader = TopHeader \
+     &quot;&lt;title&gt;My name is GAWK, GNU AWK&lt;/title&gt;&lt;/HEAD&gt;&quot;
+  TopDoc    = &quot;&lt;BODY&gt;&lt;h2&gt;\
+    Do you prefer your date &lt;A HREF=&quot; MyPrefix \
+    &quot;/human&gt;human&lt;/A&gt; or \
+    &lt;A HREF=&quot; MyPrefix &quot;/POSIX&gt;POSIXed&lt;/A&gt;?&lt;/h2&gt;&quot; ORS ORS
+  TopFooter = &quot;&lt;/BODY&gt;&lt;/HTML&gt;&quot;
+}
+</pre></div>
+
+<p>On the first run through the main loop, the default line terminators are
+set and the default home page is copied to the actual home page. Since this
+is the first run, <code class="code">GETARG[&quot;Method&quot;]</code> is not initialized yet, hence the
+case selection over the method does nothing. Now that the home page is
+initialized, the server can start communicating to a client browser.
+</p>
+<a class="index-entry-id" id="index-RFC-2068-1"></a>
+<p>It does so by printing the HTTP header into the network connection
+(&lsquo;<samp class="samp">print &hellip; |&amp; HttpService</samp>&rsquo;). This command blocks execution of
+the server script until a client connects.
+</p>
+<p>If you compare this server
+script with the primitive one we wrote before, you will notice
+two additional lines in the header. The first instructs the browser
+to close the connection after each request. The second tells the
+browser that it should never try to <em class="emph">remember</em> earlier requests
+that had identical web addresses (no caching). Otherwise, it could happen
+that the browser retrieves the time of day in the previous example just once,
+and later it takes the web page from the cache, always displaying the same
+time of day although time advances each second.
+</p>
+<p>Having supplied the initial home page to the browser with a valid document
+stored in the parameter <code class="code">Prompt</code>, it closes the connection and waits
+for the next request.  When the request comes, a log line is printed that
+allows us to see which request the server receives. The final step in the
+loop is to call the function <code class="code">CGI_setup()</code>, which reads all the lines
+of the request (coming from the browser), processes them, and stores the
+transmitted parameters in the array <code class="code">PARAM</code>. The complete
+text of these application-independent functions can be found in
+<a class="ref" href="CGI-Lib.html">A Simple CGI Library</a>.
+For now, we use a simplified version of <code class="code">CGI_setup()</code>:
+</p>
+<div class="example">
+<pre class="example-preformatted">function CGI_setup(   method, uri, version, i) {
+  delete GETARG;         delete MENU;        delete PARAM
+  GETARG[&quot;Method&quot;] = $1
+  GETARG[&quot;URI&quot;] = $2
+  GETARG[&quot;Version&quot;] = $3
+  i = index($2, &quot;?&quot;)
+  # is there a &quot;?&quot; indicating a CGI request?
+</pre><div class="group"><pre class="example-preformatted">  if (i &gt; 0) {
+    split(substr($2, 1, i-1), MENU, &quot;[/:]&quot;)
+    split(substr($2, i+1), PARAM, &quot;&amp;&quot;)
+    for (i in PARAM) {
+      j = index(PARAM[i], &quot;=&quot;)
+      GETARG[substr(PARAM[i], 1, j-1)] = \
+                                  substr(PARAM[i], j+1)
+    }
+  } else {    # there is no &quot;?&quot;, no need for splitting PARAMs
+    split($2, MENU, &quot;[/:]&quot;)
+  }
+</pre></div><pre class="example-preformatted">}
+</pre></div>
+
+<p>At first, the function clears all variables used for
+global storage of request parameters. The rest of the function serves
+the purpose of filling the global parameters with the extracted new values.
+To accomplish this, the name of the requested resource is split into
+parts and stored for later evaluation. If the request contains a &lsquo;<samp class="samp">?</samp>&rsquo;,
+then the request has CGI variables seamlessly appended to the web address.
+Everything in front of the &lsquo;<samp class="samp">?</samp>&rsquo; is split up into menu items, and
+everything behind the &lsquo;<samp class="samp">?</samp>&rsquo; is a list of &lsquo;<samp class="samp"><var class="var">variable</var>=<var class="var">value</var></samp>&rsquo; pairs
+(separated by &lsquo;<samp class="samp">&amp;</samp>&rsquo;) that also need splitting. This way, CGI variables are
+isolated and stored. This procedure lacks recognition of special characters
+that are transmitted in coded form<a class="footnote" id="DOCF10" href="Interacting-Service.html#FOOT10"><sup>10</sup></a>. Here, any
+optional request header and body parts are ignored. We do not need
+header parameters and the request body. However, when refining our approach or
+working with the <code class="code">POST</code> and <code class="code">PUT</code> methods, reading the header
+and body
+becomes inevitable. Header parameters should then be stored in a global
+array as well as the body.
+</p>
+<p>On each subsequent run through the main loop, one request from a browser is
+received, evaluated, and answered according to the user&rsquo;s choice. This can be
+done by letting the value of the HTTP method guide the main loop into
+execution of the procedure <code class="code">HandleGET()</code>, which evaluates the user&rsquo;s
+choice. In this case, we have only one hierarchical level of menus,
+but in the general case,
+menus are nested.
+The menu choices at each level are
+separated by &lsquo;<samp class="samp">/</samp>&rsquo;, just as in file names. Notice how simple it is to
+construct menus of arbitrary depth:
+</p>
+<div class="example">
+<pre class="example-preformatted">function HandleGET() {
+  if (       MENU[2] == &quot;human&quot;) {
+    Footer = strftime() TopFooter
+  } else if (MENU[2] == &quot;POSIX&quot;) {
+    Footer = systime()  TopFooter
+  }
+}
+</pre></div>
+
+<p>The disadvantage of this approach is that our server is slow and can
+handle only one request at a time. Its main advantage, however, is that
+the server
+consists of just one <code class="command">gawk</code> program. No need for installing an
+<code class="command">httpd</code>, and no need for static separate HTML files, CGI scripts, or
+<code class="code">root</code> privileges. This is rapid prototyping.
+This program can be started on the same host that runs your browser.
+Then let your browser point to <a class="uref" href="http://localhost:8080">http://localhost:8080</a>.
+</p>
+<a class="index-entry-id" id="index-XBM-image-format"></a>
+<a class="index-entry-id" id="index-images-1"></a>
+<a class="index-entry-id" id="index-web-pages-1"></a>
+<a class="index-entry-id" id="index-GNUPlot-utility"></a>
+<p>It is also possible to include images into the HTML pages.
+Most browsers support the not very well-known
+<samp class="file">.xbm</samp> format,
+which may contain only
+monochrome pictures but is an ASCII format. Binary images are possible but
+not so easy to handle. Another way of including images is to generate them
+with a tool such as GNUPlot,
+by calling the tool with the <code class="code">system()</code> function or through a pipe.
+</p>
+<ul class="mini-toc">
+<li><a href="CGI-Lib.html" accesskey="1">A Simple CGI Library</a></li>
+</ul>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT10" href="Interacting-Service.html#DOCF10">(10)</a></h5>
+<p>As defined in RFC 2068.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Simple-Server.html">A Simple Web Server</a>, Previous: <a href="Primitive-Service.html">A Primitive Web Service</a>, Up: <a href="Using-Networking.html">Networking With <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

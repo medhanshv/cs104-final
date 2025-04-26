@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Extension Philosophy (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Extension Philosophy (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Extension Philosophy (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Advanced-Features.html" rel="up" title="Advanced Features">
+<link href="Advanced-Features-Summary.html" rel="next" title="Advanced Features Summary">
+<link href="Persistent-Memory.html" rel="prev" title="Persistent Memory">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Extension-Philosophy">
+<div class="nav-panel">
+<p>
+Next: <a href="Advanced-Features-Summary.html" accesskey="n" rel="next">Summary</a>, Previous: <a href="Persistent-Memory.html" accesskey="p" rel="prev">Preserving Data Between Runs</a>, Up: <a href="Advanced-Features.html" accesskey="u" rel="up">Advanced Features of <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Builtin-Features-versus-Extensions"><span>12.8 Builtin Features versus Extensions<a class="copiable-link" href="Extension-Philosophy.html#Builtin-Features-versus-Extensions"> &para;</a></span></h3>
+
+<p>As this and subsequent chapters show, <code class="command">gawk</code> has a
+large number of extensions over standard <code class="command">awk</code> built-in to
+the program.  These have developed over time.  More recently, the
+focus has moved to using the extension mechanism (see <a class="pxref" href="Dynamic-Extensions.html">Writing Extensions for <code class="command">gawk</code></a>)
+for adding features.  This section discusses the &ldquo;guiding philosophy&rdquo;
+behind what should be added to the interpreter as a built-in
+feature versus what should be done in extensions.
+</p>
+<p>There are several goals:
+</p>
+<ol class="enumerate">
+<li> Keep the language <code class="command">awk</code>; it should not become unrecognizable, even
+if programs in it will only run on <code class="command">gawk</code>.
+
+</li><li> Keep the core from getting any larger unless absolutely necessary.
+
+</li><li> Add new functionality either in <code class="command">awk</code> scripts (<samp class="option">-f</samp>,
+<code class="code">@include</code>) or in loadable extensions written in C or C++
+(<samp class="option">-l</samp>, <code class="code">@load</code>).
+
+</li><li> Extend the core interpreter only if some feature is:
+
+<ol class="enumerate" type="A" start="1">
+<li> Truly desirable.
+</li><li> Cannot be done via library files or loadable extensions.
+</li><li> Can be implemented without too much pain in the core.
+</li></ol>
+</li></ol>
+<p>Combining modules with <code class="command">awk</code> files is a powerful technique.
+Some of the sample extensions demonstrate this.
+</p>
+<p>Loading extensions and library files should not be done automatically,
+because then there&rsquo;s overhead that most users don&rsquo;t want or need.
+</p>
+</div>
+
+
+
+</body>
+</html>

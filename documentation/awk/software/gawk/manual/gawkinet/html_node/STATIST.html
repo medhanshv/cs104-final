@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>STATIST (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="STATIST (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="STATIST (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Some-Applications-and-Techniques.html" rel="up" title="Some Applications and Techniques">
+<link href="MAZE.html" rel="next" title="MAZE">
+<link href="WEBGRAB.html" rel="prev" title="WEBGRAB">
+<style type="text/css">
+<!--
+div.example {margin-left: 3.2em}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="STATIST">
+<div class="nav-panel">
+<p>
+Next: <a href="MAZE.html" accesskey="n" rel="next">MAZE: Walking Through a Maze In Virtual Reality</a>, Previous: <a href="WEBGRAB.html" accesskey="p" rel="prev">WEBGRAB: Extract Links from a Page</a>, Up: <a href="Some-Applications-and-Techniques.html" accesskey="u" rel="up">Some Applications and Techniques</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="STATIST_003a-Graphing-a-Statistical-Distribution">3.6 STATIST: Graphing a Statistical Distribution</h3>
+<a class="index-entry-id" id="index-STATIST-program"></a>
+
+<a class="index-entry-id" id="index-GNUPlot-utility-1"></a>
+<a class="index-entry-id" id="index-image-format"></a>
+<a class="index-entry-id" id="index-GIF-image-format-1"></a>
+<a class="index-entry-id" id="index-PNG-image-format-1"></a>
+<a class="index-entry-id" id="index-PS-image-format"></a>
+<a class="index-entry-id" id="index-Boutell_002c-Thomas"></a>
+<img class="image" src="https://www.gnu.org/software/gawk/manual/gawkinet/html_node/gawk_statist.jpg" alt="gawk_statist">
+
+<p>In the HTTP server examples we&rsquo;ve shown thus far, we never present an image
+to the browser and its user. Presenting images is one task. Generating
+images that reflect some user input and presenting these dynamically
+generated images is another. In this section, we use GNUPlot
+for generating <samp class="file">.png</samp>, <samp class="file">.ps</samp>, or <samp class="file">.gif</samp>
+files.<a class="footnote" id="DOCF13" href="STATIST.html#FOOT13"><sup>13</sup></a>
+</p>
+<a class="index-entry-id" id="index-Numerical-Recipes"></a>
+<p>The program we develop takes the statistical parameters of two samples
+and computes the t-test statistics. As a result, we get the probabilities
+that the means and the variances of both samples are the same. In order to
+let the user check plausibility, the program presents an image of the
+distributions. The statistical computation follows
+<cite class="cite">Numerical Recipes in C: The Art of Scientific Computing</cite>
+by William H. Press, Saul A. Teukolsky, William T. Vetterling, and Brian P. Flannery.
+Since <code class="command">gawk</code> does not have a built-in function
+for the computation of the beta function, we use the <code class="code">ibeta()</code> function
+of GNUPlot. As a side effect, we learn how to use GNUPlot as a
+sophisticated calculator. The comparison of means is done as in <code class="code">tutest</code>,
+paragraph 14.2, page 613, and the comparison of variances is done as in <code class="code">ftest</code>,
+page 611 in <cite class="cite">Numerical Recipes</cite>.
+</p>
+<p>As usual, we take the site-independent code for servers and append
+our own functions <code class="code">SetUpServer()</code> and <code class="code">HandleGET()</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">function SetUpServer() {
+  TopHeader = &quot;&lt;HTML&gt;&lt;title&gt;Statistics with GAWK&lt;/title&gt;&quot;
+  TopDoc = &quot;&lt;BODY&gt;\
+   &lt;h2&gt;Please choose one of the following actions:&lt;/h2&gt;\
+   &lt;UL&gt;\
+    &lt;LI&gt;&lt;A HREF=&quot; MyPrefix &quot;/AboutServer&gt;About this server&lt;/A&gt;&lt;/LI&gt;\
+    &lt;LI&gt;&lt;A HREF=&quot; MyPrefix &quot;/EnterParameters&gt;Enter Parameters&lt;/A&gt;&lt;/LI&gt;\
+   &lt;/UL&gt;&quot;
+  TopFooter  = &quot;&lt;/BODY&gt;&lt;/HTML&gt;&quot;
+  GnuPlot    = &quot;gnuplot 2&gt;&amp;1&quot;
+  m1=m2=0;    v1=v2=1;    n1=n2=10
+}
+</pre></div>
+
+<p>Here, you see the menu structure that the user sees. Later, we
+will see how the program structure of the <code class="code">HandleGET()</code> function
+reflects the menu structure. What is missing here is the link for the
+image we generate. In an event-driven environment, request,
+generation, and delivery of images are separated.
+</p>
+<p>Notice the way we initialize the <code class="code">GnuPlot</code> command string for
+the pipe. By default,
+GNUPlot outputs the generated image via standard output, as well as
+the results of <code class="code">print</code>(ed) calculations via standard error.
+The redirection causes standard error to be mixed into standard
+output, enabling us to read results of calculations with <code class="code">getline</code>.
+By initializing the statistical parameters with some meaningful
+defaults, we make sure the user gets an image the first time
+he uses the program.
+</p>
+<a class="index-entry-id" id="index-JavaScript"></a>
+<p>Following is the rather long function <code class="code">HandleGET()</code>, which
+implements the contents of this service by reacting to the different
+kinds of requests from the browser. Before you start playing with
+this script, make sure that your browser supports JavaScript and that it also
+has this option switched on. The script uses a short snippet of
+JavaScript code for delayed opening of a window with an image.
+A more detailed explanation follows:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">function HandleGET() {
+  if (MENU[2] == &quot;AboutServer&quot;) {
+    Document  = &quot;This is a GUI for a statistical computation.\
+      It compares means and variances of two distributions.\
+      It is implemented as one GAWK script and uses GNUPLOT.&quot;
+  } else if (MENU[2] == &quot;EnterParameters&quot;) {
+    Document = &quot;&quot;
+    if (&quot;m1&quot; in GETARG) {     # are there parameters to compare?
+      Document = Document &quot;&lt;SCRIPT LANGUAGE=\&quot;JavaScript\&quot;&gt;\
+        setTimeout(\&quot;window.open(\\\&quot;&quot; MyPrefix &quot;/Image&quot; systime()\
+         &quot;\\\&quot;,\\\&quot;dist\\\&quot;, \\\&quot;status=no\\\&quot;);\&quot;, 1000); &lt;/SCRIPT&gt;&quot;
+      m1 = GETARG[&quot;m1&quot;]; v1 = GETARG[&quot;v1&quot;]; n1 = GETARG[&quot;n1&quot;]
+      m2 = GETARG[&quot;m2&quot;]; v2 = GETARG[&quot;v2&quot;]; n2 = GETARG[&quot;n2&quot;]
+      t = (m1-m2)/sqrt(v1/n1+v2/n2)
+      df = (v1/n1+v2/n2)*(v1/n1+v2/n2)/((v1/n1)*(v1/n1)/(n1-1) \
+           + (v2/n2)*(v2/n2) /(n2-1))
+      if (v1&gt;v2) {
+          f = v1/v2
+          df1 = n1 - 1
+          df2 = n2 - 1
+      } else {
+          f = v2/v1
+          df1 = n2 - 1
+          df2 = n1 - 1
+      }
+      print &quot;pt=ibeta(&quot; df/2 &quot;,0.5,&quot; df/(df+t*t) &quot;)&quot;  |&amp; GnuPlot
+      print &quot;pF=2.0*ibeta(&quot; df2/2 &quot;,&quot; df1/2 &quot;,&quot; \
+            df2/(df2+df1*f) &quot;)&quot;                    |&amp; GnuPlot
+      print &quot;print pt, pF&quot;                         |&amp; GnuPlot
+      RS=&quot;\n&quot;; GnuPlot |&amp; getline; RS=&quot;\r\n&quot;    # $1 is pt, $2 is pF
+      print &quot;invsqrt2pi=1.0/sqrt(2.0*pi)&quot;          |&amp; GnuPlot
+      print &quot;nd(x)=invsqrt2pi/sd*exp(-0.5*((x-mu)/sd)**2)&quot; |&amp; GnuPlot
+      print &quot;set term png small color&quot;             |&amp; GnuPlot
+      #print &quot;set term postscript color&quot;           |&amp; GnuPlot
+      #print &quot;set term gif medium size 320,240&quot;    |&amp; GnuPlot
+      print &quot;set yrange[-0.3:]&quot;                    |&amp; GnuPlot
+      print &quot;set label 'p(m1=m2) =&quot; $1 &quot;' at 0,-0.1 left&quot;  |&amp; GnuPlot
+      print &quot;set label 'p(v1=v2) =&quot; $2 &quot;' at 0,-0.2 left&quot;  |&amp; GnuPlot
+      print &quot;plot mu=&quot; m1 &quot;,sd=&quot; sqrt(v1) &quot;, nd(x) title 'sample 1',\
+        mu=&quot; m2 &quot;,sd=&quot; sqrt(v2) &quot;, nd(x) title 'sample 2'&quot; |&amp; GnuPlot
+      print &quot;quit&quot;                                         |&amp; GnuPlot
+      GnuPlot |&amp; getline Image
+      while ((GnuPlot |&amp; getline) &gt; 0)
+          Image = Image RS $0
+      close(GnuPlot)
+    }
+    Document = Document &quot;\
+    &lt;h3&gt;Do these samples have the same Gaussian distribution?&lt;/h3&gt;\
+    &lt;FORM METHOD=GET&gt; &lt;TABLE BORDER CELLPADDING=5&gt;\
+    &lt;TR&gt;\
+    &lt;TD&gt;1. Mean    &lt;/TD&gt;
+    &lt;TD&gt;&lt;input type=text name=m1 value=&quot; m1 &quot; size=8&gt;&lt;/TD&gt;\
+    &lt;TD&gt;1. Variance&lt;/TD&gt;
+    &lt;TD&gt;&lt;input type=text name=v1 value=&quot; v1 &quot; size=8&gt;&lt;/TD&gt;\
+    &lt;TD&gt;1. Count   &lt;/TD&gt;
+    &lt;TD&gt;&lt;input type=text name=n1 value=&quot; n1 &quot; size=8&gt;&lt;/TD&gt;\
+    &lt;/TR&gt;&lt;TR&gt;\
+    &lt;TD&gt;2. Mean    &lt;/TD&gt;
+    &lt;TD&gt;&lt;input type=text name=m2 value=&quot; m2 &quot; size=8&gt;&lt;/TD&gt;\
+    &lt;TD&gt;2. Variance&lt;/TD&gt;
+    &lt;TD&gt;&lt;input type=text name=v2 value=&quot; v2 &quot; size=8&gt;&lt;/TD&gt;\
+    &lt;TD&gt;2. Count   &lt;/TD&gt;
+    &lt;TD&gt;&lt;input type=text name=n2 value=&quot; n2 &quot; size=8&gt;&lt;/TD&gt;\
+    &lt;/TR&gt;                   &lt;input type=submit value=\&quot;Compute\&quot;&gt;\
+    &lt;/TABLE&gt;&lt;/FORM&gt;&lt;BR&gt;&quot;
+  } else if (MENU[2] ~ &quot;Image&quot;) {
+    Reason = &quot;OK&quot; ORS &quot;Content-type: image/png&quot;
+    #Reason = &quot;OK&quot; ORS &quot;Content-type: application/x-postscript&quot;
+    #Reason = &quot;OK&quot; ORS &quot;Content-type: image/gif&quot;
+    Header = Footer = &quot;&quot;
+    Document = Image
+  }
+}
+</pre></div>
+
+<a class="index-entry-id" id="index-PostScript"></a>
+<p>As usual, we give a short description of the service in the first
+menu choice. The third menu choice shows us that generation and
+presentation of an image are two separate actions. While the latter
+takes place quite instantly in the third menu choice, the former
+takes place in the much longer second choice. Image data passes from the
+generating action to the presenting action via the variable <code class="code">Image</code>
+that contains a complete <samp class="file">.png</samp> image, which is otherwise stored
+in a file. If you prefer <samp class="file">.ps</samp> or <samp class="file">.gif</samp> images over the
+default <samp class="file">.png</samp> images, you may select these options by uncommenting
+the appropriate lines. But remember to do so in two places: when
+telling GNUPlot which kind of images to generate, and when transmitting the
+image at the end of the program.
+</p>
+<p>Looking at the end of the program,
+the way we pass the &lsquo;<samp class="samp">Content-type</samp>&rsquo; to the browser is a bit unusual.
+It is appended to the &lsquo;<samp class="samp">OK</samp>&rsquo; of the first header line
+to make sure the type information becomes part of the header.
+The other variables that get transmitted across the network are
+made empty, because in this case we do not have an HTML document to
+transmit, but rather raw image data to contain in the body.
+</p>
+<p>Most of the work is done in the second menu choice. It starts with a
+strange JavaScript code snippet. When first implementing this server,
+we used a short &lsquo;<samp class="samp">&quot;&lt;IMG&nbsp;SRC=&quot;<!-- /@w --> MyPrefix &quot;/Image&gt;&quot;</samp>&rsquo; here. But then
+browsers got smarter and tried to improve on speed by requesting the
+image and the HTML code at the same time. When doing this, the browser
+tries to build up a connection for the image request while the request for
+the HTML text is not yet completed. The browser tries to connect
+to the <code class="command">gawk</code> server on port 8080 while port 8080 is still in use for
+transmission of the HTML text. The connection for the image cannot be
+built up, so the image appears as &ldquo;broken&rdquo; in the browser window.
+We solved this problem by telling the browser to open a separate window
+for the image, but only after a delay of 1000 milliseconds.
+By this time, the server should be ready for serving the next request.
+</p>
+<p>But there is one more subtlety in the JavaScript code.
+Each time the JavaScript code opens a window for the image, the
+name of the image is appended with a timestamp (<code class="code">systime()</code>).
+Why this constant change of name for the image? Initially, we always named
+the image <code class="code">Image</code>, but then the Netscape browser noticed the name
+had <em class="emph">not</em> changed since the previous request and displayed the
+previous image (caching behavior). The server core
+is implemented so that browsers are told <em class="emph">not</em> to cache anything.
+Obviously HTTP requests do not always work as expected. One way to
+circumvent the cache of such overly smart browsers is to change the
+name of the image with each request. These three lines of JavaScript
+caused us a lot of trouble.
+</p>
+<p>The rest can be broken
+down into two phases. At first, we check if there are statistical
+parameters. When the program is first started, there usually are no
+parameters because it enters the page coming from the top menu.
+Then, we only have to present the user a form that he can use to change
+statistical parameters and submit them. Subsequently, the submission of
+the form causes the execution of the first phase because <em class="emph">now</em>
+there <em class="emph">are</em> parameters to handle.
+</p>
+<p>Now that we have parameters, we know there will be an image available.
+Therefore we insert the JavaScript code here to initiate the opening
+of the image in a separate window. Then,
+we prepare some variables that will be passed to GNUPlot for calculation
+of the probabilities. Prior to reading the results, we must temporarily
+change <code class="code">RS</code> because GNUPlot separates lines with newlines.
+After instructing GNUPlot to generate a <samp class="file">.png</samp> (or <samp class="file">.ps</samp> or
+<samp class="file">.gif</samp>) image, we initiate the insertion of some text,
+explaining the resulting probabilities. The final &lsquo;<samp class="samp">plot</samp>&rsquo; command
+actually generates the image data. This raw binary has to be read in carefully
+without adding, changing, or deleting a single byte. Hence the unusual
+initialization of <code class="code">Image</code> and completion with a <code class="code">while</code> loop.
+</p>
+<p>When using this server, it soon becomes clear that it is far from being
+perfect. It mixes source code of six scripting languages or protocols:
+</p>
+<ul class="itemize mark-bullet">
+<li>GNU <code class="command">awk</code> implements a server for the protocol:
+</li><li>HTTP which transmits:
+</li><li>HTML text which contains a short piece of:
+</li><li>JavaScript code opening a separate window.
+</li><li>A Bourne shell script is used for piping commands into:
+</li><li>GNUPlot to generate the image to be opened.
+</li></ul>
+
+<p>After all this work, the GNUPlot image opens in the JavaScript window
+where it can be viewed by the user.
+</p>
+<p>It is probably better not to mix up so many different languages.
+The result is not very readable.  Furthermore, the
+statistical part of the server does not take care of invalid input.
+Among others, using negative variances causes invalid results.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT13" href="STATIST.html#DOCF13">(13)</a></h5>
+<p>Due to licensing problems, the default
+installation of GNUPlot disables the generation of <samp class="file">.gif</samp> files.
+If your installed version does not accept &lsquo;<samp class="samp">set term gif</samp>&rsquo;,
+just download and install the most recent version of GNUPlot and the
+<a class="uref" href="https://libgd.github.io/">GD library</a>
+by Thomas Boutell.
+Otherwise you still have the chance to generate some
+ASCII-art style images with GNUPlot by using &lsquo;<samp class="samp">set term dumb</samp>&rsquo;.
+(We tried it and it worked.)</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="MAZE.html">MAZE: Walking Through a Maze In Virtual Reality</a>, Previous: <a href="WEBGRAB.html">WEBGRAB: Extract Links from a Page</a>, Up: <a href="Some-Applications-and-Techniques.html">Some Applications and Techniques</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

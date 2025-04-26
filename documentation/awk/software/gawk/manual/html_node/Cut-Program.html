@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Cut Program (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Cut Program (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Cut Program (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Clones.html" rel="up" title="Clones">
+<link href="Egrep-Program.html" rel="next" title="Egrep Program">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Cut-Program">
+<div class="nav-panel">
+<p>
+Next: <a href="Egrep-Program.html" accesskey="n" rel="next">Searching for Regular Expressions in Files</a>, Up: <a href="Clones.html" accesskey="u" rel="up">Reinventing Wheels for Fun and Profit</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Cutting-Out-Fields-and-Columns"><span>11.2.1 Cutting Out Fields and Columns<a class="copiable-link" href="Cut-Program.html#Cutting-Out-Fields-and-Columns"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-cut-utility"></a>
+<a class="index-entry-id" id="index-cut-utility-1"></a>
+<a class="index-entry-id" id="index-fields-cutting"></a>
+<a class="index-entry-id" id="index-columns-cutting"></a>
+<p>The <code class="command">cut</code> utility selects, or &ldquo;cuts,&rdquo; characters or fields
+from its standard input and sends them to its standard output.
+Fields are separated by TABs by default,
+but you may supply a command-line option to change the field
+<em class="dfn">delimiter</em> (i.e., the field-separator character). <code class="command">cut</code>&rsquo;s
+definition of fields is less general than <code class="command">awk</code>&rsquo;s.
+</p>
+<p>A common use of <code class="command">cut</code> might be to pull out just the login names of
+logged-on users from the output of <code class="command">who</code>.  For example, the following
+pipeline generates a sorted, unique list of the logged-on users:
+</p>
+<div class="example">
+<pre class="example-preformatted">who | cut -c1-8 | sort | uniq
+</pre></div>
+
+<p>The options for <code class="command">cut</code> are:
+</p>
+<dl class="table">
+<dt><code class="code">-c <var class="var">list</var></code></dt>
+<dd><p>Use <var class="var">list</var> as the list of characters to cut out.  Items within the list
+may be separated by commas, and ranges of characters can be separated with
+dashes.  The list &lsquo;<samp class="samp">1-8,15,22-35</samp>&rsquo; specifies characters 1 through
+8, 15, and 22 through 35.
+</p>
+</dd>
+<dt><code class="code">-d <var class="var">delim</var></code></dt>
+<dd><p>Use <var class="var">delim</var> as the field-separator character instead of the TAB
+character.
+</p>
+</dd>
+<dt><code class="code">-f <var class="var">list</var></code></dt>
+<dd><p>Use <var class="var">list</var> as the list of fields to cut out.
+</p>
+</dd>
+<dt><code class="code">-s</code></dt>
+<dd><p>Suppress printing of lines that do not contain the field delimiter.
+</p></dd>
+</dl>
+
+<p>The <code class="command">awk</code> implementation of <code class="command">cut</code> uses the <code class="code">getopt()</code> library
+function (see <a class="pxref" href="Getopt-Function.html">Processing Command-Line Options</a>)
+and the <code class="code">join()</code> library function
+(see <a class="pxref" href="Join-Function.html">Merging an Array into a String</a>).
+</p>
+<p>The current POSIX version of <code class="command">cut</code> has options to cut fields based on
+both bytes and characters. This version does not attempt to implement those options,
+as <code class="command">awk</code> works exclusively in terms of characters.
+</p>
+<p>The program begins with a comment describing the options, the library
+functions needed, and a <code class="code">usage()</code> function that prints out a usage
+message and exits.  <code class="code">usage()</code> is called if invalid arguments are
+supplied:
+</p>
+<a class="index-entry-id" id="index-cut_002eawk-program"></a>
+<div class="example">
+<pre class="example-preformatted"># cut.awk --- implement cut in awk
+
+# Options:
+#    -c list     Cut characters
+#    -f list     Cut fields
+#    -d c        Field delimiter character
+#
+#    -s          Suppress lines without the delimiter
+#
+# Requires getopt() and join() library functions
+
+</pre><div class="group"><pre class="example-preformatted">function usage()
+{
+    print(&quot;usage: cut [-f list] [-d c] [-s] [files...]&quot;) &gt; &quot;/dev/stderr&quot;
+    print(&quot;       cut [-c list] [files...]&quot;) &gt; &quot;/dev/stderr&quot;
+    exit 1
+}
+</pre></div></div>
+
+<a class="index-entry-id" id="index-BEGIN-pattern-running-awk-programs-and"></a>
+<a class="index-entry-id" id="index-FS-variable-running-awk-programs-and"></a>
+<p>Next comes a <code class="code">BEGIN</code> rule that parses the command-line options.
+It sets <code class="code">FS</code> to a single TAB character, because that is <code class="command">cut</code>&rsquo;s
+default field separator. The rule then sets the output field separator to be the
+same as the input field separator.  A loop using <code class="code">getopt()</code> steps
+through the command-line options.  Exactly one of the variables
+<code class="code">by_fields</code> or <code class="code">by_chars</code> is set to true, to indicate that
+processing should be done by fields or by characters, respectively.
+When cutting by characters, the output field separator is set to the null
+string:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+    FS = &quot;\t&quot;    # default
+    OFS = FS
+    while ((c = getopt(ARGC, ARGV, &quot;sf:c:d:&quot;)) != -1) {
+        if (c == &quot;f&quot;) {
+            by_fields = 1
+            fieldlist = Optarg
+        } else if (c == &quot;c&quot;) {
+            by_chars = 1
+            fieldlist = Optarg
+            OFS = &quot;&quot;
+        } else if (c == &quot;d&quot;) {
+            if (length(Optarg) &gt; 1) {
+                printf(&quot;cut: using first character of %s&quot; \
+                       &quot; for delimiter\n&quot;, Optarg) &gt; &quot;/dev/stderr&quot;
+                Optarg = substr(Optarg, 1, 1)
+            }
+            fs = FS = Optarg
+            OFS = FS
+            if (FS == &quot; &quot;)    # defeat awk semantics
+                FS = &quot;[ ]&quot;
+        } else if (c == &quot;s&quot;)
+            suppress = 1
+        else
+            usage()
+    }
+
+    # Clear out options
+    for (i = 1; i &lt; Optind; i++)
+        ARGV[i] = &quot;&quot;
+</pre></div>
+
+<a class="index-entry-id" id="index-field-separator-spaces-as"></a>
+<p>The code must take
+special care when the field delimiter is a space.  Using
+a single space (<code class="code">&quot;&nbsp;&quot;<!-- /@w --></code>) for the value of <code class="code">FS</code> is
+incorrect&mdash;<code class="command">awk</code> would separate fields with runs of spaces,
+TABs, and/or newlines, and we want them to be separated with individual
+spaces.
+To this end, we save the original space character in the variable
+<code class="code">fs</code> for later use; after setting <code class="code">FS</code> to <code class="code">&quot;[&nbsp;]&quot;<!-- /@w --></code> we can&rsquo;t
+use it directly to see if the field delimiter character is in the string.
+</p>
+<p>Also remember that after <code class="code">getopt()</code> is through
+(as described in <a class="ref" href="Getopt-Function.html">Processing Command-Line Options</a>),
+we have to
+clear out all the elements of <code class="code">ARGV</code> from 1 to <code class="code">Optind</code>,
+so that <code class="command">awk</code> does not try to process the command-line options
+as file names.
+</p>
+<p>After dealing with the command-line options, the program verifies that the
+options make sense.  Only one or the other of <samp class="option">-c</samp> and <samp class="option">-f</samp>
+should be used, and both require a field list.  Then the program calls
+either <code class="code">set_fieldlist()</code> or <code class="code">set_charlist()</code> to pull apart the
+list of fields or characters:
+</p>
+<div class="example">
+<pre class="example-preformatted">    if (by_fields &amp;&amp; by_chars)
+        usage()
+
+    if (by_fields == 0 &amp;&amp; by_chars == 0)
+        by_fields = 1    # default
+
+</pre><div class="group"><pre class="example-preformatted">    if (fieldlist == &quot;&quot;) {
+        print &quot;cut: needs list for -c or -f&quot; &gt; &quot;/dev/stderr&quot;
+        exit 1
+    }
+</pre></div><pre class="example-preformatted">
+
+    if (by_fields)
+        set_fieldlist()
+    else
+        set_charlist()
+}
+</pre></div>
+
+<p><code class="code">set_fieldlist()</code> splits the field list apart at the commas
+into an array.  Then, for each element of the array, it looks to
+see if the element is actually a range, and if so, splits it apart.
+The function checks the range
+to make sure that the first number is smaller than the second.
+Each number in the list is added to the <code class="code">flist</code> array, which
+simply lists the fields that will be printed.  Normal field splitting
+is used.  The program lets <code class="command">awk</code> handle the job of doing the
+field splitting:
+</p>
+<div class="example">
+<pre class="example-preformatted">function set_fieldlist(        n, m, i, j, k, f, g)
+{
+    n = split(fieldlist, f, &quot;,&quot;)
+    j = 1    # index in flist
+    for (i = 1; i &lt;= n; i++) {
+        if (index(f[i], &quot;-&quot;) != 0) { # a range
+            m = split(f[i], g, &quot;-&quot;)
+</pre><div class="group"><pre class="example-preformatted">            if (m != 2 || g[1] &gt;= g[2]) {
+                printf(&quot;cut: bad field list: %s\n&quot;,
+                                  f[i]) &gt; &quot;/dev/stderr&quot;
+                exit 1
+            }
+</pre></div><pre class="example-preformatted">            for (k = g[1]; k &lt;= g[2]; k++)
+                flist[j++] = k
+        } else
+            flist[j++] = f[i]
+    }
+    nfields = j - 1
+}
+</pre></div>
+
+<p>The <code class="code">set_charlist()</code> function is more complicated than
+<code class="code">set_fieldlist()</code>.
+The idea here is to use <code class="command">gawk</code>&rsquo;s <code class="code">FIELDWIDTHS</code> variable
+(see <a class="pxref" href="Constant-Size.html">Reading Fixed-Width Data</a>),
+which describes constant-width input.  When using a character list, that is
+exactly what we have.
+</p>
+<p>Setting up <code class="code">FIELDWIDTHS</code> is more complicated than simply listing the
+fields that need to be printed.  We have to keep track of the fields to
+print and also the intervening characters that have to be skipped.
+For example, suppose you wanted characters 1 through 8, 15, and
+22 through 35.  You would use &lsquo;<samp class="samp">-c 1-8,15,22-35</samp>&rsquo;.  The necessary value
+for <code class="code">FIELDWIDTHS</code> is <code class="code">&quot;8&nbsp;6&nbsp;1&nbsp;6&nbsp;14&quot;<!-- /@w --></code>.  This yields five
+fields, and the fields to print
+are <code class="code">$1</code>, <code class="code">$3</code>, and <code class="code">$5</code>.
+The intermediate fields are <em class="dfn">filler</em>,
+which is stuff in between the desired data.
+<code class="code">flist</code> lists the fields to print, and <code class="code">t</code> tracks the
+complete field list, including filler fields:
+</p>
+<div class="example">
+<pre class="example-preformatted">function set_charlist(    field, i, j, f, g, n, m, t,
+                          filler, last, len)
+{
+    field = 1   # count total fields
+    n = split(fieldlist, f, &quot;,&quot;)
+    j = 1       # index in flist
+    for (i = 1; i &lt;= n; i++) {
+        if (index(f[i], &quot;-&quot;) != 0) { # range
+            m = split(f[i], g, &quot;-&quot;)
+            if (m != 2 || g[1] &gt;= g[2]) {
+                printf(&quot;cut: bad character list: %s\n&quot;,
+                               f[i]) &gt; &quot;/dev/stderr&quot;
+                exit 1
+            }
+            len = g[2] - g[1] + 1
+            if (g[1] &gt; 1)  # compute length of filler
+                filler = g[1] - last - 1
+            else
+                filler = 0
+</pre><div class="group"><pre class="example-preformatted">            if (filler)
+                t[field++] = filler
+</pre></div><pre class="example-preformatted">            t[field++] = len  # length of field
+            last = g[2]
+            flist[j++] = field - 1
+        } else {
+            if (f[i] &gt; 1)
+                filler = f[i] - last - 1
+            else
+                filler = 0
+            if (filler)
+                t[field++] = filler
+            t[field++] = 1
+            last = f[i]
+            flist[j++] = field - 1
+        }
+    }
+    FIELDWIDTHS = join(t, 1, field - 1)
+    nfields = j - 1
+}
+</pre></div>
+
+<p>Next is the rule that processes the data.  If the <samp class="option">-s</samp> option
+is given, then <code class="code">suppress</code> is true.  The first <code class="code">if</code> statement
+makes sure that the input record does have the field separator.  If
+<code class="command">cut</code> is processing fields, <code class="code">suppress</code> is true, and the field
+separator character is not in the record, then the record is skipped.
+</p>
+<p>If the record is valid, then <code class="command">gawk</code> has split the data
+into fields, either using the character in <code class="code">FS</code> or using fixed-length
+fields and <code class="code">FIELDWIDTHS</code>.  The loop goes through the list of fields
+that should be printed.  The corresponding field is printed if it contains data.
+If the next field also has data, then the separator character is
+written out between the fields:
+</p>
+<div class="example">
+<pre class="example-preformatted">{
+    if (by_fields &amp;&amp; suppress &amp;&amp; index($0, fs) == 0)
+        next
+
+    for (i = 1; i &lt;= nfields; i++) {
+        if ($flist[i] != &quot;&quot;) {
+            printf &quot;%s&quot;, $flist[i]
+            if (i &lt; nfields &amp;&amp; $flist[i+1] != &quot;&quot;)
+                printf &quot;%s&quot;, OFS
+        }
+    }
+    print &quot;&quot;
+}
+</pre></div>
+
+<p>This version of <code class="command">cut</code> relies on <code class="command">gawk</code>&rsquo;s <code class="code">FIELDWIDTHS</code>
+variable to do the character-based cutting.  It is possible in
+other <code class="command">awk</code> implementations to use <code class="code">substr()</code>
+(see <a class="pxref" href="String-Functions.html">String-Manipulation Functions</a>), but
+it is also extremely painful.
+The <code class="code">FIELDWIDTHS</code> variable supplies an elegant solution to the problem
+of picking the input line apart by characters.
+</p>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Egrep-Program.html">Searching for Regular Expressions in Files</a>, Up: <a href="Clones.html">Reinventing Wheels for Fun and Profit</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

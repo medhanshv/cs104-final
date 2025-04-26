@@ -1,0 +1,1 @@
+[('jawai', 'soninlaw'), ('kudi', 'girl'), ('noon', 'daughterinlaw'), ('soni', 'beautiful'), ('voti', 'wife'), ('yaar', 'friend')]

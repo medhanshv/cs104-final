@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Library Functions (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Library Functions (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Library Functions (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Sample-Programs.html" rel="next" title="Sample Programs">
+<link href="Functions.html" rel="prev" title="Functions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="part-level-extent" id="Part-II_003a-Problem-Solving-with-awk">
+<div class="nav-panel">
+<p>
+Next: <a href="Sample-Programs.html" accesskey="n" rel="next">Practical <code class="command">awk</code> Programs</a>, Previous: <a href="Functions.html" accesskey="p" rel="prev">Functions</a>, Up: <a href="index.html" accesskey="u" rel="up">General Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h1 class="part"><span>Part II:<br>Problem Solving with <code class="command">awk</code><a class="copiable-link" href="Library-Functions.html#Part-II_003a-Problem-Solving-with-awk"> &para;</a></span></h1>
+<hr>
+
+
+<ul class="mini-toc">
+<li><a href="Library-Functions.html#Library-Functions" accesskey="1">A Library of <code class="command">awk</code> Functions</a></li>
+<li><a href="Sample-Programs.html" accesskey="2">Practical <code class="command">awk</code> Programs</a></li>
+</ul>
+<div class="chapter-level-extent" id="Library-Functions">
+<h2 class="chapter" id="A-Library-of-awk-Functions"><span>10 A Library of <code class="command">awk</code> Functions<a class="copiable-link" href="Library-Functions.html#A-Library-of-awk-Functions"> &para;</a></span></h2>
+<a class="index-entry-id" id="index-libraries-of-awk-functions"></a>
+<a class="index-entry-id" id="index-functions-library"></a>
+<a class="index-entry-id" id="index-functions-user_002ddefined-library-of"></a>
+
+<p><a class="ref" href="User_002ddefined.html">User-Defined Functions</a> describes how to write
+your own <code class="command">awk</code> functions.  Writing functions is important, because
+it allows you to encapsulate algorithms and program tasks in a single
+place.  It simplifies programming, making program development more
+manageable and making programs more readable.
+</p>
+<a class="index-entry-id" id="index-Kernighan_002c-Brian-quotes-4"></a>
+<a class="index-entry-id" id="index-Plauger_002c-P_002eJ_002e"></a>
+<p>In their seminal 1976 book, <cite class="cite">Software Tools</cite>,<a class="footnote" id="DOCF67" href="Library-Functions.html#FOOT67"><sup>67</sup></a> Brian Kernighan
+and P.J. Plauger wrote:
+</p>
+<blockquote class="quotation">
+<p>Good Programming is not learned from generalities, but by seeing how
+significant programs can be made clean, easy to read, easy to maintain and
+modify, human-engineered, efficient and reliable, by the application of
+common sense and good programming practices.  Careful study and imitation
+of good programs leads to better writing.
+</p></blockquote>
+
+<p>In fact, they felt this idea was so important that they placed this
+statement on the cover of their book.  Because we believe strongly
+that their statement is correct, this chapter and <a class="ref" href="Sample-Programs.html">Practical <code class="command">awk</code> Programs</a>, provide a good-sized body of code for you to read and, we hope,
+to learn from.
+</p>
+<p>This chapter presents a library of useful <code class="command">awk</code> functions.
+Many of the sample programs presented later in this Web page
+use these functions.
+The functions are presented here in a progression from simple to complex.
+</p>
+<a class="index-entry-id" id="index-Texinfo-1"></a>
+<p><a class="ref" href="Extract-Program.html">Extracting Programs from Texinfo Source Files</a>
+presents a program that you can use to extract the source code for
+these example library functions and programs from the Texinfo source
+for this Web page.
+(This has already been done as part of the <code class="command">gawk</code> distribution.)
+</p>
+<p>If you have written one or more useful, general-purpose <code class="command">awk</code> functions
+and would like to contribute them to the <code class="command">awk</code> user community, see
+<a class="ref" href="How-To-Contribute.html">How to Contribute</a>, for more information.
+</p>
+<a class="index-entry-id" id="index-portability-example-programs"></a>
+<p>The programs in this chapter and in
+<a class="ref" href="Sample-Programs.html">Practical <code class="command">awk</code> Programs</a>,
+freely use <code class="command">gawk</code>-specific features.
+Rewriting these programs for different implementations of <code class="command">awk</code>
+is pretty straightforward:
+</p>
+<ul class="itemize mark-bullet">
+<li>Diagnostic error messages are sent to <samp class="file">/dev/stderr</samp>.
+Use &lsquo;<samp class="samp">| &quot;cat 1&gt;&amp;2&quot;</samp>&rsquo; instead of &lsquo;<samp class="samp">&gt; &quot;/dev/stderr&quot;</samp>&rsquo; if your system
+does not have a <samp class="file">/dev/stderr</samp>, or if you cannot use <code class="command">gawk</code>.
+
+</li><li><a class="index-entry-id" id="index-case-sensitivity-example-programs"></a>
+<a class="index-entry-id" id="index-IGNORECASE-variable-in-example-programs"></a>
+Finally, some of the programs choose to ignore upper- and lowercase
+distinctions in their input. They do so by assigning one to <code class="code">IGNORECASE</code>.
+You can achieve almost the same effect<a class="footnote" id="DOCF68" href="Library-Functions.html#FOOT68"><sup>68</sup></a> by adding the following rule to the
+beginning of the program:
+
+<div class="example">
+<pre class="example-preformatted"># ignore case
+{ $0 = tolower($0) }
+</pre></div>
+
+<p>Also, verify that all regexp and string constants used in
+comparisons use only lowercase letters.
+</p></li></ul>
+
+
+<ul class="mini-toc">
+<li><a href="Library-Names.html" accesskey="1">Naming Library Function Global Variables</a></li>
+<li><a href="General-Functions.html" accesskey="2">General Programming</a></li>
+<li><a href="Data-File-Management.html" accesskey="3">Data file Management</a></li>
+<li><a href="Getopt-Function.html" accesskey="4">Processing Command-Line Options</a></li>
+<li><a href="Passwd-Functions.html" accesskey="5">Reading the User Database</a></li>
+<li><a href="Group-Functions.html" accesskey="6">Reading the Group Database</a></li>
+<li><a href="Walking-Arrays.html" accesskey="7">Traversing Arrays of Arrays</a></li>
+<li><a href="Library-Functions-Summary.html" accesskey="8">Summary</a></li>
+<li><a href="Library-Exercises.html" accesskey="9">Exercises</a></li>
+</ul>
+</div>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT67" href="Library-Functions.html#DOCF67">(67)</a></h5>
+<p>Sadly, almost 50
+years later, many of the lessons taught by this book have yet to be
+learned by a vast number of practicing programmers.</p>
+<h5 class="footnote-body-heading"><a id="FOOT68" href="Library-Functions.html#DOCF68">(68)</a></h5>
+<p>The effects are
+not identical.  Output of the transformed
+record will be in all lowercase, while <code class="code">IGNORECASE</code> preserves the original
+contents of the input record.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Sample-Programs.html">Practical <code class="command">awk</code> Programs</a>, Previous: <a href="Functions.html">Functions</a>, Up: <a href="index.html">General Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

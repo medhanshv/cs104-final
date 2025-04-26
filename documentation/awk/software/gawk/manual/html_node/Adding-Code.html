@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Adding Code (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Adding Code (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Adding Code (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Additions.html" rel="up" title="Additions">
+<link href="New-Ports.html" rel="next" title="New Ports">
+<link href="Accessing-The-Source.html" rel="prev" title="Accessing The Source">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="appendixsubsec-level-extent" id="Adding-Code">
+<div class="nav-panel">
+<p>
+Next: <a href="New-Ports.html" accesskey="n" rel="next">Porting <code class="command">gawk</code> to a New Operating System</a>, Previous: <a href="Accessing-The-Source.html" accesskey="p" rel="prev">Accessing The <code class="command">gawk</code> Git Repository</a>, Up: <a href="Additions.html" accesskey="u" rel="up">Making Additions to <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="appendixsubsec" id="Adding-New-Features"><span>C.2.2 Adding New Features<a class="copiable-link" href="Adding-Code.html#Adding-New-Features"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-adding-features-to-gawk"></a>
+<a class="index-entry-id" id="index-features-adding-to-gawk"></a>
+<a class="index-entry-id" id="index-gawk-features-adding"></a>
+<p>You are free to add any new features you like to <code class="command">gawk</code>.
+However, if you want your changes to be incorporated into the <code class="command">gawk</code>
+distribution, there are several steps that you need to take in order to
+make it possible to include them:
+</p>
+<ol class="enumerate">
+<li> Discuss the proposed new feature with the <code class="command">gawk</code> maintainer.
+The bug list may be used for this.  Even if I don&rsquo;t
+wish to include your feature, be aware that you are still free to
+add it and distribute your own &ldquo;fork&rdquo; of <code class="command">gawk</code>.
+
+</li><li> Before building the new feature into <code class="command">gawk</code> itself,
+consider writing it as an extension
+(see <a class="pxref" href="Dynamic-Extensions.html">Writing Extensions for <code class="command">gawk</code></a>).
+If that&rsquo;s not possible, continue with the rest of the steps in this list.
+
+</li><li> Be prepared to sign the appropriate paperwork.
+In order for the FSF to distribute your changes, you must either place
+those changes in the public domain and submit a signed statement to that
+effect, or assign the copyright in your changes to the FSF.
+Both of these actions are easy to do and <em class="emph">many</em> people have done so
+already. If you have questions, please contact me
+(see <a class="pxref" href="Bugs.html">Reporting Problems and Bugs</a>),
+or &ldquo;assign at gnu dot org&rdquo;.
+
+</li><li> Get the latest version.
+It is much easier for me to integrate changes if they are relative to
+the most recent distributed version of <code class="command">gawk</code>, or better yet,
+relative to the latest code in the Git repository.  If your version of
+<code class="command">gawk</code> is very old, I may not be able to integrate your changes at all.
+(See <a class="xref" href="Getting.html">Getting the <code class="command">gawk</code> Distribution</a>,
+for information on getting the latest version of <code class="command">gawk</code>.)
+
+</li><li> Follow the <cite class="cite">GNU Coding Standards</cite>.
+This document describes how GNU software should be written. If you haven&rsquo;t
+read it, please do so, preferably <em class="emph">before</em> starting to modify <code class="command">gawk</code>.
+(The <cite class="cite">GNU Coding Standards</cite> are available from
+the GNU Project&rsquo;s
+<a class="uref" href="https://www.gnu.org/prep/standards/">website</a>.
+Texinfo, Info, and DVI versions are also available.)
+
+<a class="index-entry-id" id="index-gawk-coding-style-in"></a>
+</li><li> Use the <code class="command">gawk</code> coding style.
+The C code for <code class="command">gawk</code> follows the instructions in the
+<cite class="cite">GNU Coding Standards</cite>, with minor exceptions.  The code is formatted
+using the traditional &ldquo;K&amp;R&rdquo; style, particularly as regards to the placement
+of braces and the use of TABs.  In brief, the coding rules for <code class="command">gawk</code>
+are as follows:
+
+<ul class="itemize mark-bullet">
+<li>Use ANSI/ISO style (prototype) function headers when defining functions.
+
+</li><li>Put the name of the function at the beginning of its own line.
+
+</li><li>Use &lsquo;<samp class="samp">#elif</samp>&rsquo; instead of nesting &lsquo;<samp class="samp">#if</samp>&rsquo; inside &lsquo;<samp class="samp">#else</samp>&rsquo;.
+
+</li><li>Put the return type of the function, even if it is <code class="code">int</code>, on the
+line above the line with the name and arguments of the function.
+
+</li><li>Put spaces around parentheses used in control structures
+(<code class="code">if</code>, <code class="code">while</code>, <code class="code">for</code>, <code class="code">do</code>, and <code class="code">switch</code>).
+
+</li><li>Do not parenthesize the expression used with <code class="code">return</code>.
+
+</li><li>Do not put spaces in front of parentheses used in function calls.
+
+</li><li>Put spaces around all C operators and after commas in function calls.
+
+</li><li>Do not use the comma operator to produce multiple side effects, except
+in <code class="code">for</code> loop initialization and increment parts, and in macro bodies.
+
+</li><li>Use real TABs for indenting, not spaces.
+
+</li><li>Use the &ldquo;K&amp;R&rdquo; brace layout style.
+
+</li><li>Use comparisons against <code class="code">NULL</code> and <code class="code">'\0'</code> in the conditions of
+<code class="code">if</code>, <code class="code">while</code>, and <code class="code">for</code> statements, as well as in the <code class="code">case</code>s
+of <code class="code">switch</code> statements, instead of just the
+plain pointer or character value.
+
+</li><li>Do not, <em class="emph">under any circumstances</em>, use the &lsquo;<samp class="samp">-1 == foo</samp>&rsquo; or
+&lsquo;<samp class="samp">0 &gt;= bar</samp>&rsquo; style of comparison expressions.  I have known about
+it for decades, and I understand why some people like it.  Nonetheless,
+I abhor it with a passion, and code that uses it will never be accepted.
+
+</li><li>Use <code class="code">true</code> and <code class="code">false</code> for <code class="code">bool</code> values,
+the <code class="code">NULL</code> symbolic constant for pointer values,
+and the character constant <code class="code">'\0'</code> where appropriate, instead of <code class="code">1</code>
+and <code class="code">0</code>.
+
+</li><li>Provide one-line descriptive comments for each function.
+
+</li><li>Do not use the <code class="code">alloca()</code> function for allocating memory off the
+stack.  Its use causes more portability trouble than is worth the minor
+benefit of not having to free the storage. Instead, use <code class="code">malloc()</code>
+and <code class="code">free()</code>.
+
+</li><li>Do not use comparisons of the form &lsquo;<samp class="samp">! strcmp(a, b)</samp>&rsquo; or similar.
+As Henry Spencer once said, &ldquo;<code class="code">strcmp()</code> is not a boolean!&rdquo;
+Instead, use &lsquo;<samp class="samp">strcmp(a, b) == 0</samp>&rsquo;.
+
+</li><li>If adding new bit flag values, use explicit hexadecimal constants
+(<code class="code">0x001</code>, <code class="code">0x002</code>, <code class="code">0x004</code>, and so on) instead of
+shifting one left by successive amounts (&lsquo;<samp class="samp">(1&lt;&lt;0)</samp>&rsquo;, &lsquo;<samp class="samp">(1&lt;&lt;1)</samp>&rsquo;,
+and so on).
+</li></ul>
+
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> If I have to reformat your code to follow the coding style used in
+<code class="command">gawk</code>, I may not bother to integrate your changes at all.
+</p></blockquote>
+
+</li><li> <a class="index-entry-id" id="index-Texinfo-5"></a>
+Update the documentation.
+Along with your new code, please supply new sections and/or chapters
+for this Web page.  If at all possible, please use real
+Texinfo, instead of just supplying unformatted ASCII text (although
+even that is better than no documentation at all).
+Conventions to be followed in <cite class="cite">GAWK: Effective AWK Programming</cite> are provided
+after the &lsquo;<samp class="samp">@bye</samp>&rsquo; at the end of the Texinfo source file.
+If possible, please update the <code class="command">man</code> page as well.
+
+<p>You will also have to sign paperwork for your documentation changes.
+</p>
+</li><li> <a class="index-entry-id" id="index-git-utility-3"></a>
+Submit changes as unified diffs.
+Use &lsquo;<samp class="samp">diff -u -r -N</samp>&rsquo; to compare
+the original <code class="command">gawk</code> source tree with your version.
+I recommend using the GNU version of <code class="command">diff</code>, or best of all,
+&lsquo;<samp class="samp">git diff</samp>&rsquo; or &lsquo;<samp class="samp">git format-patch</samp>&rsquo;.
+Send the output produced by <code class="command">diff</code> to me when you
+submit your changes.
+(See <a class="xref" href="Bugs.html">Reporting Problems and Bugs</a>, for the electronic mail
+information.)
+
+<p>Using this format makes it easy for me to apply your changes to the
+master version of the <code class="command">gawk</code> source code (using <code class="command">patch</code>).
+If I have to apply the changes manually, using a text editor, I may
+not do so, particularly if there are lots of changes.
+</p>
+</li><li> Include an entry for the <samp class="file">ChangeLog</samp> file with your submission.
+This helps further minimize the amount of work I have to do,
+making it easier for me to accept patches.
+It is simplest if you just make this part of your diff.
+</li></ol>
+
+<p>Although this sounds like a lot of work, please remember that while you
+may write the new code, I have to maintain it and support it. If it
+isn&rsquo;t possible for me to do that with a minimum of extra work, then I
+probably will not.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="New-Ports.html">Porting <code class="command">gawk</code> to a New Operating System</a>, Previous: <a href="Accessing-The-Source.html">Accessing The <code class="command">gawk</code> Git Repository</a>, Up: <a href="Additions.html">Making Additions to <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

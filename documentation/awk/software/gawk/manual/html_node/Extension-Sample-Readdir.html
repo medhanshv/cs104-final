@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Extension Sample Readdir (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Extension Sample Readdir (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Extension Sample Readdir (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Extension-Samples.html" rel="up" title="Extension Samples">
+<link href="Extension-Sample-Revout.html" rel="next" title="Extension Sample Revout">
+<link href="Extension-Sample-Ord.html" rel="prev" title="Extension Sample Ord">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Extension-Sample-Readdir">
+<div class="nav-panel">
+<p>
+Next: <a href="Extension-Sample-Revout.html" accesskey="n" rel="next">Reversing Output</a>, Previous: <a href="Extension-Sample-Ord.html" accesskey="p" rel="prev">Character and Numeric values: <code class="code">ord()</code> and <code class="code">chr()</code></a>, Up: <a href="Extension-Samples.html" accesskey="u" rel="up">The Sample Extensions in the <code class="command">gawk</code> Distribution</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Reading-Directories"><span>17.7.6 Reading Directories<a class="copiable-link" href="Extension-Sample-Readdir.html#Reading-Directories"> &para;</a></span></h4>
+
+<p>The <code class="code">readdir</code> extension adds an input parser for directories.
+The usage is as follows:
+</p>
+<a class="index-entry-id" id="index-readdir-extension"></a>
+<div class="example">
+<pre class="example-preformatted">@load &quot;readdir&quot;
+</pre></div>
+
+<p>When this extension is in use, instead of skipping directories named
+on the command line (or with <code class="code">getline</code>),
+they are read, with each entry returned as a record.
+</p>
+<p>The record consists of three fields separated by forward slash characters.
+The first two are the inode number and the file name, and the third field
+is a single letter indicating the type of the file.  The letters and their
+corresponding file types are shown in <a class="ref" href="Extension-Sample-Readdir.html#table_002dreaddir_002dfile_002dtypes">Table 17.4</a>.
+</p>
+<div class="float" id="table_002dreaddir_002dfile_002dtypes">
+<table class="multitable">
+<thead><tr><th width="10%">Letter</th><th width="90%">File type</th></tr></thead>
+<tbody><tr><td width="10%"><code class="code">b</code></td><td width="90%">Block device</td></tr>
+<tr><td width="10%"><code class="code">c</code></td><td width="90%">Character device</td></tr>
+<tr><td width="10%"><code class="code">d</code></td><td width="90%">Directory</td></tr>
+<tr><td width="10%"><code class="code">f</code></td><td width="90%">Regular file</td></tr>
+<tr><td width="10%"><code class="code">l</code></td><td width="90%">Symbolic link</td></tr>
+<tr><td width="10%"><code class="code">p</code></td><td width="90%">Named pipe (FIFO)</td></tr>
+<tr><td width="10%"><code class="code">s</code></td><td width="90%">Socket</td></tr>
+</tbody>
+</table>
+<div class="caption"><p><strong class="strong">Table 17.4: </strong>File types returned by the <code class="code">readdir</code> extension</p></div></div>
+<p>On systems where the directory entry contains the file type, the third
+field is filled in from that information.
+On systems without the file type information, the extension falls back
+to calling the <code class="code">stat()</code> system call
+in order to provide the information.
+Thus the third field should never be &lsquo;<samp class="samp">u</samp>&rsquo; (for &ldquo;unknown&rdquo;).
+</p>
+<p>Normally, when reading directories, you should set <code class="code">FS</code>
+equal to <code class="code">&quot;/&quot;</code>.  However, you may instead chose to create
+<code class="code">PROCINFO[&quot;readdir_override&quot;]</code> (with any value). If this element
+exists when the directory is opened, then the extension automatically
+sets the fields in each record for you.
+</p>
+<p>By default, if a directory cannot be opened (due to permission problems,
+for example), <code class="command">gawk</code> will exit.  As with regular files, this
+situation can be handled using a <code class="code">BEGINFILE</code> rule that checks
+<code class="code">ERRNO</code> and prints an error or otherwise handles the problem.
+</p>
+<p>Here is an example:
+</p>
+<div class="example">
+<pre class="example-preformatted">@load &quot;readdir&quot;
+...
+BEGIN { FS = &quot;/&quot; }
+{ print &quot;file name is&quot;, $2 }
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Extension-Sample-Revout.html">Reversing Output</a>, Previous: <a href="Extension-Sample-Ord.html">Character and Numeric values: <code class="code">ord()</code> and <code class="code">chr()</code></a>, Up: <a href="Extension-Samples.html">The Sample Extensions in the <code class="command">gawk</code> Distribution</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

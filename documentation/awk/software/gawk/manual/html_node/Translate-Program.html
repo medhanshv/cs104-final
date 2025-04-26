@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Translate Program (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Translate Program (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Translate Program (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Miscellaneous-Programs.html" rel="up" title="Miscellaneous Programs">
+<link href="Labels-Program.html" rel="next" title="Labels Program">
+<link href="Alarm-Program.html" rel="prev" title="Alarm Program">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Translate-Program">
+<div class="nav-panel">
+<p>
+Next: <a href="Labels-Program.html" accesskey="n" rel="next">Printing Mailing Labels</a>, Previous: <a href="Alarm-Program.html" accesskey="p" rel="prev">An Alarm Clock Program</a>, Up: <a href="Miscellaneous-Programs.html" accesskey="u" rel="up">A Grab Bag of <code class="command">awk</code> Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Transliterating-Characters"><span>11.3.3 Transliterating Characters<a class="copiable-link" href="Translate-Program.html#Transliterating-Characters"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-characters-transliterating"></a>
+<a class="index-entry-id" id="index-tr-utility"></a>
+<p>The system <code class="command">tr</code> utility transliterates characters.  For example, it is
+often used to map uppercase letters into lowercase for further processing:
+</p>
+<div class="example">
+<pre class="example-preformatted"><var class="var">generate data</var> | tr 'A-Z' 'a-z' | <var class="var">process data</var> ...
+</pre></div>
+
+<p><code class="command">tr</code> requires two lists of characters.<a class="footnote" id="DOCF79" href="Translate-Program.html#FOOT79"><sup>79</sup></a>  When processing the input, the
+first character in the first list is replaced with the first character
+in the second list, the second character in the first list is replaced
+with the second character in the second list, and so on.  If there are
+more characters in the &ldquo;from&rdquo; list than in the &ldquo;to&rdquo; list, the last
+character of the &ldquo;to&rdquo; list is used for the remaining characters in the
+&ldquo;from&rdquo; list.
+</p>
+<p>Once upon a time,
+a user proposed adding a transliteration function
+to <code class="command">gawk</code>.
+The following program was written to
+prove that character transliteration could be done with a user-level
+function.  This program is not as complete as the system <code class="command">tr</code> utility,
+but it does most of the job.
+</p>
+<p>The <code class="command">translate</code> program was written long before <code class="command">gawk</code>
+acquired the ability to split each character in a string into separate
+array elements.  Thus, it makes repeated use of the <code class="code">substr()</code>,
+<code class="code">index()</code>, and <code class="code">gsub()</code> built-in functions (see <a class="pxref" href="String-Functions.html">String-Manipulation Functions</a>).  There are two functions.  The first, <code class="code">stranslate()</code>,
+takes three arguments:
+</p>
+<dl class="table">
+<dt><code class="code">from</code></dt>
+<dd><p>A list of characters from which to translate
+</p>
+</dd>
+<dt><code class="code">to</code></dt>
+<dd><p>A list of characters to which to translate
+</p>
+</dd>
+<dt><code class="code">target</code></dt>
+<dd><p>The string on which to do the translation
+</p></dd>
+</dl>
+
+<p>Associative arrays make the translation part fairly easy. <code class="code">t_ar</code> holds
+the &ldquo;to&rdquo; characters, indexed by the &ldquo;from&rdquo; characters.  Then a simple
+loop goes through <code class="code">from</code>, one character at a time.  For each character
+in <code class="code">from</code>, if the character appears in <code class="code">target</code>,
+it is replaced with the corresponding <code class="code">to</code> character.
+</p>
+<p>The <code class="code">translate()</code> function calls <code class="code">stranslate()</code>, using <code class="code">$0</code>
+as the target.  The main program sets two global variables, <code class="code">FROM</code> and
+<code class="code">TO</code>, from the command line, and then changes <code class="code">ARGV</code> so that
+<code class="command">awk</code> reads from the standard input.
+</p>
+<p>Finally, the processing rule simply calls <code class="code">translate()</code> for each record:
+</p>
+<a class="index-entry-id" id="index-translate_002eawk-program"></a>
+<div class="example">
+<pre class="example-preformatted"># translate.awk --- do tr-like stuff
+# Bugs: does not handle things like tr A-Z a-z; it has
+# to be spelled out. However, if `to' is shorter than `from',
+# the last character in `to' is used for the rest of `from'.
+
+function stranslate(from, to, target,     lf, lt, ltarget, t_ar, i, c,
+                                                               result)
+{
+    lf = length(from)
+    lt = length(to)
+    ltarget = length(target)
+    for (i = 1; i &lt;= lt; i++)
+        t_ar[substr(from, i, 1)] = substr(to, i, 1)
+    if (lt &lt; lf)
+        for (; i &lt;= lf; i++)
+            t_ar[substr(from, i, 1)] = substr(to, lt, 1)
+    for (i = 1; i &lt;= ltarget; i++) {
+        c = substr(target, i, 1)
+        if (c in t_ar)
+            c = t_ar[c]
+        result = result c
+    }
+    return result
+}
+
+function translate(from, to)
+{
+    return $0 = stranslate(from, to, $0)
+}
+
+# main program
+BEGIN {
+</pre><div class="group"><pre class="example-preformatted">    if (ARGC &lt; 3) {
+        print &quot;usage: translate from to&quot; &gt; &quot;/dev/stderr&quot;
+        exit
+    }
+</pre></div><pre class="example-preformatted">    FROM = ARGV[1]
+    TO = ARGV[2]
+    ARGC = 2
+    ARGV[1] = &quot;-&quot;
+}
+
+{
+    translate(FROM, TO)
+    print
+}
+</pre></div>
+
+<p>It is possible to do character transliteration in a user-level
+function, but it is not necessarily efficient, and we (the <code class="command">gawk</code>
+developers) started to consider adding a built-in function.  However,
+shortly after writing this program, we learned that Brian Kernighan
+had added the <code class="code">toupper()</code> and <code class="code">tolower()</code> functions to his
+<code class="command">awk</code> (see <a class="pxref" href="String-Functions.html">String-Manipulation Functions</a>).  These functions handle the
+vast majority of the cases where character transliteration is necessary,
+and so we chose to simply add those functions to <code class="command">gawk</code> as well
+and then leave well enough alone.
+</p>
+<p>An obvious improvement to this program would be to set up the
+<code class="code">t_ar</code> array only once, in a <code class="code">BEGIN</code> rule. However, this
+assumes that the &ldquo;from&rdquo; and &ldquo;to&rdquo; lists
+will never change throughout the lifetime of the program.
+</p>
+<p>Another obvious improvement is to enable the use of ranges,
+such as &lsquo;<samp class="samp">a-z</samp>&rsquo;, as allowed by the <code class="command">tr</code> utility.
+Look at the code for <samp class="file">cut.awk</samp> (see <a class="pxref" href="Cut-Program.html">Cutting Out Fields and Columns</a>)
+for inspiration.
+</p>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT79" href="Translate-Program.html#DOCF79">(79)</a></h5>
+<p>On some older
+systems, including Solaris, the system version of <code class="command">tr</code> may require
+that the lists be written as range expressions enclosed in square brackets
+(&lsquo;<samp class="samp">[a-z]</samp>&rsquo;) and quoted, to prevent the shell from attempting a
+file name expansion.  This is not a feature.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Labels-Program.html">Printing Mailing Labels</a>, Previous: <a href="Alarm-Program.html">An Alarm Clock Program</a>, Up: <a href="Miscellaneous-Programs.html">A Grab Bag of <code class="command">awk</code> Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

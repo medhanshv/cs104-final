@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Preface (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Preface (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Preface (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Getting-Started.html" rel="next" title="Getting Started">
+<link href="Foreword4.html" rel="prev" title="Foreword4">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="unnumbered-level-extent" id="Preface">
+<div class="nav-panel">
+<p>
+Next: <a href="Getting-Started.html" accesskey="n" rel="next">Getting Started with <code class="command">awk</code></a>, Previous: <a href="Foreword4.html" accesskey="p" rel="prev">Foreword to the Fourth Edition</a>, Up: <a href="index.html" accesskey="u" rel="up">General Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="unnumbered" id="Preface-1"><span>Preface<a class="copiable-link" href="Preface.html#Preface-1"> &para;</a></span></h2>
+
+
+<a class="index-entry-id" id="index-awk"></a>
+<p>Several kinds of tasks occur repeatedly when working with text files.
+You might want to extract certain lines and discard the rest.  Or you
+may need to make changes wherever certain patterns appear, but leave the
+rest of the file alone.  Such jobs are often easy with <code class="command">awk</code>.
+The <code class="command">awk</code> utility interprets a special-purpose programming
+language that makes it easy to handle simple data-reformatting jobs.
+</p>
+<a class="index-entry-id" id="index-gawk"></a>
+<p>The GNU implementation of <code class="command">awk</code> is called <code class="command">gawk</code>; if you
+invoke it with the proper options or environment variables,
+it is fully compatible with
+the POSIX<a class="footnote" id="DOCF1" href="Preface.html#FOOT1"><sup>1</sup></a>
+specification of the <code class="command">awk</code> language
+and with the Unix version of <code class="command">awk</code> maintained
+by Brian Kernighan.
+This means that all
+properly written <code class="command">awk</code> programs should work with <code class="command">gawk</code>.
+So most of the time, we don&rsquo;t distinguish between <code class="command">gawk</code> and other
+<code class="command">awk</code> implementations.
+</p>
+<a class="index-entry-id" id="index-awk-POSIX-and"></a>
+<a class="index-entry-id" id="index-awk-POSIX-and-1"></a>
+<a class="index-entry-id" id="index-POSIX-awk-and"></a>
+<a class="index-entry-id" id="index-gawk-awk-and"></a>
+<a class="index-entry-id" id="index-awk-gawk-and"></a>
+<a class="index-entry-id" id="index-awk-uses-for"></a>
+<p>Using <code class="command">awk</code> you can:
+</p>
+<ul class="itemize mark-bullet">
+<li>Manage small, personal databases
+
+</li><li>Generate reports
+
+</li><li>Validate data
+
+</li><li>Produce indexes and perform other document-preparation tasks
+
+</li><li>Experiment with algorithms that you can adapt later to other computer
+languages
+</li></ul>
+
+<a class="index-entry-id" id="index-gawk-uses-for"></a>
+<p>In addition,
+<code class="command">gawk</code>
+provides facilities that make it easy to:
+</p>
+<ul class="itemize mark-bullet">
+<li>Extract bits and pieces of data for processing
+
+</li><li>Sort data
+
+</li><li>Perform simple network communications
+
+</li><li>Profile and debug <code class="command">awk</code> programs
+
+</li><li>Extend the language with functions written in C or C++
+</li></ul>
+
+<p>This Web page teaches you about the <code class="command">awk</code> language and
+how you can use it effectively.  You should already be familiar with basic
+system commands, such as <code class="command">cat</code> and <code class="command">ls</code>,<a class="footnote" id="DOCF2" href="Preface.html#FOOT2"><sup>2</sup></a> as well as basic shell
+facilities, such as input/output (I/O) redirection and pipes.
+</p>
+<p>Implementations of the <code class="command">awk</code> language are available for many
+different computing environments.  This Web page, while describing
+the <code class="command">awk</code> language in general, also describes the particular
+implementation of <code class="command">awk</code> called <code class="command">gawk</code> (which stands for
+&ldquo;GNU <code class="command">awk</code>&rdquo;).  <code class="command">gawk</code> runs on a broad range of Unix systems,
+ranging from Intel-architecture PC-based computers
+up through large-scale systems.
+<code class="command">gawk</code> has also been ported to macOS, z/OS,
+Microsoft Windows
+(all versions),
+and OpenVMS.<a class="footnote" id="DOCF3" href="Preface.html#FOOT3"><sup>3</sup></a>
+</p>
+
+<ul class="mini-toc">
+<li><a href="History.html" accesskey="1">History of <code class="command">awk</code> and <code class="command">gawk</code></a></li>
+<li><a href="Names.html" accesskey="2">A Rose by Any Other Name</a></li>
+<li><a href="This-Manual.html" accesskey="3">Using This Book</a></li>
+<li><a href="Conventions.html" accesskey="4">Typographical Conventions</a></li>
+<li><a href="Manual-History.html" accesskey="5">The GNU Project and This Book</a></li>
+<li><a href="How-To-Contribute.html" accesskey="6">How to Contribute</a></li>
+<li><a href="Acknowledgments.html" accesskey="7">Acknowledgments</a></li>
+</ul>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT1" href="Preface.html#DOCF1">(1)</a></h5>
+<p>The 2018 POSIX standard is accessible online at
+<a class="url" href="https://pubs.opengroup.org/onlinepubs/9699919799/">https://pubs.opengroup.org/onlinepubs/9699919799/</a>.<!-- /@w --></p>
+<h5 class="footnote-body-heading"><a id="FOOT2" href="Preface.html#DOCF2">(2)</a></h5>
+<p>These utilities
+are available on POSIX-compliant systems, as well as on traditional
+Unix-based systems. If you are using some other operating system, you still need to
+be familiar with the ideas of I/O redirection and pipes.</p>
+<h5 class="footnote-body-heading"><a id="FOOT3" href="Preface.html#DOCF3">(3)</a></h5>
+<p>Some other, obsolete systems to which <code class="command">gawk</code>
+was once ported are no longer supported and the code for those systems
+has been removed.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Getting-Started.html">Getting Started with <code class="command">awk</code></a>, Previous: <a href="Foreword4.html">Foreword to the Fourth Edition</a>, Up: <a href="index.html">General Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

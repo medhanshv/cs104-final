@@ -1,0 +1,1 @@
+python3 language.py 3 punjabi english noon

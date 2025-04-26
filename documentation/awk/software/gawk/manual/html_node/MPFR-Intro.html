@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>MPFR Intro (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="MPFR Intro (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="MPFR Intro (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="MPFR-features.html" rel="up" title="MPFR features">
+<link href="MPFR-On-Parole.html" rel="prev" title="MPFR On Parole">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="MPFR-Intro">
+<div class="nav-panel">
+<p>
+Previous: <a href="MPFR-On-Parole.html" accesskey="p" rel="prev">Arbitrary Precision Arithmetic is On Parole!</a>, Up: <a href="MPFR-features.html" accesskey="u" rel="up">Arbitrary-Precision Arithmetic Features in <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Arbitrary-Precision-Introduction"><span>16.3.2 Arbitrary Precision Introduction<a class="copiable-link" href="MPFR-Intro.html#Arbitrary-Precision-Introduction"> &para;</a></span></h4>
+
+<p>By default, <code class="command">gawk</code> uses the double-precision floating-point values
+supplied by the hardware of the system it runs on.  However, if it was
+compiled to do so, and the <samp class="option">-M</samp> command-line option is supplied,
+<code class="command">gawk</code> uses the <a class="uref" href="http://www.mpfr.org">GNU MPFR</a> and <a class="uref" href="https://gmplib.org">GNU MP</a> (GMP) libraries for
+arbitrary-precision arithmetic on numbers.  You can see if MPFR support
+is available like so:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk --version</kbd>
+-| GNU Awk 5.2.1, API 3.2, PMA Avon 8-g1, (GNU MPFR 4.1.0, GNU MP 6.2.1)
+-| Copyright (C) 1989, 1991-2022 Free Software Foundation.
+...
+</pre></div>
+
+<p>(You may see different version numbers than what&rsquo;s shown here. That&rsquo;s OK;
+what&rsquo;s important is to see that GNU MPFR and GNU MP are listed in
+the output.)
+</p>
+<p>Additionally, there are a few elements available in the <code class="code">PROCINFO</code>
+array to provide information about the MPFR and GMP libraries
+(see <a class="pxref" href="Auto_002dset.html">Built-in Variables That Convey Information</a>).
+</p>
+<p>The MPFR library provides precise control over precisions and rounding
+modes, and gives correctly rounded, reproducible, platform-independent
+results.  With the <samp class="option">-M</samp> command-line option,
+all floating-point arithmetic operators and numeric functions
+can yield results to any desired precision level supported by MPFR.
+</p>
+<p>Two predefined variables, <code class="code">PREC</code> and <code class="code">ROUNDMODE</code>,
+provide control over the working precision and the rounding mode.
+The precision and the rounding mode are set globally for every operation
+to follow.
+See <a class="xref" href="Setting-precision.html">Setting the Precision</a> and <a class="ref" href="Setting-the-rounding-mode.html">Setting the Rounding Mode</a>
+for more information.
+</p>
+</div>
+
+
+
+</body>
+</html>

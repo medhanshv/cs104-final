@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Internationalization (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Internationalization (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Internationalization (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Debugger.html" rel="next" title="Debugger">
+<link href="Advanced-Features.html" rel="prev" title="Advanced Features">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.center {text-align:center}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Internationalization">
+<div class="nav-panel">
+<p>
+Next: <a href="Debugger.html" accesskey="n" rel="next">Debugging <code class="command">awk</code> Programs</a>, Previous: <a href="Advanced-Features.html" accesskey="p" rel="prev">Advanced Features of <code class="command">gawk</code></a>, Up: <a href="index.html" accesskey="u" rel="up">General Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Internationalization-with-gawk"><span>13 Internationalization with <code class="command">gawk</code><a class="copiable-link" href="Internationalization.html#Internationalization-with-gawk"> &para;</a></span></h2>
+
+<a class="index-entry-id" id="index-Robbins-Malka"></a>
+<a class="index-entry-id" id="index-Moon_002c-Sailor"></a>
+<blockquote class="quotation">
+<p><i class="i">Moon&hellip; Gorgeous&hellip; MEDITATION!</i>
+</p></blockquote>
+<div class="center">&mdash; <em class="emph">Pretty Guardian Sailor Moon Eternal, The Movie</em>
+</div>
+<blockquote class="quotation">
+<p><i class="i">It probably sounded better in Japanese.</i>
+</p></blockquote>
+<div class="center">&mdash; <em class="emph">Malka Robbins</em>
+</div>
+<p>Once upon a time, computer makers
+wrote software that worked only in English.
+Eventually, hardware and software vendors noticed that if their
+systems worked in the native languages of non-English-speaking
+countries, they were able to sell more systems.
+As a result, internationalization and localization
+of programs and software systems became a common practice.
+</p>
+<a class="index-entry-id" id="index-internationalization-localization-1"></a>
+<a class="index-entry-id" id="index-gawk-internationalization"></a>
+<a class="index-entry-id" id="index-internationalization-localization-gawk-and"></a>
+<p>For many years, the ability to provide internationalization
+was largely restricted to programs written in C and C++.
+This chapter describes the underlying library <code class="command">gawk</code>
+uses for internationalization, as well as how
+<code class="command">gawk</code> makes internationalization
+features available at the <code class="command">awk</code> program level.
+Having internationalization available at the <code class="command">awk</code> level
+gives software developers additional flexibility&mdash;they are no
+longer forced to write in C or C++ when internationalization is
+a requirement.
+</p>
+
+<ul class="mini-toc">
+<li><a href="I18N-and-L10N.html" accesskey="1">Internationalization and Localization</a></li>
+<li><a href="Explaining-gettext.html" accesskey="2">GNU <code class="command">gettext</code></a></li>
+<li><a href="Programmer-i18n.html" accesskey="3">Internationalizing <code class="command">awk</code> Programs</a></li>
+<li><a href="Translator-i18n.html" accesskey="4">Translating <code class="command">awk</code> Programs</a></li>
+<li><a href="I18N-Example.html" accesskey="5">A Simple Internationalization Example</a></li>
+<li><a href="Gawk-I18N.html" accesskey="6"><code class="command">gawk</code> Can Speak Your Language</a></li>
+<li><a href="I18N-Summary.html" accesskey="7">Summary</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

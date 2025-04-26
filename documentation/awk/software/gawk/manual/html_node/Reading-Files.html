@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Reading Files (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Reading Files (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Reading Files (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Printing.html" rel="next" title="Printing">
+<link href="Regexp.html" rel="prev" title="Regexp">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Reading-Files">
+<div class="nav-panel">
+<p>
+Next: <a href="Printing.html" accesskey="n" rel="next">Printing Output</a>, Previous: <a href="Regexp.html" accesskey="p" rel="prev">Regular Expressions</a>, Up: <a href="index.html" accesskey="u" rel="up">General Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Reading-Input-Files"><span>4 Reading Input Files<a class="copiable-link" href="Reading-Files.html#Reading-Input-Files"> &para;</a></span></h2>
+
+<a class="index-entry-id" id="index-reading-input-files"></a>
+<a class="index-entry-id" id="index-input-files-reading"></a>
+<a class="index-entry-id" id="index-input-files"></a>
+<a class="index-entry-id" id="index-FILENAME-variable"></a>
+<p>In the typical <code class="command">awk</code> program,
+<code class="command">awk</code> reads all input either from the
+standard input (by default, this is the keyboard, but often it is a pipe from another
+command) or from files whose names you specify on the <code class="command">awk</code>
+command line.  If you specify input files, <code class="command">awk</code> reads them
+in order, processing all the data from one before going on to the next.
+The name of the current input file can be found in the predefined variable
+<code class="code">FILENAME</code>
+(see <a class="pxref" href="Built_002din-Variables.html">Predefined Variables</a>).
+</p>
+<a class="index-entry-id" id="index-records"></a>
+<a class="index-entry-id" id="index-fields"></a>
+<p>The input is read in units called <em class="dfn">records</em>, and is processed by the
+rules of your program one record at a time.
+By default, each record is one line.  Each
+record is automatically split into chunks called <em class="dfn">fields</em>.
+This makes it more convenient for programs to work on the parts of a record.
+</p>
+<a class="index-entry-id" id="index-getline-function"></a>
+<p>On rare occasions, you may need to use the <code class="code">getline</code> function.
+The  <code class="code">getline</code> function is valuable both because it
+can do explicit input from any number of files, and because the files
+used with it do not have to be named on the <code class="command">awk</code> command line
+(see <a class="pxref" href="Getline.html">Explicit Input with <code class="code">getline</code></a>).
+</p>
+
+<ul class="mini-toc">
+<li><a href="Records.html" accesskey="1">How Input Is Split into Records</a></li>
+<li><a href="Fields.html" accesskey="2">Examining Fields</a></li>
+<li><a href="Nonconstant-Fields.html" accesskey="3">Nonconstant Field Numbers</a></li>
+<li><a href="Changing-Fields.html" accesskey="4">Changing the Contents of a Field</a></li>
+<li><a href="Field-Separators.html" accesskey="5">Specifying How Fields Are Separated</a></li>
+<li><a href="Constant-Size.html" accesskey="6">Reading Fixed-Width Data</a></li>
+<li><a href="Splitting-By-Content.html" accesskey="7">Defining Fields by Content</a></li>
+<li><a href="Testing-field-creation.html" accesskey="8">Checking How <code class="command">gawk</code> Is Splitting Records</a></li>
+<li><a href="Multiple-Line.html" accesskey="9">Multiple-Line Records</a></li>
+<li><a href="Getline.html">Explicit Input with <code class="code">getline</code></a></li>
+<li><a href="Read-Timeout.html">Reading Input with a Timeout</a></li>
+<li><a href="Retrying-Input.html">Retrying Reads After Certain Input Errors</a></li>
+<li><a href="Command_002dline-directories.html">Directories on the Command Line</a></li>
+<li><a href="Input-Summary.html">Summary</a></li>
+<li><a href="Input-Exercises.html">Exercises</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Printing.html">Printing Output</a>, Previous: <a href="Regexp.html">Regular Expressions</a>, Up: <a href="index.html">General Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

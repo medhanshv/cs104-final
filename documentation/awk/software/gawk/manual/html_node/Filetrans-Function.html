@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Filetrans Function (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Filetrans Function (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Filetrans Function (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Data-File-Management.html" rel="up" title="Data File Management">
+<link href="Rewind-Function.html" rel="next" title="Rewind Function">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Filetrans-Function">
+<div class="nav-panel">
+<p>
+Next: <a href="Rewind-Function.html" accesskey="n" rel="next">Rereading the Current File</a>, Up: <a href="Data-File-Management.html" accesskey="u" rel="up">Data file Management</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Noting-Data-file-Boundaries"><span>10.3.1 Noting Data file Boundaries<a class="copiable-link" href="Filetrans-Function.html#Noting-Data-file-Boundaries"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-files-managing-data-file-boundaries"></a>
+<a class="index-entry-id" id="index-files-initialization-and-cleanup"></a>
+<p>The <code class="code">BEGIN</code> and <code class="code">END</code> rules are each executed exactly once, at
+the beginning and end of your <code class="command">awk</code> program, respectively
+(see <a class="pxref" href="BEGIN_002fEND.html">The <code class="code">BEGIN</code> and <code class="code">END</code> Special Patterns</a>).
+We (the <code class="command">gawk</code> authors) once had a user who mistakenly thought that the
+<code class="code">BEGIN</code> rules were executed at the beginning of each data file and the
+<code class="code">END</code> rules were executed at the end of each data file.
+</p>
+<p>When informed
+that this was not the case, the user requested that we add new special
+patterns to <code class="command">gawk</code>, named <code class="code">BEGIN_FILE</code> and <code class="code">END_FILE</code>, that
+would have the desired behavior.  He even supplied us the code to do so.
+</p>
+<p>Adding these special patterns to <code class="command">gawk</code> wasn&rsquo;t necessary;
+the job can be done cleanly in <code class="command">awk</code> itself, as illustrated
+by the following library program.
+It arranges to call two user-supplied functions, <code class="code">beginfile()</code> and
+<code class="code">endfile()</code>, at the beginning and end of each data file.
+Besides solving the problem in only nine(!) lines of code, it does so
+<em class="emph">portably</em>; this works with any implementation of <code class="command">awk</code>:
+</p>
+<div class="example">
+<pre class="example-preformatted"># transfile.awk
+#
+# Give the user a hook for filename transitions
+#
+# The user must supply functions beginfile() and endfile()
+# that each take the name of the file being started or
+# finished, respectively.
+
+FILENAME != _oldfilename {
+    if (_oldfilename != &quot;&quot;)
+        endfile(_oldfilename)
+    _oldfilename = FILENAME
+    beginfile(FILENAME)
+}
+
+END { endfile(FILENAME) }
+</pre></div>
+
+<p>This file must be loaded before the user&rsquo;s &ldquo;main&rdquo; program, so that the
+rule it supplies is executed first.
+</p>
+<p>This rule relies on <code class="command">awk</code>&rsquo;s <code class="code">FILENAME</code> variable, which
+automatically changes for each new data file.  The current file name is
+saved in a private variable, <code class="code">_oldfilename</code>.  If <code class="code">FILENAME</code> does
+not equal <code class="code">_oldfilename</code>, then a new data file is being processed and
+it is necessary to call <code class="code">endfile()</code> for the old file.  Because
+<code class="code">endfile()</code> should only be called if a file has been processed, the
+program first checks to make sure that <code class="code">_oldfilename</code> is not the null
+string.  The program then assigns the current file name to
+<code class="code">_oldfilename</code> and calls <code class="code">beginfile()</code> for the file.
+Because, like all <code class="command">awk</code> variables, <code class="code">_oldfilename</code> is
+initialized to the null string, this rule executes correctly even for the
+first data file.
+</p>
+<p>The program also supplies an <code class="code">END</code> rule to do the final processing for
+the last file.  Because this <code class="code">END</code> rule comes before any <code class="code">END</code> rules
+supplied in the &ldquo;main&rdquo; program, <code class="code">endfile()</code> is called first.  Once
+again, the value of multiple <code class="code">BEGIN</code> and <code class="code">END</code> rules should be clear.
+</p>
+<a class="index-entry-id" id="index-beginfile_0028_0029-user_002ddefined-function"></a>
+<a class="index-entry-id" id="index-user_002ddefined-function-beginfile_0028_0029"></a>
+<a class="index-entry-id" id="index-endfile_0028_0029-user_002ddefined-function"></a>
+<a class="index-entry-id" id="index-user_002ddefined-function-endfile_0028_0029"></a>
+<p>If the same data file occurs twice in a row on the command line, then
+<code class="code">endfile()</code> and <code class="code">beginfile()</code> are not executed at the end of the
+first pass and at the beginning of the second pass.
+The following version solves the problem:
+</p>
+<div class="example">
+<pre class="example-preformatted"># ftrans.awk --- handle datafile transitions
+#
+# user supplies beginfile() and endfile() functions
+
+FNR == 1 {
+    if (_filename_ != &quot;&quot;)
+        endfile(_filename_)
+    _filename_ = FILENAME
+    beginfile(FILENAME)
+}
+
+END { endfile(_filename_) }
+</pre></div>
+
+<p><a class="ref" href="Wc-Program.html">Counting Things</a>
+shows how this library function can be used and
+how it simplifies writing the main program.
+</p>
+<a class="index-entry-id" id="index-sidebar-So-Why-Does-gawk-Have-BEGINFILE-and-ENDFILE_003f"></a>
+<table class="cartouche" border="1"><tr><th>
+So Why Does <code class="command">gawk</code> Have <code class="code">BEGINFILE</code> and <code class="code">ENDFILE</code>?</th></tr><tr><td>
+
+<p>You are probably wondering, if <code class="code">beginfile()</code> and <code class="code">endfile()</code>
+functions can do the job, why does <code class="command">gawk</code> have
+<code class="code">BEGINFILE</code> and <code class="code">ENDFILE</code> patterns?
+</p>
+<p>Good question.  Normally, if <code class="command">awk</code> cannot open a file, this
+causes an immediate fatal error.  In this case, there is no way for a
+user-defined function to deal with the problem, as the mechanism for
+calling it relies on the file being open and at the first record.  Thus,
+the main reason for <code class="code">BEGINFILE</code> is to give you a &ldquo;hook&rdquo; to catch
+files that cannot be processed.  <code class="code">ENDFILE</code> exists for symmetry,
+and because it provides an easy way to do per-file cleanup processing.
+For more information, refer to <a class="ref" href="BEGINFILE_002fENDFILE.html">The <code class="code">BEGINFILE</code> and <code class="code">ENDFILE</code> Special Patterns</a>.
+</p></td></tr></table>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Rewind-Function.html">Rereading the Current File</a>, Up: <a href="Data-File-Management.html">Data file Management</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Bitwise Functions (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Bitwise Functions (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Bitwise Functions (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Built_002din.html" rel="up" title="Built-in">
+<link href="Type-Functions.html" rel="next" title="Type Functions">
+<link href="Time-Functions.html" rel="prev" title="Time Functions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.center {text-align:center}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Bitwise-Functions">
+<div class="nav-panel">
+<p>
+Next: <a href="Type-Functions.html" accesskey="n" rel="next">Getting Type Information</a>, Previous: <a href="Time-Functions.html" accesskey="p" rel="prev">Time Functions</a>, Up: <a href="Built_002din.html" accesskey="u" rel="up">Built-in Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Bit_002dManipulation-Functions"><span>9.1.7 Bit-Manipulation Functions<a class="copiable-link" href="Bitwise-Functions.html#Bit_002dManipulation-Functions"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-bit_002dmanipulation-functions"></a>
+<a class="index-entry-id" id="index-bitwise-operations"></a>
+<a class="index-entry-id" id="index-AND-bitwise-operation"></a>
+<a class="index-entry-id" id="index-OR-bitwise-operation"></a>
+<a class="index-entry-id" id="index-XOR-bitwise-operation"></a>
+<a class="index-entry-id" id="index-operations_002c-bitwise"></a>
+<blockquote class="quotation">
+<p><i class="i">I can explain it for you, but I can&rsquo;t understand it for you.</i>
+</p></blockquote>
+<div class="center">&mdash; <em class="emph">Anonymous</em>
+</div>
+<p>Many languages provide the ability to perform <em class="dfn">bitwise</em> operations
+on two integer numbers.  In other words, the operation is performed on
+each successive pair of bits in the operands.
+Three common operations are bitwise AND, OR, and XOR.
+The operations are described in <a class="ref" href="Bitwise-Functions.html#table_002dbitwise_002dops">Table 9.6</a>.
+</p>
+<div class="float" id="table_002dbitwise_002dops">
+<pre class="verbatim">                Bit operator
+          |  AND  |   OR  |  XOR
+          |---+---+---+---+---+---
+Operands  | 0 | 1 | 0 | 1 | 0 | 1
+----------+---+---+---+---+---+---
+    0     | 0   0 | 0   1 | 0   1
+    1     | 0   1 | 1   1 | 1   0
+</pre>
+<div class="caption"><p><strong class="strong">Table 9.6: </strong>Bitwise operations</p></div></div>
+<a class="index-entry-id" id="index-bitwise-complement"></a>
+<a class="index-entry-id" id="index-complement_002c-bitwise"></a>
+<p>As you can see, the result of an AND operation is 1 only when <em class="emph">both</em>
+bits are 1.
+The result of an OR operation is 1 if <em class="emph">either</em> bit is 1.
+The result of an XOR operation is 1 if either bit is 1,
+but not both.
+The next operation is the <em class="dfn">complement</em>; the complement of 1 is 0 and
+the complement of 0 is 1. Thus, this operation &ldquo;flips&rdquo; all the bits
+of a given value.
+</p>
+<a class="index-entry-id" id="index-bitwise-shift"></a>
+<a class="index-entry-id" id="index-left-shift_002c-bitwise"></a>
+<a class="index-entry-id" id="index-right-shift_002c-bitwise"></a>
+<a class="index-entry-id" id="index-shift_002c-bitwise"></a>
+<p>Finally, two other common operations are to shift the bits left or right.
+For example, if you have a bit string &lsquo;<samp class="samp">10111001</samp>&rsquo; and you shift it
+right by three bits, you end up with &lsquo;<samp class="samp">00010111</samp>&rsquo;.<a class="footnote" id="DOCF62" href="Bitwise-Functions.html#FOOT62"><sup>62</sup></a>
+If you start over again with &lsquo;<samp class="samp">10111001</samp>&rsquo; and shift it left by three
+bits, you end up with &lsquo;<samp class="samp">11001000</samp>&rsquo;.  The following list describes
+<code class="command">gawk</code>&rsquo;s built-in functions that implement the bitwise operations.
+Optional parameters are enclosed in square brackets ([ ]):
+</p>
+<a class="index-entry-id" id="index-gawk-bitwise-operations-in"></a>
+<dl class="table">
+<dd><a class="index-entry-id" id="index-and_0028_0029-function-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-bitwise-AND"></a>
+</dd>
+<dt><code class="code">and(</code><var class="var">v1</var><code class="code">,</code> <var class="var">v2</var> [<code class="code">,</code> &hellip;]<code class="code">)</code></dt>
+<dd><p>Return the bitwise AND of the arguments. There must be at least two.
+</p>
+<a class="index-entry-id" id="index-compl_0028_0029-function-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-bitwise-complement-1"></a>
+</dd>
+<dt><code class="code">compl(<var class="var">val</var>)</code></dt>
+<dd><p>Return the bitwise complement of <var class="var">val</var>.
+</p>
+</dd>
+<dt><a id="index-lshift_0028_0029-function-_0028gawk_0029"></a><span><code class="code">lshift(<var class="var">val</var>, <var class="var">count</var>)</code><a class="copiable-link" href="Bitwise-Functions.html#index-lshift_0028_0029-function-_0028gawk_0029"> &para;</a></span></dt>
+<dd><p>Return the value of <var class="var">val</var>, shifted left by <var class="var">count</var> bits.
+</p>
+<a class="index-entry-id" id="index-or_0028_0029-function-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-bitwise-OR"></a>
+</dd>
+<dt><code class="code">or(</code><var class="var">v1</var><code class="code">,</code> <var class="var">v2</var> [<code class="code">,</code> &hellip;]<code class="code">)</code></dt>
+<dd><p>Return the bitwise OR of the arguments. There must be at least two.
+</p>
+</dd>
+<dt><a id="index-rshift_0028_0029-function-_0028gawk_0029"></a><span><code class="code">rshift(<var class="var">val</var>, <var class="var">count</var>)</code><a class="copiable-link" href="Bitwise-Functions.html#index-rshift_0028_0029-function-_0028gawk_0029"> &para;</a></span></dt>
+<dd><p>Return the value of <var class="var">val</var>, shifted right by <var class="var">count</var> bits.
+</p>
+<a class="index-entry-id" id="index-xor_0028_0029-function-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-bitwise-XOR"></a>
+</dd>
+<dt><code class="code">xor(</code><var class="var">v1</var><code class="code">,</code> <var class="var">v2</var> [<code class="code">,</code> &hellip;]<code class="code">)</code></dt>
+<dd><p>Return the bitwise XOR of the arguments. There must be at least two.
+</p></dd>
+</dl>
+
+<blockquote class="quotation">
+<p><b class="b">CAUTION:</b> Beginning with <code class="command">gawk</code> version 4.2, negative
+operands are not allowed for any of these functions. A negative
+operand produces a fatal error.  See the sidebar
+&ldquo;Beware The Smoke and Mirrors!&rdquo; for more information as to why.
+</p></blockquote>
+
+<p>Here is a user-defined function (see <a class="pxref" href="User_002ddefined.html">User-Defined Functions</a>)
+that illustrates the use of these functions:
+</p>
+<a class="index-entry-id" id="index-bits2str_0028_0029-user_002ddefined-function"></a>
+<a class="index-entry-id" id="index-user_002ddefined-function-bits2str_0028_0029"></a>
+<a class="index-entry-id" id="index-testbits_002eawk-program"></a>
+<div class="example">
+<div class="group"><pre class="example-preformatted"># bits2str --- turn an integer into readable ones and zeros
+
+function bits2str(bits,        data, mask)
+{
+    if (bits == 0)
+        return &quot;0&quot;
+
+    mask = 1
+    for (; bits != 0; bits = rshift(bits, 1))
+        data = (and(bits, mask) ? &quot;1&quot; : &quot;0&quot;) data
+
+    while ((length(data) % 8) != 0)
+        data = &quot;0&quot; data
+
+    return data
+}
+</pre></div><pre class="example-preformatted">
+
+BEGIN {
+    printf &quot;123 = %s\n&quot;, bits2str(123)
+    printf &quot;0123 = %s\n&quot;, bits2str(0123)
+    printf &quot;0x99 = %s\n&quot;, bits2str(0x99)
+    comp = compl(0x99)
+    printf &quot;compl(0x99) = %#x = %s\n&quot;, comp, bits2str(comp)
+    shift = lshift(0x99, 2)
+    printf &quot;lshift(0x99, 2) = %#x = %s\n&quot;, shift, bits2str(shift)
+    shift = rshift(0x99, 2)
+    printf &quot;rshift(0x99, 2) = %#x = %s\n&quot;, shift, bits2str(shift)
+}
+</pre></div>
+
+<p>This program produces the following output when run:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk -f testbits.awk</kbd>
+-| 123 = 01111011
+-| 0123 = 01010011
+-| 0x99 = 10011001
+-| compl(0x99) = 0x3fffffffffff66 =
+-| 00111111111111111111111111111111111111111111111101100110
+-| lshift(0x99, 2) = 0x264 = 0000001001100100
+-| rshift(0x99, 2) = 0x26 = 00100110
+</pre></div>
+
+<a class="index-entry-id" id="index-converting-string-to-numbers-2"></a>
+<a class="index-entry-id" id="index-strings-converting-1"></a>
+<a class="index-entry-id" id="index-numbers-converting-1"></a>
+<a class="index-entry-id" id="index-converting-numbers-to-strings-1"></a>
+<a class="index-entry-id" id="index-numbers-as-string-of-bits"></a>
+<p>The <code class="code">bits2str()</code> function turns a binary number into a string.
+Initializing <code class="code">mask</code> to one creates
+a binary value where the rightmost bit
+is set to one.  Using this mask,
+the function repeatedly checks the rightmost bit.
+ANDing the mask with the value indicates whether the
+rightmost bit is one or not. If so, a <code class="code">&quot;1&quot;</code> is concatenated onto the front
+of the string.
+Otherwise, a <code class="code">&quot;0&quot;</code> is added.
+The value is then shifted right by one bit and the loop continues
+until there are no more one bits.
+</p>
+<p>If the initial value is zero, it returns a simple <code class="code">&quot;0&quot;</code>.
+Otherwise, at the end, it pads the value with zeros to represent multiples
+of 8-bit quantities. This is typical in modern computers.
+</p>
+<p>The main code in the <code class="code">BEGIN</code> rule shows the difference between the
+decimal and octal values for the same numbers
+(see <a class="pxref" href="Nondecimal_002dnumbers.html">Octal and Hexadecimal Numbers</a>),
+and then demonstrates the
+results of the <code class="code">compl()</code>, <code class="code">lshift()</code>, and <code class="code">rshift()</code> functions.
+</p>
+<a class="index-entry-id" id="index-sidebar-Beware-The-Smoke-and-Mirrors_0021"></a>
+<table class="cartouche" border="1"><tr><th>
+Beware The Smoke and Mirrors!</th></tr><tr><td>
+
+<p>It other languages, bitwise operations are performed on integer values,
+not floating-point values.  As a general statement, such operations work
+best when performed on unsigned integers.
+</p>
+<p><code class="command">gawk</code> attempts to treat the arguments to the bitwise functions
+as unsigned integers.  For this reason, negative arguments produce a
+fatal error.
+</p>
+<p>In normal operation, for all of these functions, first the
+double-precision floating-point value is converted to the widest C
+unsigned integer type, then the bitwise operation is performed.  If the
+result cannot be represented exactly as a C <code class="code">double</code>, leading
+nonzero bits are removed one by one until it can be represented exactly.
+The result is then converted back into a C <code class="code">double</code>.<a class="footnote" id="DOCF63" href="Bitwise-Functions.html#FOOT63"><sup>63</sup></a>
+</p>
+<p>However, when using arbitrary precision arithmetic with the <samp class="option">-M</samp>
+option (see <a class="pxref" href="Arbitrary-Precision-Arithmetic.html">Arithmetic and Arbitrary-Precision Arithmetic with <code class="command">gawk</code></a>), the results may differ.
+This is particularly noticeable with the <code class="code">compl()</code> function:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk 'BEGIN { print compl(42) }'</kbd>
+-| 9007199254740949
+$ <kbd class="kbd">gawk -M 'BEGIN { print compl(42) }'</kbd>
+-| -43
+</pre></div>
+
+<p>What&rsquo;s going on becomes clear when printing the results
+in hexadecimal:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk 'BEGIN { printf &quot;%#x\n&quot;, compl(42) }'</kbd>
+-| 0x1fffffffffffd5
+$ <kbd class="kbd">gawk -M 'BEGIN { printf &quot;%#x\n&quot;, compl(42) }'</kbd>
+-| 0xffffffffffffffd5
+</pre></div>
+
+<p>When using the <samp class="option">-M</samp> option, under the hood, <code class="command">gawk</code> uses
+GNU MP arbitrary precision integers which have at least 64 bits of precision.
+When not using <samp class="option">-M</samp>, <code class="command">gawk</code> stores integral values in
+regular double-precision floating point, which only maintain 53 bits of
+precision.  Furthermore, the GNU MP library treats (or at least seems to treat)
+the leading bit as a sign bit; thus the result with <samp class="option">-M</samp> in this case is
+a negative number.
+</p>
+<p>In short, using <code class="command">gawk</code> for any but the simplest kind of bitwise
+operations is probably a bad idea; caveat emptor!
+</p>
+</td></tr></table>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT62" href="Bitwise-Functions.html#DOCF62">(62)</a></h5>
+<p>This example
+shows that zeros come in on the left side. For <code class="command">gawk</code>, this is
+always true, but in some languages, it&rsquo;s possible to have the left side
+fill with ones.</p>
+<h5 class="footnote-body-heading"><a id="FOOT63" href="Bitwise-Functions.html#DOCF63">(63)</a></h5>
+<p>If you don&rsquo;t
+understand this paragraph, the upshot is that <code class="command">gawk</code> can only
+store a particular range of integer values; numbers outside that range
+are reduced to fit within the range.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Type-Functions.html">Getting Type Information</a>, Previous: <a href="Time-Functions.html">Time Functions</a>, Up: <a href="Built_002din.html">Built-in Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

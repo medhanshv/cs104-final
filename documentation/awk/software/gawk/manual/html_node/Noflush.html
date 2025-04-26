@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Noflush (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Noflush (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Noflush (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Printing.html" rel="up" title="Printing">
+<link href="Nonfatal.html" rel="next" title="Nonfatal">
+<link href="Close-Files-And-Pipes.html" rel="prev" title="Close Files And Pipes">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Noflush">
+<div class="nav-panel">
+<p>
+Next: <a href="Nonfatal.html" accesskey="n" rel="next">Enabling Nonfatal Output</a>, Previous: <a href="Close-Files-And-Pipes.html" accesskey="p" rel="prev">Closing Input and Output Redirections</a>, Up: <a href="Printing.html" accesskey="u" rel="up">Printing Output</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Speeding-Up-Pipe-Output"><span>5.10 Speeding Up Pipe Output<a class="copiable-link" href="Noflush.html#Speeding-Up-Pipe-Output"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-PROCINFO-array-not-flushing-pipe-buffers"></a>
+<a class="index-entry-id" id="index-pipe-output_002c-speeding-up"></a>
+
+<p>This section describes a <code class="command">gawk</code>-specific feature.
+</p>
+<p>Normally, when you send data down a pipeline to a command with
+<code class="code">print</code> or <code class="code">printf</code>, <code class="command">gawk</code> <em class="dfn">flushes</em> the
+output down the pipe. That is, output is not buffered, but
+written directly.  This assures, that pipeline output
+intermixed with <code class="command">gawk</code>&rsquo;s output comes out in the
+expected order:
+</p>
+<div class="example">
+<pre class="example-preformatted">print &quot;something&quot;                       # goes to standard output
+print &quot;something else&quot; | &quot;some-command&quot; # also to standard output
+print &quot;more stuff&quot;                      # and this too
+</pre></div>
+
+<p>There can be a price to pay for this; flushing data down
+the pipeline uses more CPU time, and in certain environments
+this can become expensive.
+</p>
+<p>You can tell <code class="command">gawk</code> not to flush buffered data in
+one of two ways:
+</p>
+<ul class="itemize mark-bullet">
+<li>Set <code class="code">PROCINFO[&quot;BUFFERPIPE&quot;]</code> to any value. When this is done,
+<code class="command">gawk</code> will buffer data for all pipelines.
+
+</li><li>Set <code class="code">PROCINFO[&quot;<var class="var">command</var>&quot;, &quot;BUFFERPIPE&quot;]</code> to any value.
+In this case, only <var class="var">command</var>&rsquo;s data will be fully buffered.
+</li></ul>
+
+<p>You <em class="emph">must</em> create one or the other of these elements
+in <code class="code">PROCINFO</code> before the first <code class="code">print</code> or
+<code class="code">printf</code> to the pipeline.  Doing so after output has
+already been sent is too late.
+</p>
+<p>Be aware that using this feature may change the output behavior of
+your programs, so exercise caution.
+</p>
+</div>
+
+
+
+</body>
+</html>

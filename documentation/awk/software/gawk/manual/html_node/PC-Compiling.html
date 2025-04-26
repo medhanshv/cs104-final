@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>PC Compiling (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="PC Compiling (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="PC Compiling (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="PC-Installation.html" rel="up" title="PC Installation">
+<link href="PC-Using.html" rel="next" title="PC Using">
+<link href="PC-Binary-Installation.html" rel="prev" title="PC Binary Installation">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="appendixsubsubsec-level-extent" id="PC-Compiling">
+<div class="nav-panel">
+<p>
+Next: <a href="PC-Using.html" accesskey="n" rel="next">Using <code class="command">gawk</code> on PC Operating Systems</a>, Previous: <a href="PC-Binary-Installation.html" accesskey="p" rel="prev">Installing a Prepared Distribution for MS-Windows Systems</a>, Up: <a href="PC-Installation.html" accesskey="u" rel="up">Installation on MS-Windows</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="appendixsubsubsec" id="Compiling-gawk-for-PC-Operating-Systems"><span>B.3.1.2 Compiling <code class="command">gawk</code> for PC Operating Systems<a class="copiable-link" href="PC-Compiling.html#Compiling-gawk-for-PC-Operating-Systems"> &para;</a></span></h4>
+
+<p><code class="command">gawk</code> can be compiled for Windows32 using MinGW (Windows32).
+The file <samp class="file">README_d/README.pc</samp> in the <code class="command">gawk</code> distribution
+contains additional notes, and <samp class="file">pc/Makefile</samp> contains important
+information on compilation options.
+</p>
+<a class="index-entry-id" id="index-compiling-gawk-for-MS_002dWindows"></a>
+<p>To build <code class="command">gawk</code> for Windows32, copy the files in
+the <samp class="file">pc</samp> directory (<em class="emph">except</em> for <samp class="file">ChangeLog</samp>) to the
+directory with the rest of the <code class="command">gawk</code> sources, then invoke
+<code class="command">make</code> with the appropriate target name as an argument to
+build <code class="command">gawk</code>.  The <samp class="file">Makefile</samp> copied from the <samp class="file">pc</samp>
+directory contains a configuration section with comments and may need
+to be edited in order to work with your <code class="command">make</code> utility.
+</p>
+<p>The <samp class="file">Makefile</samp> supports a number of targets for building various
+Windows32 versions.  A list of targets is printed if the
+<code class="command">make</code> command is given without a target.  As an example,
+to build a native MS-Windows binary of <code class="command">gawk</code> using the MinGW tools,
+type &lsquo;<samp class="samp">make mingw32</samp>&rsquo;.
+</p>
+</div>
+
+
+
+</body>
+</html>

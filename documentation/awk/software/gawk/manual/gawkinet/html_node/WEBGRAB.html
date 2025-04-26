@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>WEBGRAB (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="WEBGRAB (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="WEBGRAB (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Some-Applications-and-Techniques.html" rel="up" title="Some Applications and Techniques">
+<link href="STATIST.html" rel="next" title="STATIST">
+<link href="URLCHK.html" rel="prev" title="URLCHK">
+<style type="text/css">
+<!--
+div.example {margin-left: 3.2em}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="WEBGRAB">
+<div class="nav-panel">
+<p>
+Next: <a href="STATIST.html" accesskey="n" rel="next">STATIST: Graphing a Statistical Distribution</a>, Previous: <a href="URLCHK.html" accesskey="p" rel="prev">URLCHK: Look for Changed Web Pages</a>, Up: <a href="Some-Applications-and-Techniques.html" accesskey="u" rel="up">Some Applications and Techniques</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="WEBGRAB_003a-Extract-Links-from-a-Page">3.5 WEBGRAB: Extract Links from a Page</h3>
+<a class="index-entry-id" id="index-WEBGRAB-program"></a>
+<a class="index-entry-id" id="index-robot-1"></a>
+<p>Sometimes it is necessary to extract links from web pages.
+Browsers do it, web robots do it, and sometimes even humans do it.
+Since we have a tool like GETURL at hand, we can solve this problem with
+some help from the Bourne shell:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN { RS = &quot;https?://[#%&amp;\\+\\-\\./0-9\\:;\\?A-Z_a-z\\~]*&quot; }
+RT != &quot;&quot; {
+   command = (&quot;gawk -v Proxy=MyProxy -f geturl.awk &quot; RT \
+               &quot; &gt; doc&quot; NR &quot;.html&quot;)
+   print command
+}
+</pre></div>
+
+<p>Notice that the regular expression for URLs is rather crude. A precise
+regular expression is much more complex. But this one works
+rather well. One problem is that it is unable to find internal links of
+an HTML document.  Another problem is that
+&lsquo;<samp class="samp">ftp</samp>&rsquo;, &lsquo;<samp class="samp">telnet</samp>&rsquo;, &lsquo;<samp class="samp">news</samp>&rsquo;, &lsquo;<samp class="samp">mailto</samp>&rsquo;, and other kinds
+of links are missing in the regular expression.
+However, it is straightforward to add them, if doing so is necessary for other tasks.
+</p>
+<p>This program reads an HTML file and prints all the HTTP links that it finds.
+It relies on <code class="command">gawk</code>&rsquo;s ability to use regular expressions as the record
+separator. With <code class="code">RS</code> set to a regular expression that matches links,
+the second action is executed each time a non-empty link is found.
+We can find the matching link itself in <code class="code">RT</code>.
+</p>
+<p>The action could use the <code class="code">system()</code> function to let another GETURL
+retrieve the page, but here we use a different approach.
+This simple program prints shell commands that can be piped into <code class="command">sh</code>
+for execution.  This way it is possible to first extract
+the links, wrap shell commands around them, and pipe all the shell commands
+into a file. After editing the file, execution of the file retrieves
+only those files that we really need. In case we do not want to edit,
+we can retrieve all the pages like this:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gawk -f geturl.awk http://www.suse.de | gawk -f webgrab.awk | sh
+</pre></div>
+
+<a class="index-entry-id" id="index-Microsoft-Windows-2"></a>
+<p>After this, you will find the contents of all referenced documents in
+files named <samp class="file">doc*.html</samp> even if they do not contain HTML code.
+The most annoying thing is that we always have to pass the proxy to
+GETURL. If you do not like to see the headers of the web pages
+appear on the screen, you can redirect them to <samp class="file">/dev/null</samp>.
+Watching the headers appear can be quite interesting, because
+it reveals
+interesting details such as which web server the companies use.
+Now, it is clear how the clever marketing people
+use web robots to determine the
+market shares
+of Microsoft and Netscape in the web server market.
+</p>
+<p>Port 80 of any web server is like a small hole in a repellent firewall.
+After attaching a browser to port 80, we usually catch a glimpse
+of the bright side of the server (its home page). With a tool like GETURL
+at hand, we are able to discover some of the more concealed
+or even &ldquo;indecent&rdquo; services (i.e., lacking conformity to standards of quality).
+It can be exciting to see the fancy CGI scripts that lie
+there, revealing the inner workings of the server, ready to be called:
+</p>
+<ul class="itemize mark-bullet">
+<li>With a command such as:
+
+<div class="example">
+<pre class="example-preformatted">gawk -f geturl.awk http://any.host.on.the.net/cgi-bin/
+</pre></div>
+
+<p>some servers give you a directory listing of the CGI files.
+Knowing the names, you can try to call some of them and watch
+for useful results. Sometimes there are executables in such directories
+(such as Perl interpreters) that you may call remotely. If there are
+subdirectories with configuration data of the web server, this can also
+be quite interesting to read.
+</p>
+</li><li><a class="index-entry-id" id="index-apache"></a>
+The well-known Apache web server usually has its CGI files in the
+directory <samp class="file">/cgi-bin</samp>. There you can often find the scripts
+<samp class="file">test-cgi</samp> and <samp class="file">printenv</samp>. Both tell you some things
+about the current connection and the installation of the web server.
+Just call:
+
+<div class="example smallexample">
+<pre class="example-preformatted">gawk -f geturl.awk http://any.host.on.the.net/cgi-bin/test-cgi
+gawk -f geturl.awk http://any.host.on.the.net/cgi-bin/printenv
+</pre></div>
+
+</li><li>Sometimes it is even possible to retrieve system files like the web
+server&rsquo;s log file&mdash;possibly containing customer data&mdash;or even the file
+<samp class="file">/etc/passwd</samp>.
+(We don&rsquo;t recommend this!)
+</li></ul>
+
+<p><strong class="strong">Caution:</strong>
+Although this may sound funny or simply irrelevant, we are talking about
+severe security holes. Try to explore your own system this way and make
+sure that none of the above reveals too much information about your system.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="STATIST.html">STATIST: Graphing a Statistical Distribution</a>, Previous: <a href="URLCHK.html">URLCHK: Look for Changed Web Pages</a>, Up: <a href="Some-Applications-and-Techniques.html">Some Applications and Techniques</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Changing Fields (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Changing Fields (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Changing Fields (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Reading-Files.html" rel="up" title="Reading Files">
+<link href="Field-Separators.html" rel="next" title="Field Separators">
+<link href="Nonconstant-Fields.html" rel="prev" title="Nonconstant Fields">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Changing-Fields">
+<div class="nav-panel">
+<p>
+Next: <a href="Field-Separators.html" accesskey="n" rel="next">Specifying How Fields Are Separated</a>, Previous: <a href="Nonconstant-Fields.html" accesskey="p" rel="prev">Nonconstant Field Numbers</a>, Up: <a href="Reading-Files.html" accesskey="u" rel="up">Reading Input Files</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Changing-the-Contents-of-a-Field"><span>4.4 Changing the Contents of a Field<a class="copiable-link" href="Changing-Fields.html#Changing-the-Contents-of-a-Field"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-fields-changing-contents-of"></a>
+<p>The contents of a field, as seen by <code class="command">awk</code>, can be changed within an
+<code class="command">awk</code> program; this changes what <code class="command">awk</code> perceives as the
+current input record.  (The actual input is untouched; <code class="command">awk</code> <em class="emph">never</em>
+modifies the input file.)
+Consider the following example and its output:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">awk '{ nboxes = $3 ; $3 = $3 - 10</kbd>
+&gt;        <kbd class="kbd">print nboxes, $3 }' inventory-shipped</kbd>
+-| 25 15
+-| 32 22
+-| 24 14
+...
+</pre></div>
+
+<p>The program first saves the original value of field three in the variable
+<code class="code">nboxes</code>.
+The &lsquo;<samp class="samp">-</samp>&rsquo; sign represents subtraction, so this program reassigns
+field three, <code class="code">$3</code>, as the original value of field three minus ten:
+&lsquo;<samp class="samp">$3 - 10</samp>&rsquo;.  (See <a class="xref" href="Arithmetic-Ops.html">Arithmetic Operators</a>.)
+Then it prints the original and new values for field three.
+(Someone in the warehouse made a consistent mistake while inventorying
+the red boxes.)
+</p>
+<p>For this to work, the text in <code class="code">$3</code> must make sense
+as a number; the string of characters must be converted to a number
+for the computer to do arithmetic on it.  The number resulting
+from the subtraction is converted back to a string of characters that
+then becomes field three.
+See <a class="xref" href="Conversion.html">Conversion of Strings and Numbers</a>.
+</p>
+<p>When the value of a field is changed (as perceived by <code class="command">awk</code>), the
+text of the input record is recalculated to contain the new field where
+the old one was.  In other words, <code class="code">$0</code> changes to reflect the altered
+field.  Thus, this program
+prints a copy of the input file, with 10 subtracted from the second
+field of each line:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">awk '{ $2 = $2 - 10; print $0 }' inventory-shipped</kbd>
+-| Jan 3 25 15 115
+-| Feb 5 32 24 226
+-| Mar 5 24 34 228
+...
+</pre></div>
+
+<p>It is also possible to assign contents to fields that are out
+of range.  For example:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">awk '{ $6 = ($5 + $4 + $3 + $2)</kbd>
+&gt; <kbd class="kbd">       print $6 }' inventory-shipped</kbd>
+-| 168
+-| 297
+-| 301
+...
+</pre></div>
+
+<a class="index-entry-id" id="index-adding-fields"></a>
+<a class="index-entry-id" id="index-fields-adding"></a>
+<p>We&rsquo;ve just created <code class="code">$6</code>, whose value is the sum of fields
+<code class="code">$2</code>, <code class="code">$3</code>, <code class="code">$4</code>, and <code class="code">$5</code>.  The &lsquo;<samp class="samp">+</samp>&rsquo; sign
+represents addition.  For the file <samp class="file">inventory-shipped</samp>, <code class="code">$6</code>
+represents the total number of parcels shipped for a particular month.
+</p>
+<p>Creating a new field changes <code class="command">awk</code>&rsquo;s internal copy of the current
+input record, which is the value of <code class="code">$0</code>.  Thus, if you do &lsquo;<samp class="samp">print $0</samp>&rsquo;
+after adding a field, the record printed includes the new field, with
+the appropriate number of field separators between it and the previously
+existing fields.
+</p>
+<a class="index-entry-id" id="index-OFS-variable"></a>
+<p>This recomputation affects and is affected by
+<code class="code">NF</code> (the number of fields; see <a class="pxref" href="Fields.html">Examining Fields</a>).
+For example, the value of <code class="code">NF</code> is set to the number of the highest
+field you create.
+The exact format of <code class="code">$0</code> is also affected by a feature that has not been discussed yet:
+the <em class="dfn">output field separator</em>, <code class="code">OFS</code>,
+used to separate the fields (see <a class="pxref" href="Output-Separators.html">Output Separators</a>).
+</p>
+<p>Note, however, that merely <em class="emph">referencing</em> an out-of-range field
+does <em class="emph">not</em> change the value of either <code class="code">$0</code> or <code class="code">NF</code>.
+Referencing an out-of-range field only produces an empty string.  For
+example:
+</p>
+<div class="example">
+<pre class="example-preformatted">if ($(NF+1) != &quot;&quot;)
+    print &quot;can't happen&quot;
+else
+    print &quot;everything is normal&quot;
+</pre></div>
+
+<p>should print &lsquo;<samp class="samp">everything is normal</samp>&rsquo;, because <code class="code">NF+1</code> is certain
+to be out of range.  (See <a class="xref" href="If-Statement.html">The <code class="code">if</code>-<code class="code">else</code> Statement</a>
+for more information about <code class="command">awk</code>&rsquo;s <code class="code">if-else</code> statements.
+See <a class="xref" href="Typing-and-Comparison.html">Variable Typing and Comparison Expressions</a>
+for more information about the &lsquo;<samp class="samp">!=</samp>&rsquo; operator.)
+</p>
+<p>It is important to note that making an assignment to an existing field
+changes the
+value of <code class="code">$0</code> but does not change the value of <code class="code">NF</code>,
+even when you assign the empty string to a field.  For example:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">echo a b c d | awk '{ OFS = &quot;:&quot;; $2 = &quot;&quot;</kbd>
+&gt;                       <kbd class="kbd">print $0; print NF }'</kbd>
+-| a::c:d
+-| 4
+</pre></div>
+
+<p>The field is still there; it just has an empty value, delimited by
+the two colons between &lsquo;<samp class="samp">a</samp>&rsquo; and &lsquo;<samp class="samp">c</samp>&rsquo;.
+This example shows what happens if you create a new field:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">echo a b c d | awk '{ OFS = &quot;:&quot;; $2 = &quot;&quot;; $6 = &quot;new&quot;</kbd>
+&gt;                       <kbd class="kbd">print $0; print NF }'</kbd>
+-| a::c:d::new
+-| 6
+</pre></div>
+
+<p>The intervening field, <code class="code">$5</code>, is created with an empty value
+(indicated by the second pair of adjacent colons),
+and <code class="code">NF</code> is updated with the value six.
+</p>
+<a class="index-entry-id" id="index-dark-corner-NF-variable_002c-decrementing"></a>
+<a class="index-entry-id" id="index-NF-variable-decrementing"></a>
+<p>Decrementing <code class="code">NF</code> throws away the values of the fields
+after the new value of <code class="code">NF</code> and recomputes <code class="code">$0</code>.
+(d.c.)
+Here is an example:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">echo a b c d e f | awk '{ print &quot;NF =&quot;, NF;</kbd>
+&gt; <kbd class="kbd">                          NF = 3; print $0 }'</kbd>
+-| NF = 6
+-| a b c
+</pre></div>
+
+<a class="index-entry-id" id="index-portability-NF-variable_002c-decrementing"></a>
+<blockquote class="quotation">
+<p><b class="b">CAUTION:</b> Some versions of <code class="command">awk</code> don&rsquo;t
+rebuild <code class="code">$0</code> when <code class="code">NF</code> is decremented.
+Until August, 2018, this included BWK <code class="command">awk</code>; fortunately
+his version now handles this correctly.
+</p></blockquote>
+
+<p>Finally, there are times when it is convenient to force
+<code class="command">awk</code> to rebuild the entire record, using the current
+values of the fields and <code class="code">OFS</code>.  To do this, use the
+seemingly innocuous assignment:
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">$1 = $1   # force record to be reconstituted
+print $0  # or whatever else with $0
+</pre></div></div>
+
+<p>This forces <code class="command">awk</code> to rebuild the record.  It does help
+to add a comment, as we&rsquo;ve shown here.
+</p>
+<p>There is a flip side to the relationship between <code class="code">$0</code> and
+the fields.  Any assignment to <code class="code">$0</code> causes the record to be
+reparsed into fields using the <em class="emph">current</em> value of <code class="code">FS</code>.
+This also applies to any built-in function that updates <code class="code">$0</code>,
+such as <code class="code">sub()</code> and <code class="code">gsub()</code>
+(see <a class="pxref" href="String-Functions.html">String-Manipulation Functions</a>).
+</p>
+<a class="index-entry-id" id="index-sidebar-Understanding-_00240"></a>
+<table class="cartouche" border="1"><tr><th>
+Understanding <code class="code">$0</code></th></tr><tr><td>
+
+<p>It is important to remember that <code class="code">$0</code> is the <em class="emph">full</em>
+record, exactly as it was read from the input.  This includes
+any leading or trailing whitespace, and the exact whitespace (or other
+characters) that separates the fields.
+</p>
+<p>It is a common error to try to change the field separators
+in a record simply by setting <code class="code">FS</code> and <code class="code">OFS</code>, and then
+expecting a plain &lsquo;<samp class="samp">print</samp>&rsquo; or &lsquo;<samp class="samp">print $0</samp>&rsquo; to print the
+modified record.
+</p>
+<p>But this does not work, because nothing was done to change the record
+itself.  Instead, you must force the record to be rebuilt, typically
+with a statement such as &lsquo;<samp class="samp">$1 = $1</samp>&rsquo;, as described earlier.
+</p></td></tr></table>
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Field-Separators.html">Specifying How Fields Are Separated</a>, Previous: <a href="Nonconstant-Fields.html">Nonconstant Field Numbers</a>, Up: <a href="Reading-Files.html">Reading Input Files</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

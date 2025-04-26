@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Action Overview (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Action Overview (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Action Overview (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Patterns-and-Actions.html" rel="up" title="Patterns and Actions">
+<link href="Statements.html" rel="next" title="Statements">
+<link href="Using-Shell-Variables.html" rel="prev" title="Using Shell Variables">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+pre.display-preformatted {font-family: inherit}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Action-Overview">
+<div class="nav-panel">
+<p>
+Next: <a href="Statements.html" accesskey="n" rel="next">Control Statements in Actions</a>, Previous: <a href="Using-Shell-Variables.html" accesskey="p" rel="prev">Using Shell Variables in Programs</a>, Up: <a href="Patterns-and-Actions.html" accesskey="u" rel="up">Patterns, Actions, and Variables</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Actions"><span>7.3 Actions<a class="copiable-link" href="Action-Overview.html#Actions"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-actions"></a>
+
+<p>An <code class="command">awk</code> program or script consists of a series of
+rules and function definitions interspersed.  (Functions are
+described later.  See <a class="xref" href="User_002ddefined.html">User-Defined Functions</a>.)
+A rule contains a pattern and an action, either of which (but not
+both) may be omitted.  The purpose of the <em class="dfn">action</em> is to tell
+<code class="command">awk</code> what to do once a match for the pattern is found.  Thus,
+in outline, an <code class="command">awk</code> program generally looks like this:
+</p>
+<div class="display">
+<pre class="display-preformatted">[<var class="var">pattern</var>]  <code class="code">{ <var class="var">action</var> }</code>
+ <var class="var">pattern</var>  [<code class="code">{ <var class="var">action</var> }</code>]
+...
+<code class="code">function <var class="var">name</var>(<var class="var">args</var>) { ... }</code>
+...
+</pre></div>
+
+<a class="index-entry-id" id="index-_007b_007d-_0028braces_0029-actions-and"></a>
+<a class="index-entry-id" id="index-braces-_0028_007b_007d_0029-actions-and"></a>
+<a class="index-entry-id" id="index-separators-for-statements-in-actions"></a>
+<a class="index-entry-id" id="index-newlines-separating-statements-in-actions"></a>
+<a class="index-entry-id" id="index-_003b-_0028semicolon_0029-separating-statements-in-actions-1"></a>
+<a class="index-entry-id" id="index-semicolon-_0028_003b_0029-separating-statements-in-actions-1"></a>
+<p>An action consists of one or more <code class="command">awk</code> <em class="dfn">statements</em>, enclosed
+in braces (&lsquo;<samp class="samp">{<span class="r">&hellip;</span>}</samp>&rsquo;).  Each statement specifies one
+thing to do.  The statements are separated by newlines or semicolons.
+The braces around an action must be used even if the action
+contains only one statement, or if it contains no statements at
+all.  However, if you omit the action entirely, omit the braces as
+well.  An omitted action is equivalent to &lsquo;<samp class="samp">{ print $0 }</samp>&rsquo;:
+</p>
+<div class="example">
+<pre class="example-preformatted">/foo/  { }     <i class="i">match <code class="code">foo</code>, do nothing --- empty action</i>
+/foo/          <i class="i">match <code class="code">foo</code>, print the record --- omitted action</i>
+</pre></div>
+
+<p>The following types of statements are supported in <code class="command">awk</code>:
+</p>
+<dl class="table">
+<dd><a class="index-entry-id" id="index-side-effects-statements"></a>
+</dd>
+<dt>Expressions</dt>
+<dd><p>Call functions or assign values to variables
+(see <a class="pxref" href="Expressions.html">Expressions</a>).  Executing
+this kind of statement simply computes the value of the expression.
+This is useful when the expression has side effects
+(see <a class="pxref" href="Assignment-Ops.html">Assignment Expressions</a>).
+</p>
+</dd>
+<dt>Control statements</dt>
+<dd><p>Specify the control flow of <code class="command">awk</code>
+programs.  The <code class="command">awk</code> language gives you C-like constructs
+(<code class="code">if</code>, <code class="code">for</code>, <code class="code">while</code>, and <code class="code">do</code>) as well as a few
+special ones (see <a class="pxref" href="Statements.html">Control Statements in Actions</a>).
+</p>
+</dd>
+<dt>Compound statements</dt>
+<dd><p>Enclose one or more statements in braces.  A compound statement
+is used in order to put several statements together in the body of an
+<code class="code">if</code>, <code class="code">while</code>, <code class="code">do</code>, or <code class="code">for</code> statement.
+</p>
+</dd>
+<dt>Input statements</dt>
+<dd><p>Use the <code class="code">getline</code> function
+(see <a class="pxref" href="Getline.html">Explicit Input with <code class="code">getline</code></a>).
+Also supplied in <code class="command">awk</code> are the <code class="code">next</code>
+statement (see <a class="pxref" href="Next-Statement.html">The <code class="code">next</code> Statement</a>)
+and the <code class="code">nextfile</code> statement
+(see <a class="pxref" href="Nextfile-Statement.html">The <code class="code">nextfile</code> Statement</a>).
+</p>
+</dd>
+<dt>Output statements</dt>
+<dd><p>Such as <code class="code">print</code> and <code class="code">printf</code>.
+See <a class="xref" href="Printing.html">Printing Output</a>.
+</p>
+</dd>
+<dt>Deletion statements</dt>
+<dd><p>For deleting array elements.
+See <a class="xref" href="Delete.html">The <code class="code">delete</code> Statement</a>.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Statements.html">Control Statements in Actions</a>, Previous: <a href="Using-Shell-Variables.html">Using Shell Variables in Programs</a>, Up: <a href="Patterns-and-Actions.html">Patterns, Actions, and Variables</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

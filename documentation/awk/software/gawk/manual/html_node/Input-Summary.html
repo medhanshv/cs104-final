@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Input Summary (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Input Summary (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Input Summary (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Reading-Files.html" rel="up" title="Reading Files">
+<link href="Input-Exercises.html" rel="next" title="Input Exercises">
+<link href="Command_002dline-directories.html" rel="prev" title="Command-line directories">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Input-Summary">
+<div class="nav-panel">
+<p>
+Next: <a href="Input-Exercises.html" accesskey="n" rel="next">Exercises</a>, Previous: <a href="Command_002dline-directories.html" accesskey="p" rel="prev">Directories on the Command Line</a>, Up: <a href="Reading-Files.html" accesskey="u" rel="up">Reading Input Files</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Summary-3"><span>4.14 Summary<a class="copiable-link" href="Input-Summary.html#Summary-3"> &para;</a></span></h3>
+
+<ul class="itemize mark-bullet">
+<li>Input is split into records based on the value of <code class="code">RS</code>.
+The possibilities are as follows:
+
+<table class="multitable">
+<thead><tr><th width="25%">Value of <code class="code">RS</code></th><th width="35%">Records are split on &hellip;</th><th width="40%"><code class="command">awk</code> / <code class="command">gawk</code></th></tr></thead>
+<tbody><tr><td width="25%">Any single character</td><td width="35%">That character</td><td width="40%"><code class="command">awk</code></td></tr>
+<tr><td width="25%">The empty string (<code class="code">&quot;&quot;</code>)</td><td width="35%">Runs of two or more newlines</td><td width="40%"><code class="command">awk</code></td></tr>
+<tr><td width="25%">A regexp</td><td width="35%">Text that matches the regexp</td><td width="40%"><code class="command">gawk</code></td></tr>
+</tbody>
+</table>
+
+</li><li><code class="code">FNR</code> indicates how many records have been read from the current input file;
+<code class="code">NR</code> indicates how many records have been read in total.
+
+</li><li><code class="command">gawk</code> sets <code class="code">RT</code> to the text matched by <code class="code">RS</code>.
+
+</li><li>After splitting the input into records, <code class="command">awk</code> further splits
+the records into individual fields, named <code class="code">$1</code>, <code class="code">$2</code>, and so
+on. <code class="code">$0</code> is the whole record, and <code class="code">NF</code> indicates how many
+fields there are.  The default way to split fields is between whitespace
+characters.
+
+</li><li>Fields may be referenced using a variable, as in <code class="code">$NF</code>.  Fields
+may also be assigned values, which causes the value of <code class="code">$0</code> to be
+recomputed when it is later referenced. Assigning to a field with a number
+greater than <code class="code">NF</code> creates the field and rebuilds the record, using
+<code class="code">OFS</code> to separate the fields.  Incrementing <code class="code">NF</code> does the same
+thing. Decrementing <code class="code">NF</code> throws away fields and rebuilds the record.
+
+</li><li>Field splitting is more complicated than record splitting:
+
+<table class="multitable">
+<thead><tr><th width="40%">Field separator value</th><th width="40%">Fields are split &hellip;</th><th width="20%"><code class="command">awk</code> / <code class="command">gawk</code></th></tr></thead>
+<tbody><tr><td width="40%"><code class="code">FS == &quot; &quot;</code></td><td width="40%">On runs of whitespace</td><td width="20%"><code class="command">awk</code></td></tr>
+<tr><td width="40%"><code class="code">FS == <var class="var">any single character</var></code></td><td width="40%">On that character</td><td width="20%"><code class="command">awk</code></td></tr>
+<tr><td width="40%"><code class="code">FS == <var class="var">regexp</var></code></td><td width="40%">On text matching the regexp</td><td width="20%"><code class="command">awk</code></td></tr>
+<tr><td width="40%"><code class="code">FS == &quot;&quot;</code></td><td width="40%">Such that each individual character is a separate field</td><td width="20%"><code class="command">gawk</code></td></tr>
+<tr><td width="40%"><code class="code">FIELDWIDTHS == <var class="var">list of columns</var></code></td><td width="40%">Based on character position</td><td width="20%"><code class="command">gawk</code></td></tr>
+<tr><td width="40%"><code class="code">FPAT == <var class="var">regexp</var></code></td><td width="40%">On the text surrounding text matching the regexp</td><td width="20%"><code class="command">gawk</code></td></tr>
+</tbody>
+</table>
+
+</li><li>Using &lsquo;<samp class="samp">FS = &quot;\n&quot;</samp>&rsquo; causes the entire record to be a single field
+(assuming that newlines separate records).
+
+</li><li><code class="code">FS</code> may be set from the command line using the <samp class="option">-F</samp> option.
+This can also be done using command-line variable assignment.
+
+</li><li>Use <code class="code">PROCINFO[&quot;FS&quot;]</code> to see how fields are being split.
+
+</li><li>Use <code class="code">getline</code> in its various forms to read additional records
+from the default input stream, from a file, or from a pipe or coprocess.
+
+</li><li>Use <code class="code">PROCINFO[<var class="var">file</var>, &quot;READ_TIMEOUT&quot;]</code> to cause reads to time out
+for <var class="var">file</var>.
+
+</li><li><a class="index-entry-id" id="index-POSIX-mode-3"></a>
+Directories on the command line are fatal for standard <code class="command">awk</code>;
+<code class="command">gawk</code> ignores them if not in POSIX mode.
+
+</li></ul>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Input-Exercises.html">Exercises</a>, Previous: <a href="Command_002dline-directories.html">Directories on the Command Line</a>, Up: <a href="Reading-Files.html">Reading Input Files</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

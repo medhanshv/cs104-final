@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>To CSV Function (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="To CSV Function (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="To CSV Function (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="General-Functions.html" rel="up" title="General Functions">
+<link href="Isnumeric-Function.html" rel="prev" title="Isnumeric Function">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="To-CSV-Function">
+<div class="nav-panel">
+<p>
+Previous: <a href="Isnumeric-Function.html" accesskey="p" rel="prev">Checking Whether A Value Is Numeric</a>, Up: <a href="General-Functions.html" accesskey="u" rel="up">General Programming</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Producing-CSV-Data"><span>10.2.11 Producing CSV Data<a class="copiable-link" href="To-CSV-Function.html#Producing-CSV-Data"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-comma-separated-values-_0028CSV_0029-data-generating-CSV-data"></a>
+<a class="index-entry-id" id="index-CSV-_0028comma-separated-values_0029-data-generating-CSV-data"></a>
+<p><code class="command">gawk</code>&rsquo;s <samp class="option">--csv</samp> option causes <code class="command">gawk</code>
+to process CSV data (see <a class="pxref" href="Comma-Separated-Fields.html">Working With Comma Separated Value Files</a>).
+</p>
+<p>But what if you have regular data that you want to output
+in CSV format?  This section provides functions for
+doing that.
+</p>
+<p>The first function, <code class="code">tocsv()</code>, takes an array of data
+fields as input. The array should be indexed starting from one.
+The optional second parameter is the separator to use. If none
+is supplied, the default is a comma.
+</p>
+<p>The function takes care to quote fields that contain double
+quotes, newlines, or the separator character.  It then builds
+up the final CSV record and returns it.
+</p>
+<a class="index-entry-id" id="index-tocsv_0028_0029-user_002ddefined-function"></a>
+<div class="example">
+<pre class="example-preformatted"># tocsv.awk --- convert data to CSV format
+
+function tocsv(fields, sep,     i, j, nfields, result)
+{
+    if (length(fields) == 0)
+        return &quot;&quot;
+
+    if (sep == &quot;&quot;)
+        sep = &quot;,&quot;
+    delete nfields
+    for (i = 1; i in fields; i++) {
+        nfields[i] = fields[i]
+        if (nfields[i] ~ /[&quot;\n]/ || index(nfields[i], sep) != 0) {
+            gsub(/&quot;/, &quot;\&quot;\&quot;&quot;, nfields[i])       # double up the double quotes
+            nfields[i] = &quot;\&quot;&quot; nfields[i] &quot;\&quot;&quot;   # wrap in double quotes
+        }
+    }
+
+    result = nfields[1]
+    j = length(nfields)
+    for (i = 2; i &lt;= j; i++)
+        result = result sep nfields[i]
+
+    return result
+}
+</pre></div>
+
+<p>The next function, <code class="code">tocsv_rec()</code> is a wrapper around
+<code class="code">tocsv()</code>. Its intended use is for when you want to convert the
+current input record to CSV format.  The function itself simply copies
+the fields into an array to pass to <code class="code">tocsv()</code> which does the work.
+It accepts an optional separator character as its first parameter,
+which it simply passes on to <code class="code">tocsv()</code>.
+</p>
+<a class="index-entry-id" id="index-tocsv_005frec_0028_0029-user_002ddefined-function"></a>
+<div class="example">
+<pre class="example-preformatted">function tocsv_rec(sep,     i, fields)
+{
+    delete fields
+    for (i = 1; i &lt;= NF; i++)
+        fields[i] = $i
+
+    return tocsv(fields, sep)
+}
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Isnumeric-Function.html">Checking Whether A Value Is Numeric</a>, Up: <a href="General-Functions.html">General Programming</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

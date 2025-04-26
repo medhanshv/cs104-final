@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Arithmetic Ops (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Arithmetic Ops (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Arithmetic Ops (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="All-Operators.html" rel="up" title="All Operators">
+<link href="Concatenation.html" rel="next" title="Concatenation">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Arithmetic-Ops">
+<div class="nav-panel">
+<p>
+Next: <a href="Concatenation.html" accesskey="n" rel="next">String Concatenation</a>, Up: <a href="All-Operators.html" accesskey="u" rel="up">Operators: Doing Something with Values</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Arithmetic-Operators"><span>6.2.1 Arithmetic Operators<a class="copiable-link" href="Arithmetic-Ops.html#Arithmetic-Operators"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-arithmetic-operators"></a>
+<a class="index-entry-id" id="index-operators-arithmetic"></a>
+
+<p>The <code class="command">awk</code> language uses the common arithmetic operators when
+evaluating expressions.  All of these arithmetic operators follow normal
+precedence rules and work as you would expect them to.
+</p>
+<p>The following example uses a file named <samp class="file">grades</samp>, which contains
+a list of student names as well as three test scores per student (it&rsquo;s
+a small class):
+</p>
+<div class="example">
+<pre class="example-preformatted">Pat   100 97 58
+Sandy  84 72 93
+Chris  72 92 89
+</pre></div>
+
+<p>This program takes the file <samp class="file">grades</samp> and prints the average
+of the scores:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">awk '{ sum = $2 + $3 + $4 ; avg = sum / 3</kbd>
+&gt;        <kbd class="kbd">print $1, avg }' grades</kbd>
+-| Pat 85
+-| Sandy 83
+-| Chris 84.3333
+</pre></div>
+
+<p>The following list provides the arithmetic operators in <code class="command">awk</code>,
+in order from the highest precedence to the lowest:
+</p>
+<dl class="table">
+<dd><a class="index-entry-id" id="index-common-extensions-_002a_002a-operator"></a>
+<a class="index-entry-id" id="index-extensions-common-_002a_002a-operator"></a>
+<a class="index-entry-id" id="index-POSIX-awk-arithmetic-operators-and"></a>
+</dd>
+<dt><code class="code"><var class="var">x</var> ^ <var class="var">y</var></code></dt>
+<dt><code class="code"><var class="var">x</var> ** <var class="var">y</var></code></dt>
+<dd><p>Exponentiation; <var class="var">x</var> raised to the <var class="var">y</var> power.  &lsquo;<samp class="samp">2 ^ 3</samp>&rsquo; has
+the value eight; the character sequence &lsquo;<samp class="samp">**</samp>&rsquo; is equivalent to
+&lsquo;<samp class="samp">^</samp>&rsquo;. (c.e.)
+</p>
+</dd>
+<dt><code class="code">- <var class="var">x</var></code></dt>
+<dd><p>Negation.
+</p>
+</dd>
+<dt><code class="code">+ <var class="var">x</var></code></dt>
+<dd><p>Unary plus; the expression is converted to a number.
+</p>
+</dd>
+<dt><code class="code"><var class="var">x</var> * <var class="var">y</var></code></dt>
+<dd><p>Multiplication.
+</p>
+<a class="index-entry-id" id="index-troubleshooting-division"></a>
+</dd>
+<dt><a id="index-division"></a><span><code class="code"><var class="var">x</var> / <var class="var">y</var></code><a class="copiable-link" href="Arithmetic-Ops.html#index-division"> &para;</a></span></dt>
+<dd><p>Division;  because all numbers in <code class="command">awk</code> are floating-point
+numbers, the result is <em class="emph">not</em> rounded to an integer&mdash;&lsquo;<samp class="samp">3 / 4</samp>&rsquo; has
+the value 0.75.  (It is a common mistake, especially for C programmers,
+to forget that <em class="emph">all</em> numbers in <code class="command">awk</code> are floating point,
+and that division of integer-looking constants produces a real number,
+not an integer.)
+</p>
+</dd>
+<dt><code class="code"><var class="var">x</var> % <var class="var">y</var></code></dt>
+<dd><p>Remainder; further discussion is provided in the text, just
+after this list.
+</p>
+</dd>
+<dt><code class="code"><var class="var">x</var> + <var class="var">y</var></code></dt>
+<dd><p>Addition.
+</p>
+</dd>
+<dt><code class="code"><var class="var">x</var> - <var class="var">y</var></code></dt>
+<dd><p>Subtraction.
+</p></dd>
+</dl>
+
+<p>Unary plus and minus have the same precedence,
+the multiplication operators all have the same precedence, and
+addition and subtraction have the same precedence.
+</p>
+<a class="index-entry-id" id="index-differences-in-awk-and-gawk-trunc_002dmod-operation"></a>
+<a class="index-entry-id" id="index-trunc_002dmod-operation"></a>
+<p>When computing the remainder of &lsquo;<samp class="samp"><var class="var">x</var> % <var class="var">y</var></samp>&rsquo;,
+the quotient is rounded toward zero to an integer and
+multiplied by <var class="var">y</var>. This result is subtracted from <var class="var">x</var>;
+this operation is sometimes known as &ldquo;trunc-mod.&rdquo;  The following
+relation always holds:
+</p>
+<div class="example">
+<pre class="example-preformatted">b * int(a / b) + (a % b) == a
+</pre></div>
+
+<p>One possibly undesirable effect of this definition of remainder is that
+&lsquo;<samp class="samp"><var class="var">x</var> % <var class="var">y</var></samp>&rsquo; is negative if <var class="var">x</var> is negative.  Thus:
+</p>
+<div class="example">
+<pre class="example-preformatted">-17 % 8 = -1
+</pre></div>
+
+<p>This definition is compliant with the POSIX standard, which says that the <code class="code">%</code>
+operator produces results equivalent to using the standard C
+<code class="code">fmod()</code> function, and that function in turn works as just
+described.
+</p>
+<p>In other <code class="command">awk</code> implementations, the signedness of the remainder
+may be machine-dependent.
+</p>
+<a class="index-entry-id" id="index-portability-_002a_002a-operator-and"></a>
+<a class="index-entry-id" id="index-_002a-_0028asterisk_0029-_002a_002a-operator"></a>
+<a class="index-entry-id" id="index-asterisk-_0028_002a_0029-_002a_002a-operator"></a>
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> The POSIX standard only specifies the use of &lsquo;<samp class="samp">^</samp>&rsquo;
+for exponentiation.
+For maximum portability, do not use the &lsquo;<samp class="samp">**</samp>&rsquo; operator.
+</p></blockquote>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Concatenation.html">String Concatenation</a>, Up: <a href="All-Operators.html">Operators: Doing Something with Values</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

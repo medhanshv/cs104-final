@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Extension Other Design Decisions (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Extension Other Design Decisions (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Extension Other Design Decisions (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Extension-Design.html" rel="up" title="Extension Design">
+<link href="Extension-Future-Growth.html" rel="next" title="Extension Future Growth">
+<link href="Extension-New-Mechanism-Goals.html" rel="prev" title="Extension New Mechanism Goals">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="appendixsubsec-level-extent" id="Extension-Other-Design-Decisions">
+<div class="nav-panel">
+<p>
+Next: <a href="Extension-Future-Growth.html" accesskey="n" rel="next">Room For Future Growth</a>, Previous: <a href="Extension-New-Mechanism-Goals.html" accesskey="p" rel="prev">Goals For A New Mechanism</a>, Up: <a href="Extension-Design.html" accesskey="u" rel="up">Extension API Design</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="appendixsubsec" id="Other-Design-Decisions"><span>C.5.3 Other Design Decisions<a class="copiable-link" href="Extension-Other-Design-Decisions.html#Other-Design-Decisions"> &para;</a></span></h4>
+
+<p>As an arbitrary design decision, extensions can read the values of
+predefined variables and arrays (such as <code class="code">ARGV</code> and <code class="code">FS</code>), but cannot
+change them, with the exception of <code class="code">PROCINFO</code>.
+</p>
+<p>The reason for this is to prevent an extension function from affecting
+the flow of an <code class="command">awk</code> program outside its control.  While a real
+<code class="command">awk</code> function can do what it likes, that is at the discretion
+of the programmer.  An extension function should provide a service or
+make a C API available for use within <code class="command">awk</code>, and not mess with
+<code class="code">FS</code> or <code class="code">ARGC</code> and <code class="code">ARGV</code>.
+</p>
+<p>In addition, it becomes easy to start down a slippery slope. How
+much access to <code class="command">gawk</code> facilities do extensions need?
+Do they need <code class="code">getline</code>?  What about calling <code class="code">gsub()</code> or
+compiling regular expressions?  What about calling into <code class="command">awk</code>
+functions? (<em class="emph">That</em> would be messy.)
+</p>
+<p>In order to avoid these issues, the <code class="command">gawk</code> developers chose
+to start with the simplest, most basic features that are still truly useful.
+</p>
+<p>Another decision is that although <code class="command">gawk</code> provides nice things like
+MPFR, and arrays indexed internally by integers, these features are not
+being brought out to the API in order to keep things simple and close to
+traditional <code class="command">awk</code> semantics.  (In fact, arrays indexed internally
+by integers are so transparent that they aren&rsquo;t even documented!)
+</p>
+<p>Additionally, all functions in the API check that their pointer
+input parameters are not <code class="code">NULL</code>. If they are, they return an error.
+(It is a good idea for extension code to verify that
+pointers received from <code class="command">gawk</code> are not <code class="code">NULL</code>.
+Such a thing should not happen, but the <code class="command">gawk</code> developers
+are only human, and they have been known to occasionally make
+mistakes.)
+</p>
+<p>With time, the API will undoubtedly evolve; the <code class="command">gawk</code> developers
+expect this to be driven by user needs. For now, the current API seems
+to provide a minimal yet powerful set of features for creating extensions.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Extension-Future-Growth.html">Room For Future Growth</a>, Previous: <a href="Extension-New-Mechanism-Goals.html">Goals For A New Mechanism</a>, Up: <a href="Extension-Design.html">Extension API Design</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

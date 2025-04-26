@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Case-sensitivity (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Case-sensitivity (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Case-sensitivity (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Regexp.html" rel="up" title="Regexp">
+<link href="Regexp-Summary.html" rel="next" title="Regexp Summary">
+<link href="GNU-Regexp-Operators.html" rel="prev" title="GNU Regexp Operators">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Case_002dsensitivity">
+<div class="nav-panel">
+<p>
+Next: <a href="Regexp-Summary.html" accesskey="n" rel="next">Summary</a>, Previous: <a href="GNU-Regexp-Operators.html" accesskey="p" rel="prev"><code class="command">gawk</code>-Specific Regexp Operators</a>, Up: <a href="Regexp.html" accesskey="u" rel="up">Regular Expressions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Case-Sensitivity-in-Matching"><span>3.8 Case Sensitivity in Matching<a class="copiable-link" href="Case_002dsensitivity.html#Case-Sensitivity-in-Matching"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-regular-expressions-case-sensitivity"></a>
+<a class="index-entry-id" id="index-case-sensitivity-regexps-and"></a>
+<p>Case is normally significant in regular expressions, both when matching
+ordinary characters (i.e., not metacharacters) and inside bracket
+expressions.  Thus, a &lsquo;<samp class="samp">w</samp>&rsquo; in a regular expression matches only a lowercase
+&lsquo;<samp class="samp">w</samp>&rsquo; and not an uppercase &lsquo;<samp class="samp">W</samp>&rsquo;.
+</p>
+<p>The simplest way to do a case-independent match is to use a bracket
+expression&mdash;for example, &lsquo;<samp class="samp">[Ww]</samp>&rsquo;.  However, this can be cumbersome if
+you need to use it often, and it can make the regular expressions harder
+to read.  There are two alternatives that you might prefer.
+</p>
+<p>One way to perform a case-insensitive match at a particular point in the
+program is to convert the data to a single case, using the
+<code class="code">tolower()</code> or <code class="code">toupper()</code> built-in string functions (which we
+haven&rsquo;t discussed yet;
+see <a class="pxref" href="String-Functions.html">String-Manipulation Functions</a>).
+For example:
+</p>
+<div class="example">
+<pre class="example-preformatted">tolower($1) ~ /foo/  { ... }
+</pre></div>
+
+<p>converts the first field to lowercase before matching against it.
+This works in any POSIX-compliant <code class="command">awk</code>.
+</p>
+<a class="index-entry-id" id="index-gawk-regular-expressions-case-sensitivity"></a>
+<a class="index-entry-id" id="index-case-sensitivity-gawk"></a>
+<a class="index-entry-id" id="index-differences-in-awk-and-gawk-regular-expressions"></a>
+<a class="index-entry-id" id="index-_007e-_0028tilde_0029_002c-_007e-operator-2"></a>
+<a class="index-entry-id" id="index-tilde-_0028_007e_0029_002c-_007e-operator-2"></a>
+<a class="index-entry-id" id="index-_0021-_0028exclamation-point_0029-_0021_007e-operator-2"></a>
+<a class="index-entry-id" id="index-exclamation-point-_0028_0021_0029-_0021_007e-operator-2"></a>
+<a class="index-entry-id" id="index-IGNORECASE-variable-with-_007e-and-_0021_007e-operators"></a>
+<a class="index-entry-id" id="index-gawk-IGNORECASE-variable-in"></a>
+<p>Another method, specific to <code class="command">gawk</code>, is to set the variable
+<code class="code">IGNORECASE</code> to a nonzero value (see <a class="pxref" href="Built_002din-Variables.html">Predefined Variables</a>).
+When <code class="code">IGNORECASE</code> is not zero, <em class="emph">all</em> regexp and string
+operations ignore case.
+</p>
+<p>Changing the value of <code class="code">IGNORECASE</code> dynamically controls the
+case sensitivity of the program as it runs.  Case is significant by
+default because <code class="code">IGNORECASE</code> (like most variables) is initialized
+to zero:
+</p>
+<div class="example">
+<pre class="example-preformatted">x = &quot;aB&quot;
+if (x ~ /ab/) ...   # this test will fail
+
+IGNORECASE = 1
+if (x ~ /ab/) ...   # now it will succeed
+</pre></div>
+
+<p>In general, you cannot use <code class="code">IGNORECASE</code> to make certain rules
+case insensitive and other rules case sensitive, as there is no
+straightforward way
+to set <code class="code">IGNORECASE</code> just for the pattern of
+a particular rule.<a class="footnote" id="DOCF19" href="Case_002dsensitivity.html#FOOT19"><sup>19</sup></a>
+To do this, use either bracket expressions or <code class="code">tolower()</code>.  However, one
+thing you can do with <code class="code">IGNORECASE</code> only is dynamically turn
+case sensitivity on or off for all the rules at once.
+</p>
+<p><code class="code">IGNORECASE</code> can be set on the command line or in a <code class="code">BEGIN</code> rule
+(see <a class="pxref" href="Other-Arguments.html">Other Command-Line Arguments</a>; also
+see <a class="pxref" href="Using-BEGIN_002fEND.html">Startup and Cleanup Actions</a>).
+Setting <code class="code">IGNORECASE</code> from the command line is a way to make
+a program case insensitive without having to edit it.
+</p>
+<p>In multibyte locales, the equivalences between upper- and lowercase
+characters are tested based on the wide-character values of the locale&rsquo;s
+character set.  Prior to version 5.0, single-byte characters were
+tested based on the ISO-8859-1 (ISO Latin-1) character set.  However, as
+of version 5.0, single-byte characters are also tested based on
+the values of the locale&rsquo;s character set.<a class="footnote" id="DOCF20" href="Case_002dsensitivity.html#FOOT20"><sup>20</sup></a>
+</p>
+<p>The value of <code class="code">IGNORECASE</code> has no effect if <code class="command">gawk</code> is in
+compatibility mode (see <a class="pxref" href="Options.html">Command-Line Options</a>).
+Case is always significant in compatibility mode.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT19" href="Case_002dsensitivity.html#DOCF19">(19)</a></h5>
+<p>Experienced C and C++ programmers will note
+that it is possible, using something like
+&lsquo;<samp class="samp">IGNORECASE = 1 &amp;&amp; /foObAr/ { &hellip; }</samp>&rsquo;
+and
+&lsquo;<samp class="samp">IGNORECASE = 0 || /foobar/ { &hellip; }</samp>&rsquo;.
+However, this is somewhat obscure and we don&rsquo;t recommend it.</p>
+<h5 class="footnote-body-heading"><a id="FOOT20" href="Case_002dsensitivity.html#DOCF20">(20)</a></h5>
+<p>If you don&rsquo;t understand
+this, don&rsquo;t worry about it; it just means that <code class="command">gawk</code> does the
+right thing.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Regexp-Summary.html">Summary</a>, Previous: <a href="GNU-Regexp-Operators.html"><code class="command">gawk</code>-Specific Regexp Operators</a>, Up: <a href="Regexp.html">Regular Expressions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

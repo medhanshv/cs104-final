@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Long (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Long (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Long (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Running-gawk.html" rel="up" title="Running gawk">
+<link href="Executable-Scripts.html" rel="next" title="Executable Scripts">
+<link href="Read-Terminal.html" rel="prev" title="Read Terminal">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Long">
+<div class="nav-panel">
+<p>
+Next: <a href="Executable-Scripts.html" accesskey="n" rel="next">Executable <code class="command">awk</code> Programs</a>, Previous: <a href="Read-Terminal.html" accesskey="p" rel="prev">Running <code class="command">awk</code> Without Input Files</a>, Up: <a href="Running-gawk.html" accesskey="u" rel="up">How to Run <code class="command">awk</code> Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Running-Long-Programs"><span>1.1.3 Running Long Programs<a class="copiable-link" href="Long.html#Running-Long-Programs"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-awk-programs-running-1"></a>
+<a class="index-entry-id" id="index-awk-programs-lengthy"></a>
+<a class="index-entry-id" id="index-files-awk-programs-in"></a>
+<p>Sometimes <code class="command">awk</code> programs are very long.  In these cases, it is
+more convenient to put the program into a separate file.  In order to tell
+<code class="command">awk</code> to use that file for its program, you type:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk -f <var class="var">source-file</var> <var class="var">input-file1</var> <var class="var">input-file2</var> ...
+</pre></div>
+
+<a class="index-entry-id" id="index-_002df-option"></a>
+<a class="index-entry-id" id="index-command-line-option-_002df"></a>
+<p>The <samp class="option">-f</samp> instructs the <code class="command">awk</code> utility to get the
+<code class="command">awk</code> program from the file <var class="var">source-file</var> (see <a class="pxref" href="Options.html">Command-Line Options</a>).
+Any file name can be used for <var class="var">source-file</var>.  For example, you
+could put the program:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN { print &quot;Don't Panic!&quot; }
+</pre></div>
+
+<p>into the file <samp class="file">advice</samp>.  Then this command:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk -f advice
+</pre></div>
+
+<p>does the same thing as this one:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk 'BEGIN { print &quot;Don\47t Panic!&quot; }'
+</pre></div>
+
+<a class="index-entry-id" id="index-quoting-in-gawk-command-lines"></a>
+<p>This was explained earlier
+(see <a class="pxref" href="Read-Terminal.html">Running <code class="command">awk</code> Without Input Files</a>).
+Note that you don&rsquo;t usually need single quotes around the file name that you
+specify with <samp class="option">-f</samp>, because most file names don&rsquo;t contain any of the shell&rsquo;s
+special characters. (If your file names have spaces in them, then you
+will need the single quotes.)  Notice that in <samp class="file">advice</samp>, the <code class="command">awk</code>
+program did not have single quotes around it.  The quotes are only needed
+for programs that are provided on the <code class="command">awk</code> command line.
+(Also, placing the program in a file allows us to use a literal single quote in the program
+text, instead of the magic &lsquo;<samp class="samp">\47</samp>&rsquo;.)
+</p>
+<a class="index-entry-id" id="index-single-quote-_0028_0027_0029-in-gawk-command-lines"></a>
+<a class="index-entry-id" id="index-_0027-_0028single-quote_0029-in-gawk-command-lines"></a>
+<p>If you want to clearly identify an <code class="command">awk</code> program file as such,
+you can add the extension <samp class="file">.awk</samp> to the file name.  This doesn&rsquo;t
+affect the execution of the <code class="command">awk</code> program but it does make
+&ldquo;housekeeping&rdquo; easier.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Executable-Scripts.html">Executable <code class="command">awk</code> Programs</a>, Previous: <a href="Read-Terminal.html">Running <code class="command">awk</code> Without Input Files</a>, Up: <a href="Running-gawk.html">How to Run <code class="command">awk</code> Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,1 @@
+['sasur', 'saas', 'prem', 'patni', 'damaad', 'bahu', 'aag']

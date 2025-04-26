@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Printing (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Printing (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Printing (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Expressions.html" rel="next" title="Expressions">
+<link href="Reading-Files.html" rel="prev" title="Reading Files">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Printing">
+<div class="nav-panel">
+<p>
+Next: <a href="Expressions.html" accesskey="n" rel="next">Expressions</a>, Previous: <a href="Reading-Files.html" accesskey="p" rel="prev">Reading Input Files</a>, Up: <a href="index.html" accesskey="u" rel="up">General Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Printing-Output"><span>5 Printing Output<a class="copiable-link" href="Printing.html#Printing-Output"> &para;</a></span></h2>
+
+<a class="index-entry-id" id="index-printing"></a>
+<p>One of the most common programming actions is to <em class="dfn">print</em>, or output,
+some or all of the input.  Use the <code class="code">print</code> statement
+for simple output, and the <code class="code">printf</code> statement
+for fancier formatting.
+The <code class="code">print</code> statement is not limited when
+computing <em class="emph">which</em> values to print. However, with two exceptions,
+you cannot specify <em class="emph">how</em> to print them&mdash;how many
+columns, whether to use exponential notation or not, and so on.
+(For the exceptions, see <a class="pxref" href="Output-Separators.html">Output Separators</a> and
+<a class="ref" href="OFMT.html">Controlling Numeric Output with <code class="code">print</code></a>.)
+For printing with specifications, you need the <code class="code">printf</code> statement
+(see <a class="pxref" href="Printf.html">Using <code class="code">printf</code> Statements for Fancier Printing</a>).
+</p>
+<a class="index-entry-id" id="index-print-statement"></a>
+<a class="index-entry-id" id="index-printf-statement"></a>
+<p>Besides basic and formatted printing, this chapter
+also covers I/O redirections to files and pipes, introduces
+the special file names that <code class="command">gawk</code> processes internally,
+and discusses the <code class="code">close()</code> built-in function.
+</p>
+
+<ul class="mini-toc">
+<li><a href="Print.html" accesskey="1">The <code class="code">print</code> Statement</a></li>
+<li><a href="Print-Examples.html" accesskey="2"><code class="code">print</code> Statement Examples</a></li>
+<li><a href="Output-Separators.html" accesskey="3">Output Separators</a></li>
+<li><a href="OFMT.html" accesskey="4">Controlling Numeric Output with <code class="code">print</code></a></li>
+<li><a href="Printf.html" accesskey="5">Using <code class="code">printf</code> Statements for Fancier Printing</a></li>
+<li><a href="Redirection.html" accesskey="6">Redirecting Output of <code class="code">print</code> and <code class="code">printf</code></a></li>
+<li><a href="Special-FD.html" accesskey="7">Special Files for Standard Preopened Data Streams</a></li>
+<li><a href="Special-Files.html" accesskey="8">Special File names in <code class="command">gawk</code></a></li>
+<li><a href="Close-Files-And-Pipes.html" accesskey="9">Closing Input and Output Redirections</a></li>
+<li><a href="Noflush.html">Speeding Up Pipe Output</a></li>
+<li><a href="Nonfatal.html">Enabling Nonfatal Output</a></li>
+<li><a href="Output-Summary.html">Summary</a></li>
+<li><a href="Output-Exercises.html">Exercises</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

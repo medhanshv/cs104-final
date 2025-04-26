@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Extension API Description (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Extension API Description (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Extension API Description (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Dynamic-Extensions.html" rel="up" title="Dynamic Extensions">
+<link href="Finding-Extensions.html" rel="next" title="Finding Extensions">
+<link href="Extension-Mechanism-Outline.html" rel="prev" title="Extension Mechanism Outline">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Extension-API-Description">
+<div class="nav-panel">
+<p>
+Next: <a href="Finding-Extensions.html" accesskey="n" rel="next">How <code class="command">gawk</code> Finds Extensions</a>, Previous: <a href="Extension-Mechanism-Outline.html" accesskey="p" rel="prev">How It Works at a High Level</a>, Up: <a href="Dynamic-Extensions.html" accesskey="u" rel="up">Writing Extensions for <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="API-Description"><span>17.4 API Description<a class="copiable-link" href="Extension-API-Description.html#API-Description"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-extension-API"></a>
+
+<p>C or C++ code for an extension must include the header file
+<samp class="file">gawkapi.h</samp>, which declares the functions and defines the data
+types used to communicate with <code class="command">gawk</code>.
+This (rather large) section describes the API in detail.
+</p>
+
+<ul class="mini-toc">
+<li><a href="Extension-API-Functions-Introduction.html" accesskey="1">Introduction</a></li>
+<li><a href="General-Data-Types.html" accesskey="2">General-Purpose Data Types</a></li>
+<li><a href="Memory-Allocation-Functions.html" accesskey="3">Memory Allocation Functions and Convenience Macros</a></li>
+<li><a href="Constructor-Functions.html" accesskey="4">Constructor Functions</a></li>
+<li><a href="API-Ownership-of-MPFR-and-GMP-Values.html" accesskey="5">Managing MPFR and GMP Values</a></li>
+<li><a href="Registration-Functions.html" accesskey="6">Registration Functions</a></li>
+<li><a href="Printing-Messages.html" accesskey="7">Printing Messages</a></li>
+<li><a href="Updating-ERRNO.html" accesskey="8">Updating <code class="code">ERRNO</code></a></li>
+<li><a href="Requesting-Values.html" accesskey="9">Requesting Values</a></li>
+<li><a href="Accessing-Parameters.html">Accessing and Updating Parameters</a></li>
+<li><a href="Symbol-Table-Access.html">Symbol Table Access</a></li>
+<li><a href="Array-Manipulation.html">Array Manipulation</a></li>
+<li><a href="Redirection-API.html">Accessing and Manipulating Redirections</a></li>
+<li><a href="Extension-API-Variables.html">API Variables</a></li>
+<li><a href="Extension-API-Boilerplate.html">Boilerplate Code</a></li>
+<li><a href="Changes-from-API-V1.html">Changes From Version 1 of the API</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

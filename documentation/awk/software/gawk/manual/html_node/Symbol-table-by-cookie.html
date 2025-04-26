@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Symbol table by cookie (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Symbol table by cookie (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Symbol table by cookie (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Symbol-Table-Access.html" rel="up" title="Symbol Table Access">
+<link href="Cached-values.html" rel="next" title="Cached values">
+<link href="Symbol-table-by-name.html" rel="prev" title="Symbol table by name">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Symbol-table-by-cookie">
+<div class="nav-panel">
+<p>
+Next: <a href="Cached-values.html" accesskey="n" rel="next">Creating and Using Cached Values</a>, Previous: <a href="Symbol-table-by-name.html" accesskey="p" rel="prev">Variable Access and Update by Name</a>, Up: <a href="Symbol-Table-Access.html" accesskey="u" rel="up">Symbol Table Access</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Variable-Access-and-Update-by-Cookie"><span>17.4.11.2 Variable Access and Update by Cookie<a class="copiable-link" href="Symbol-table-by-cookie.html#Variable-Access-and-Update-by-Cookie"> &para;</a></span></h4>
+
+<p>A <em class="dfn">scalar cookie</em> is an opaque handle that provides access
+to a global variable or array. It is an optimization that
+avoids looking up variables in <code class="command">gawk</code>&rsquo;s symbol table every time
+access is needed. This was discussed earlier, in <a class="ref" href="General-Data-Types.html">General-Purpose Data Types</a>.
+</p>
+<p>The following functions let you work with scalar cookies:
+</p>
+<dl class="table">
+<dt><code class="code">awk_bool_t sym_lookup_scalar(awk_scalar_t cookie,</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;awk_valtype_t wanted,</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;awk_value_t *result);</code></dt>
+<dd><p>Retrieve the current value of a scalar cookie.
+Once you have obtained a scalar cookie using <code class="code">sym_lookup()</code>, you can
+use this function to get its value more efficiently.
+Return false if the value cannot be retrieved.
+</p>
+</dd>
+<dt><code class="code">awk_bool_t sym_update_scalar(awk_scalar_t cookie, awk_value_t *value);</code></dt>
+<dd><p>Update the value associated with a scalar cookie.  Return false if
+the new value is not of type <code class="code">AWK_STRING</code>, <code class="code">AWK_STRNUM</code>, <code class="code">AWK_REGEX</code>, or <code class="code">AWK_NUMBER</code>.
+Here too, the predefined variables may not be updated.
+</p></dd>
+</dl>
+
+<p>It is not obvious at first glance how to work with scalar cookies or
+what their <i class="i">raison d&rsquo;&ecirc;tre</i> really is.  In theory, the <code class="code">sym_lookup()</code>
+and <code class="code">sym_update()</code> routines are all you really need to work with
+variables.  For example, you might have code that looks up the value of
+a variable, evaluates a condition, and then possibly changes the value
+of the variable based on the result of that evaluation, like so:
+</p>
+<div class="example">
+<pre class="example-preformatted">/*  do_magic --- do something really great */
+
+static awk_value_t *
+do_magic(int nargs, awk_value_t *result)
+{
+    awk_value_t value;
+
+    if (   sym_lookup(&quot;MAGIC_VAR&quot;, AWK_NUMBER, &amp; value)
+        &amp;&amp; some_condition(value.num_value)) {
+            value.num_value += 42;
+            sym_update(&quot;MAGIC_VAR&quot;, &amp; value);
+    }
+
+    return make_number(0.0, result);
+}
+</pre></div>
+
+<p>This code looks (and is) simple and straightforward. So what&rsquo;s the problem?
+</p>
+<p>Well, consider what happens if <code class="command">awk</code>-level code associated
+with your extension calls the <code class="code">magic()</code> function (implemented in
+C by <code class="code">do_magic()</code>), once per record, while processing hundreds
+of thousands or millions of records.  The <code class="code">MAGIC_VAR</code> variable is
+looked up in the symbol table once or twice per function call!
+</p>
+<p>The symbol table lookup is really pure overhead; it is considerably
+more efficient to get a cookie that represents the variable, and use
+that to get the variable&rsquo;s value and update it as needed.<a class="footnote" id="DOCF110" href="Symbol-table-by-cookie.html#FOOT110"><sup>110</sup></a>
+</p>
+<p>Thus, the way to use cookies is as follows.  First, install
+your extension&rsquo;s variable in <code class="command">gawk</code>&rsquo;s symbol table using
+<code class="code">sym_update()</code>, as usual. Then get a scalar cookie for the variable
+using <code class="code">sym_lookup()</code>:
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">static awk_scalar_t magic_var_cookie;    /* cookie for MAGIC_VAR */
+
+static void
+my_extension_init()
+{
+    awk_value_t value;
+</pre></div><pre class="example-preformatted">
+
+    /* install initial value */
+    sym_update(&quot;MAGIC_VAR&quot;, make_number(42.0, &amp; value));
+
+    /* get the cookie */
+    sym_lookup(&quot;MAGIC_VAR&quot;, AWK_SCALAR, &amp; value);
+
+    /* save the cookie */
+    magic_var_cookie = value.scalar_cookie;
+    ...
+}
+</pre></div>
+
+<p>Next, use the routines in this section for retrieving and updating
+the value through the cookie.  Thus, <code class="code">do_magic()</code> now becomes
+something like this:
+</p>
+<div class="example">
+<pre class="example-preformatted">/*  do_magic --- do something really great */
+
+static awk_value_t *
+do_magic(int nargs, awk_value_t *result)
+{
+    awk_value_t value;
+
+    if (   sym_lookup_scalar(magic_var_cookie, AWK_NUMBER, &amp; value)
+        &amp;&amp; some_condition(value.num_value)) {
+            value.num_value += 42;
+            sym_update_scalar(magic_var_cookie, &amp; value);
+    }
+    ...
+
+    return make_number(0.0, result);
+}
+</pre></div>
+
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> The previous code omitted error checking for
+presentation purposes.  Your extension code should be more robust
+and carefully check the return values from the API functions.
+</p></blockquote>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT110" href="Symbol-table-by-cookie.html#DOCF110">(110)</a></h5>
+<p>The
+difference is measurable and quite real. Trust us.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Cached-values.html">Creating and Using Cached Values</a>, Previous: <a href="Symbol-table-by-name.html">Variable Access and Update by Name</a>, Up: <a href="Symbol-Table-Access.html">Symbol Table Access</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>PANIC (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="PANIC (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="PANIC (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Some-Applications-and-Techniques.html" rel="up" title="Some Applications and Techniques">
+<link href="GETURL.html" rel="next" title="GETURL">
+<link href="Some-Applications-and-Techniques.html" rel="prev" title="Some Applications and Techniques">
+<style type="text/css">
+<!--
+div.example {margin-left: 3.2em}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="PANIC">
+<div class="nav-panel">
+<p>
+Next: <a href="GETURL.html" accesskey="n" rel="next">GETURL: Retrieving Web Pages</a>, Previous: <a href="Some-Applications-and-Techniques.html" accesskey="p" rel="prev">Some Applications and Techniques</a>, Up: <a href="Some-Applications-and-Techniques.html" accesskey="u" rel="up">Some Applications and Techniques</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="PANIC_003a-An-Emergency-Web-Server">3.1 PANIC: An Emergency Web Server</h3>
+<a class="index-entry-id" id="index-PANIC-program"></a>
+<a class="index-entry-id" id="index-web-service-1"></a>
+<p>At first glance, the <code class="code">&quot;Hello, world&quot;</code> example in
+<a class="ref" href="Primitive-Service.html">A Primitive Web Service</a>,
+seems useless. By adding just a few lines, we can turn it into something useful.
+</p>
+<p>The PANIC program tells everyone who connects that the local
+site is not working. When a web server breaks down, it makes a difference
+if customers get a strange &ldquo;network unreachable&rdquo; message, or a short message
+telling them that the server has a problem. In such an emergency,
+the hard disk and everything on it (including the regular web service) may
+be unavailable. Rebooting the web server off a USB drive makes sense in this
+setting.
+</p>
+<p>To use the PANIC program as an emergency web server, all you need are the
+<code class="command">gawk</code> executable and the program below on a USB drive. By default,
+it connects to port 8080. A different value may be supplied on the
+command line:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+  RS = ORS = &quot;\r\n&quot;
+  if (MyPort ==  0) MyPort = 8080
+  HttpService = &quot;/inet/tcp/&quot; MyPort &quot;/0/0&quot;
+  Hello = &quot;&lt;HTML&gt;&lt;HEAD&gt;&lt;TITLE&gt;Out Of Service&lt;/TITLE&gt;&quot; \
+     &quot;&lt;/HEAD&gt;&lt;BODY&gt;&lt;H1&gt;&quot; \
+     &quot;This site is temporarily out of service.&quot; \
+     &quot;&lt;/H1&gt;&lt;/BODY&gt;&lt;/HTML&gt;&quot;
+  Len = length(Hello) + length(ORS)
+  while (&quot;awk&quot; != &quot;complex&quot;) {
+    print &quot;HTTP/1.0 200 OK&quot;          |&amp; HttpService
+    print &quot;Content-Length: &quot; Len ORS |&amp; HttpService
+    print Hello                      |&amp; HttpService
+    while ((HttpService |&amp; getline) &gt; 0)
+       continue;
+    close(HttpService)
+  }
+}
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

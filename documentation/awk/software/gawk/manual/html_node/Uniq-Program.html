@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Uniq Program (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Uniq Program (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Uniq Program (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Clones.html" rel="up" title="Clones">
+<link href="Wc-Program.html" rel="next" title="Wc Program">
+<link href="Tee-Program.html" rel="prev" title="Tee Program">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+pre.display-preformatted {font-family: inherit}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Uniq-Program">
+<div class="nav-panel">
+<p>
+Next: <a href="Wc-Program.html" accesskey="n" rel="next">Counting Things</a>, Previous: <a href="Tee-Program.html" accesskey="p" rel="prev">Duplicating Output into Multiple Files</a>, Up: <a href="Clones.html" accesskey="u" rel="up">Reinventing Wheels for Fun and Profit</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Printing-Nonduplicated-Lines-of-Text"><span>11.2.6 Printing Nonduplicated Lines of Text<a class="copiable-link" href="Uniq-Program.html#Printing-Nonduplicated-Lines-of-Text"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-printing-unduplicated-lines-of-text"></a>
+<a class="index-entry-id" id="index-text_002c-printing-unduplicated-lines-of"></a>
+<a class="index-entry-id" id="index-uniq-utility"></a>
+<p>The <code class="command">uniq</code> utility reads sorted lines of data on its standard
+input, and by default removes duplicate lines.  In other words, it only
+prints unique lines&mdash;hence the name.  <code class="command">uniq</code> has a number of
+options. The usage is as follows:
+</p>
+<div class="display">
+<pre class="display-preformatted"><code class="command">uniq</code> [<samp class="option">-udc</samp> [<code class="code">-f <var class="var">n</var></code>] [<code class="code">-s <var class="var">n</var></code>]] [<var class="var">inputfile</var> [<var class="var">outputfile</var>]]
+</pre></div>
+
+<p>The options for <code class="command">uniq</code> are:
+</p>
+<dl class="table">
+<dt><code class="code">-d</code></dt>
+<dd><p>Print only repeated (duplicated) lines.
+</p>
+</dd>
+<dt><code class="code">-u</code></dt>
+<dd><p>Print only nonrepeated (unique) lines.
+</p>
+</dd>
+<dt><code class="code">-c</code></dt>
+<dd><p>Count lines. This option overrides <samp class="option">-d</samp> and <samp class="option">-u</samp>.  Both repeated
+and nonrepeated lines are counted.
+</p>
+</dd>
+<dt><code class="code">-f <var class="var">n</var></code></dt>
+<dd><p>Skip <var class="var">n</var> fields before comparing lines.  The definition of fields
+is similar to <code class="command">awk</code>&rsquo;s default: nonwhitespace characters separated
+by runs of spaces and/or TABs.
+</p>
+</dd>
+<dt><code class="code">-s <var class="var">n</var></code></dt>
+<dd><p>Skip <var class="var">n</var> characters before comparing lines.  Any fields specified with
+<samp class="option">-f</samp> are skipped first.
+</p>
+</dd>
+<dt><code class="code"><var class="var">inputfile</var></code></dt>
+<dd><p>Data is read from the input file named on the command line, instead of from
+the standard input.
+</p>
+</dd>
+<dt><code class="code"><var class="var">outputfile</var></code></dt>
+<dd><p>The generated output is sent to the named output file, instead of to the
+standard output.
+</p></dd>
+</dl>
+
+<p>Normally <code class="command">uniq</code> behaves as if both the <samp class="option">-d</samp> and
+<samp class="option">-u</samp> options are provided.
+</p>
+<p><code class="command">uniq</code> uses the
+<code class="code">getopt()</code> library function
+(see <a class="pxref" href="Getopt-Function.html">Processing Command-Line Options</a>)
+and the <code class="code">join()</code> library function
+(see <a class="pxref" href="Join-Function.html">Merging an Array into a String</a>).
+</p>
+<p>The program begins with a <code class="code">usage()</code> function and then a brief outline of
+the options and their meanings in comments:
+</p>
+<a class="index-entry-id" id="index-uniq_002eawk-program"></a>
+<div class="example">
+<div class="group"><pre class="example-preformatted"># uniq.awk --- do uniq in awk
+#
+# Requires getopt() and join() library functions
+</pre></div><pre class="example-preformatted">
+
+function usage()
+{
+    print(&quot;Usage: uniq [-udc [-f fields] [-s chars]] &quot; \
+          &quot;[ in [ out ]]&quot;) &gt; &quot;/dev/stderr&quot;
+    exit 1
+}
+
+# -c    count lines. overrides -d and -u
+# -d    only repeated lines
+# -u    only nonrepeated lines
+# -f n  skip n fields
+# -s n  skip n characters, skip fields first
+</pre></div>
+
+<p>The POSIX standard for <code class="command">uniq</code> allows options to start with
+&lsquo;<samp class="samp">+</samp>&rsquo; as well as with &lsquo;<samp class="samp">-</samp>&rsquo;.  An initial <code class="code">BEGIN</code> rule
+traverses the arguments changing any leading &lsquo;<samp class="samp">+</samp>&rsquo; to &lsquo;<samp class="samp">-</samp>&rsquo;
+so that the <code class="code">getopt()</code> function can parse the options:
+</p>
+<div class="example">
+<pre class="example-preformatted"># As of 2020, '+' can be used as the option character in addition to '-'
+# Previously allowed use of -N to skip fields and +N to skip
+# characters is no longer allowed, and not supported by this version.
+
+BEGIN {
+    # Convert + to - so getopt can handle things
+    for (i = 1; i &lt; ARGC; i++) {
+        first = substr(ARGV[i], 1, 1)
+        if (ARGV[i] == &quot;--&quot; || (first != &quot;-&quot; &amp;&amp; first != &quot;+&quot;))
+            break
+        else if (first == &quot;+&quot;)
+            # Replace &quot;+&quot; with &quot;-&quot;
+            ARGV[i] = &quot;-&quot; substr(ARGV[i], 2)
+    }
+}
+</pre></div>
+
+<p>The next <code class="code">BEGIN</code> rule deals with the command-line arguments and options.
+If no options are supplied, then the default is taken, to print both
+repeated and nonrepeated lines.  The output file, if provided, is assigned
+to <code class="code">outputfile</code>.  Early on, <code class="code">outputfile</code> is initialized to the
+standard output, <samp class="file">/dev/stdout</samp>:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+    count = 1
+    outputfile = &quot;/dev/stdout&quot;
+    opts = &quot;udcf:s:&quot;
+    while ((c = getopt(ARGC, ARGV, opts)) != -1) {
+        if (c == &quot;u&quot;)
+            non_repeated_only++
+        else if (c == &quot;d&quot;)
+            repeated_only++
+        else if (c == &quot;c&quot;)
+            do_count++
+        else if (c == &quot;f&quot;)
+            fcount = Optarg + 0
+        else if (c == &quot;s&quot;)
+            charcount = Optarg + 0
+        else
+            usage()
+    }
+
+    for (i = 1; i &lt; Optind; i++)
+        ARGV[i] = &quot;&quot;
+
+    if (repeated_only == 0 &amp;&amp; non_repeated_only == 0)
+        repeated_only = non_repeated_only = 1
+
+    if (ARGC - Optind == 2) {
+        outputfile = ARGV[ARGC - 1]
+        ARGV[ARGC - 1] = &quot;&quot;
+    }
+}
+</pre></div>
+
+<p>The following function, <code class="code">are_equal()</code>, compares the current line,
+<code class="code">$0</code>, to the previous line, <code class="code">last</code>.  It handles skipping fields
+and characters.  If no field count and no character count are specified,
+<code class="code">are_equal()</code> returns one or zero depending upon the result of a
+simple string comparison of <code class="code">last</code> and <code class="code">$0</code>.
+</p>
+<p>Otherwise, things get more complicated.  If fields have to be skipped,
+each line is broken into an array using <code class="code">split()</code> (see <a class="pxref" href="String-Functions.html">String-Manipulation Functions</a>); the desired fields are then joined back into a line
+using <code class="code">join()</code>.  The joined lines are stored in <code class="code">clast</code> and
+<code class="code">cline</code>.  If no fields are skipped, <code class="code">clast</code> and <code class="code">cline</code>
+are set to <code class="code">last</code> and <code class="code">$0</code>, respectively.  Finally, if
+characters are skipped, <code class="code">substr()</code> is used to strip off the leading
+<code class="code">charcount</code> characters in <code class="code">clast</code> and <code class="code">cline</code>.  The two
+strings are then compared and <code class="code">are_equal()</code> returns the result:
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">function are_equal(    n, m, clast, cline, alast, aline)
+{
+    if (fcount == 0 &amp;&amp; charcount == 0)
+        return (last == $0)
+</pre></div><pre class="example-preformatted">
+
+    if (fcount &gt; 0) {
+        n = split(last, alast)
+        m = split($0, aline)
+        clast = join(alast, fcount+1, n)
+        cline = join(aline, fcount+1, m)
+    } else {
+        clast = last
+        cline = $0
+    }
+    if (charcount) {
+        clast = substr(clast, charcount + 1)
+        cline = substr(cline, charcount + 1)
+    }
+</pre><div class="group"><pre class="example-preformatted">
+
+    return (clast == cline)
+}
+</pre></div></div>
+
+<p>The following two rules are the body of the program.  The first one is
+executed only for the very first line of data.  It sets <code class="code">last</code> equal to
+<code class="code">$0</code>, so that subsequent lines of text have something to be compared to.
+</p>
+<p>The second rule does the work. The variable <code class="code">equal</code> is one or zero,
+depending upon the results of <code class="code">are_equal()</code>&rsquo;s comparison. If <code class="command">uniq</code>
+is counting repeated lines, and the lines are equal, then it increments the <code class="code">count</code> variable.
+Otherwise, it prints the line and resets <code class="code">count</code>,
+because the two lines are not equal.
+</p>
+<p>If <code class="command">uniq</code> is not counting, and if the lines are equal, <code class="code">count</code> is incremented.
+Nothing is printed, as the point is to remove duplicates.
+Otherwise, if <code class="command">uniq</code> is counting repeated lines and more than
+one line is seen, or if <code class="command">uniq</code> is counting nonrepeated lines
+and only one line is seen, then the line is printed, and <code class="code">count</code>
+is reset.
+</p>
+<p>Finally, similar logic is used in the <code class="code">END</code> rule to print the final
+line of input data:
+</p>
+<div class="example">
+<pre class="example-preformatted">NR == 1 {
+    last = $0
+    next
+}
+
+{
+    equal = are_equal()
+
+    if (do_count) {    # overrides -d and -u
+        if (equal)
+            count++
+        else {
+            printf(&quot;%4d %s\n&quot;, count, last) &gt; outputfile
+            last = $0
+            count = 1    # reset
+        }
+        next
+    }
+
+    if (equal)
+        count++
+    else {
+        if ((repeated_only &amp;&amp; count &gt; 1) ||
+            (non_repeated_only &amp;&amp; count == 1))
+                print last &gt; outputfile
+        last = $0
+        count = 1
+    }
+}
+
+END {
+    if (do_count)
+        printf(&quot;%4d %s\n&quot;, count, last) &gt; outputfile
+</pre><div class="group"><pre class="example-preformatted">    else if ((repeated_only &amp;&amp; count &gt; 1) ||
+            (non_repeated_only &amp;&amp; count == 1))
+        print last &gt; outputfile
+    close(outputfile)
+}
+</pre></div></div>
+
+<p>As a side note, this program does not follow our recommended convention of naming
+global variables with a leading capital letter.  Doing that would
+make the program a little easier to follow.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Wc-Program.html">Counting Things</a>, Previous: <a href="Tee-Program.html">Duplicating Output into Multiple Files</a>, Up: <a href="Clones.html">Reinventing Wheels for Fun and Profit</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

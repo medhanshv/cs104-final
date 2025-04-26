@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Dynamic Typing Gawk (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Dynamic Typing Gawk (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Dynamic Typing Gawk (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Dynamic-Typing.html" rel="up" title="Dynamic Typing">
+<link href="Dynamic-Typing-Awk.html" rel="prev" title="Dynamic Typing Awk">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.center {text-align:center}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Dynamic-Typing-Gawk">
+<div class="nav-panel">
+<p>
+Previous: <a href="Dynamic-Typing-Awk.html" accesskey="p" rel="prev">Dynamic Typing In Standard <code class="command">awk</code></a>, Up: <a href="Dynamic-Typing.html" accesskey="u" rel="up">Variable Typing Is Dynamic</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Dynamic-Typing-In-gawk"><span>9.3.2 Dynamic Typing In <code class="command">gawk</code><a class="copiable-link" href="Dynamic-Typing-Gawk.html#Dynamic-Typing-In-gawk"> &para;</a></span></h4>
+
+<blockquote class="quotation">
+<p><i class="i">Hc Svnt Dracones</i> (&ldquo;Here be dragons&rdquo;)
+</p></blockquote>
+<div class="center">&mdash; <em class="emph">The Lenox Globe</em>
+</div>
+<p>Things in <code class="command">gawk</code> can be a little more unexpected.
+Because <code class="command">gawk</code> allows arrays of arrays, the same
+dynamic typing can be applied to array elements that
+have been created but not used.
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+    funky(a[1])
+    if (A == 0)
+        print &quot;&lt;&quot; a[1] &quot;&gt;&quot;
+    else
+        print a[1][1]
+}
+
+function funky(arr)
+{
+    if (A == 0)
+        arr = 1
+    else
+        arr[1] = 1
+}
+</pre></div>
+
+<p>When run, the results are the same as in the earlier case:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk -v A=0 -f funky2.awk</kbd>
+-| &lt;&gt;
+$ <kbd class="kbd">gawk -v A=1 -f funky2.awk</kbd>
+-| 1
+</pre></div>
+
+<p>The <code class="code">typeof()</code> function provides us a &ldquo;window&rdquo; into <code class="command">gawk</code>&rsquo;s
+inner workings.
+Let&rsquo;s see how using a variable or array element can change
+its type dynamically.
+Let&rsquo;s start with using a variable as a scalar:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+    print typeof(a)         # we don't know what a is yet
+    printf(&quot;a = %d\n&quot;, a)   # use it as a scalar
+    print typeof(a)         # now we know it's not an array
+}
+</pre></div>
+
+<p>When run:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk -f typing1.awk</kbd>
+-| untyped
+-| a = 0
+-| unassigned
+</pre></div>
+
+<p>Initially, <code class="code">a</code> is <code class="code">untyped</code>, since we don&rsquo;t know yet if it&rsquo;s
+an array or scalar.
+After using it in the call to <code class="code">printf()</code>, we know it&rsquo;s a scalar.
+However, since it was never given a concrete value (number, string, or regexp),
+its type is <code class="code">unassigned</code>.
+</p>
+<p><code class="command">gawk</code> is peculiar in that we can do the same thing, but
+change <code class="code">a</code> into an array:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+    print typeof(a)               # we don't know what a is yet
+    a[1]                          # make a into an array
+    print typeof(a[1])            # but we don't know what a[1] is yet
+    printf(&quot;a[1] = %d\n&quot;, a[1])   # use it as a scalar
+    print typeof(a[1])            # now we know it's not an array
+}
+</pre></div>
+
+<p>When run:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk -f typing2.awk</kbd>
+-| untyped
+-| untyped
+-| a[1] = 0
+-| unassigned
+</pre></div>
+
+<p>Normally, passing a variable that has never been used to a built-in
+function causes it to become a scalar variable (<code class="code">unassigned</code>).
+However, <code class="code">isarray()</code> and <code class="code">typeof()</code> are different; they do
+not change their arguments from <code class="code">untyped</code> to <code class="code">unassigned</code>.
+</p>
+<p>As we saw, this applies to both variables denoted by simple identifiers
+and array elements that come into existence simply by referencing them:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk 'BEGIN { print typeof(x) }'</kbd>
+-| untyped
+$ <kbd class="kbd">gawk 'BEGIN { print typeof(x[&quot;foo&quot;]) }'</kbd>
+-| untyped
+</pre></div>
+
+<p>Note that prior to version 5.2, array elements
+that come into existence simply by referencing them
+were different, they were automatically forced to be scalars:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk-5.1.1 'BEGIN { print typeof(x) }'</kbd>
+-| untyped
+$ <kbd class="kbd">gawk-5.1.1 'BEGIN { print typeof(x[&quot;foo&quot;]) }'</kbd>
+-| unassigned
+</pre></div>
+
+<p>To sum up, variables and array elements get their nature (array or scalar)
+&ldquo;fixed&rdquo; upon first use.  This can lead to some weird cases, and it is
+best to avoid taking advantage of <code class="command">gawk</code>&rsquo;s dynamic nature, other
+than in the standard manner of passing untyped variables and array
+elements as function parameters.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Dynamic-Typing-Awk.html">Dynamic Typing In Standard <code class="command">awk</code></a>, Up: <a href="Dynamic-Typing.html">Variable Typing Is Dynamic</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

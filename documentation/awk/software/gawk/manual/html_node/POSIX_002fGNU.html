@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>POSIX/GNU (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="POSIX/GNU (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="POSIX/GNU (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Language-History.html" rel="up" title="Language History">
+<link href="Feature-History.html" rel="next" title="Feature History">
+<link href="BTL.html" rel="prev" title="BTL">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+ul.mark-minus {list-style-type: "\2212"}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="appendixsec-level-extent" id="POSIX_002fGNU">
+<div class="nav-panel">
+<p>
+Next: <a href="Feature-History.html" accesskey="n" rel="next">History of <code class="command">gawk</code> Features</a>, Previous: <a href="BTL.html" accesskey="p" rel="prev">Extensions in Brian Kernighan&rsquo;s <code class="command">awk</code></a>, Up: <a href="Language-History.html" accesskey="u" rel="up">The Evolution of the <code class="command">awk</code> Language</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="appendixsec" id="Extensions-in-gawk-Not-in-POSIX-awk"><span>A.5 Extensions in <code class="command">gawk</code> Not in POSIX <code class="command">awk</code><a class="copiable-link" href="POSIX_002fGNU.html#Extensions-in-gawk-Not-in-POSIX-awk"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-compatibility-mode-_0028gawk_0029-extensions"></a>
+<a class="index-entry-id" id="index-extensions-in-gawk_002c-not-in-POSIX-awk"></a>
+<a class="index-entry-id" id="index-POSIX-gawk-extensions-not-included-in"></a>
+<p>The GNU implementation, <code class="command">gawk</code>, adds a large number of features.
+They can all be disabled with either the <samp class="option">--traditional</samp> or
+<samp class="option">--posix</samp> options
+(see <a class="pxref" href="Options.html">Command-Line Options</a>).
+</p>
+<p>A number of features have come and gone over the years. This section
+summarizes the additional features over POSIX <code class="command">awk</code> that are
+in the current version of <code class="command">gawk</code>.
+</p>
+<ul class="itemize mark-bullet">
+<li>Additional predefined variables:
+
+<ul class="itemize mark-minus">
+<li>The
+<code class="code">ARGIND</code>,
+<code class="code">BINMODE</code>,
+<code class="code">ERRNO</code>,
+<code class="code">FIELDWIDTHS</code>,
+<code class="code">FPAT</code>,
+<code class="code">IGNORECASE</code>,
+<code class="code">LINT</code>,
+<code class="code">PROCINFO</code>,
+<code class="code">RT</code>,
+and
+<code class="code">TEXTDOMAIN</code>
+variables
+(see <a class="pxref" href="Built_002din-Variables.html">Predefined Variables</a>)
+</li></ul>
+
+</li><li>Special files in I/O redirections:
+
+<ul class="itemize mark-minus">
+<li>The <samp class="file">/dev/stdin</samp>, <samp class="file">/dev/stdout</samp>, <samp class="file">/dev/stderr</samp>, and
+<samp class="file">/dev/fd/<var class="var">N</var></samp> special file names
+(see <a class="pxref" href="Special-Files.html">Special File names in <code class="command">gawk</code></a>)
+
+</li><li>The <samp class="file">/inet</samp>, <samp class="file">/inet4</samp>, and <samp class="file">/inet6</samp> special files for
+TCP/IP networking using &lsquo;<samp class="samp">|&amp;</samp>&rsquo; to specify which version of the
+IP protocol to use
+(see <a class="pxref" href="TCP_002fIP-Networking.html">Using <code class="command">gawk</code> for Network Programming</a>)
+</li></ul>
+
+</li><li>Changes and/or additions to the language:
+
+<ul class="itemize mark-minus">
+<li>The &lsquo;<samp class="samp">\x</samp>&rsquo; escape sequence
+(see <a class="pxref" href="Escape-Sequences.html">Escape Sequences</a>)
+
+</li><li>Full support for both POSIX and GNU regexps
+(see <a class="pxref" href="Regexp.html">Regular Expressions</a>)
+
+</li><li>The ability for <code class="code">FS</code> and for the third
+argument to <code class="code">split()</code> to be null strings
+(see <a class="pxref" href="Single-Character-Fields.html">Making Each Character a Separate Field</a>)
+
+</li><li>The ability for <code class="code">RS</code> to be a regexp
+(see <a class="pxref" href="Records.html">How Input Is Split into Records</a>)
+
+</li><li>The ability to use octal and hexadecimal constants in <code class="command">awk</code>
+program source code
+(see <a class="pxref" href="Nondecimal_002dnumbers.html">Octal and Hexadecimal Numbers</a>)
+
+</li><li>The &lsquo;<samp class="samp">|&amp;</samp>&rsquo; operator for two-way I/O to a coprocess
+(see <a class="pxref" href="Two_002dway-I_002fO.html">Two-Way Communications with Another Process</a>)
+
+</li><li>Indirect function calls
+(see <a class="pxref" href="Indirect-Calls.html">Indirect Function Calls</a>)
+
+</li><li>Directories on the command line produce a warning and are skipped
+(see <a class="pxref" href="Command_002dline-directories.html">Directories on the Command Line</a>)
+
+</li><li>Output with <code class="code">print</code> and <code class="code">printf</code> need not be fatal
+(see <a class="pxref" href="Nonfatal.html">Enabling Nonfatal Output</a>)
+
+</li><li>Namespaces and the use of <code class="code">::</code> to designate an identifier
+within a namespace
+(see <a class="pxref" href="Namespaces.html">Namespaces in <code class="command">gawk</code></a>).
+</li></ul>
+
+</li><li>New keywords:
+
+<ul class="itemize mark-minus">
+<li>The <code class="code">BEGINFILE</code> and <code class="code">ENDFILE</code> special patterns
+(see <a class="pxref" href="BEGINFILE_002fENDFILE.html">The <code class="code">BEGINFILE</code> and <code class="code">ENDFILE</code> Special Patterns</a>)
+
+</li><li>The <code class="code">switch</code> statement
+(see <a class="pxref" href="Switch-Statement.html">The <code class="code">switch</code> Statement</a>)
+</li></ul>
+
+</li><li>Changes to standard <code class="command">awk</code> functions:
+
+<ul class="itemize mark-minus">
+<li>The optional second argument to <code class="code">close()</code> that allows closing one end
+of a two-way pipe to a coprocess
+(see <a class="pxref" href="Two_002dway-I_002fO.html">Two-Way Communications with Another Process</a>)
+
+</li><li>POSIX compliance for <code class="code">gsub()</code> and <code class="code">sub()</code> with <samp class="option">--posix</samp>
+
+</li><li>The <code class="code">length()</code> function accepts an array argument
+and returns the number of elements in the array
+(see <a class="pxref" href="String-Functions.html">String-Manipulation Functions</a>)
+
+</li><li>The optional third argument to the <code class="code">match()</code> function
+for capturing text-matching subexpressions within a regexp
+(see <a class="pxref" href="String-Functions.html">String-Manipulation Functions</a>)
+
+</li><li>Positional specifiers in <code class="code">printf</code> formats for
+making translations easier
+(see <a class="pxref" href="Printf-Ordering.html">Rearranging <code class="code">printf</code> Arguments</a>)
+
+</li><li>The <code class="code">split()</code> function&rsquo;s additional optional fourth
+argument, which is an array to hold the text of the field separators
+(see <a class="pxref" href="String-Functions.html">String-Manipulation Functions</a>)
+</li></ul>
+
+<a class="anchor" id="Gawk-Extension-Functions"></a></li><li>Additional functions only in <code class="command">gawk</code>:
+
+<ul class="itemize mark-minus">
+<li>The <code class="code">gensub()</code>, <code class="code">patsplit()</code>, and <code class="code">strtonum()</code> functions
+for more powerful text manipulation
+(see <a class="pxref" href="String-Functions.html">String-Manipulation Functions</a>)
+
+</li><li>The <code class="code">asort()</code> and <code class="code">asorti()</code> functions for sorting arrays
+(see <a class="pxref" href="Array-Sorting.html">Controlling Array Traversal and Array Sorting</a>)
+
+</li><li>The <code class="code">mktime()</code>, <code class="code">systime()</code>, and <code class="code">strftime()</code>
+functions for working with timestamps
+(see <a class="pxref" href="Time-Functions.html">Time Functions</a>)
+
+</li><li>The
+<code class="code">and()</code>,
+<code class="code">compl()</code>,
+<code class="code">lshift()</code>,
+<code class="code">or()</code>,
+<code class="code">rshift()</code>,
+and
+<code class="code">xor()</code>
+functions for bit manipulation
+(see <a class="pxref" href="Bitwise-Functions.html">Bit-Manipulation Functions</a>)
+
+</li><li>The <code class="code">isarray()</code> function to check whether a variable is an array, and
+the more general <code class="code">typeof()</code> function
+(see <a class="pxref" href="Type-Functions.html">Getting Type Information</a>)
+
+</li><li>The <code class="code">mkbool()</code> function to create a Boolean value
+(see <a class="pxref" href="Boolean-Functions.html">Generating Boolean Values</a>)
+
+</li><li>The <code class="code">bindtextdomain()</code>, <code class="code">dcgettext()</code>, and <code class="code">dcngettext()</code>
+functions for internationalization
+(see <a class="pxref" href="Programmer-i18n.html">Internationalizing <code class="command">awk</code> Programs</a>)
+
+</li></ul>
+
+</li><li>Changes and/or additions in the command-line options:
+
+<ul class="itemize mark-minus">
+<li><a class="index-entry-id" id="index-AWKPATH-environment-variable-6"></a>
+<a class="index-entry-id" id="index-environment-variables-AWKPATH-6"></a>
+</li><li>The <code class="env">AWKPATH</code> environment variable for specifying a path search for
+the <samp class="option">-f</samp> command-line option
+(see <a class="pxref" href="Options.html">Command-Line Options</a>)
+
+<a class="index-entry-id" id="index-AWKLIBPATH-environment-variable-6"></a>
+<a class="index-entry-id" id="index-environment-variables-AWKLIBPATH-6"></a>
+</li><li>The <code class="env">AWKLIBPATH</code> environment variable for specifying a path search for
+the <samp class="option">-l</samp> command-line option
+(see <a class="pxref" href="Options.html">Command-Line Options</a>)
+
+</li><li>The
+<samp class="option">-b</samp>,
+<samp class="option">-c</samp>,
+<samp class="option">-C</samp>,
+<samp class="option">-d</samp>,
+<samp class="option">-D</samp>,
+<samp class="option">-e</samp>,
+<samp class="option">-E</samp>,
+<samp class="option">-g</samp>,
+<samp class="option">-h</samp>,
+<samp class="option">-i</samp>,
+<samp class="option">-l</samp>,
+<samp class="option">-L</samp>,
+<samp class="option">-M</samp>,
+<samp class="option">-n</samp>,
+<samp class="option">-N</samp>,
+<samp class="option">-o</samp>,
+<samp class="option">-O</samp>,
+<samp class="option">-p</samp>,
+<samp class="option">-P</samp>,
+<samp class="option">-r</samp>,
+<samp class="option">-s</samp>,
+<samp class="option">-S</samp>,
+<samp class="option">-t</samp>,
+and
+<samp class="option">-V</samp>
+short options. Also, the
+ability to use GNU-style long-named options that start with <samp class="option">--</samp>,
+and the
+<samp class="option">--assign</samp>,
+<samp class="option">--bignum</samp>,
+<samp class="option">--characters-as-bytes</samp>,
+<samp class="option">--copyright</samp>,
+<samp class="option">--debug</samp>,
+<samp class="option">--dump-variables</samp>,
+<samp class="option">--exec</samp>,
+<samp class="option">--field-separator</samp>,
+<samp class="option">--file</samp>,
+<samp class="option">--gen-pot</samp>,
+<samp class="option">--help</samp>,
+<samp class="option">--include</samp>,
+<samp class="option">--lint</samp>,
+<samp class="option">--lint-old</samp>,
+<samp class="option">--load</samp>,
+<samp class="option">--non-decimal-data</samp>,
+<samp class="option">--optimize</samp>,
+<samp class="option">--no-optimize</samp>,
+<samp class="option">--posix</samp>,
+<samp class="option">--pretty-print</samp>,
+<samp class="option">--profile</samp>,
+<samp class="option">--re-interval</samp>,
+<samp class="option">--sandbox</samp>,
+<samp class="option">--source</samp>,
+<samp class="option">--traditional</samp>,
+<samp class="option">--use-lc-numeric</samp>,
+and
+<samp class="option">--version</samp>
+long options
+(see <a class="pxref" href="Options.html">Command-Line Options</a>).
+</li></ul>
+
+
+</li><li>Support for the following obsolete systems was removed from the code
+and the documentation for <code class="command">gawk</code> version 4.0:
+
+<ul class="itemize mark-minus">
+<li>Amiga
+
+</li><li>Atari
+
+</li><li>BeOS
+
+</li><li>Cray
+
+</li><li>MIPS RiscOS
+
+</li><li>MS-DOS with the Microsoft Compiler
+
+</li><li>MS-Windows with the Microsoft Compiler
+
+</li><li>NeXT
+
+</li><li>SunOS 3.x, Sun 386 (Road Runner)
+
+</li><li>Tandem (non-POSIX)
+
+</li><li>Prestandard VAX C compiler for VAX/VMS
+
+</li><li>GCC for Alpha has not been tested for a while.
+
+</li></ul>
+
+</li><li>Support for the following obsolete system was removed from the code
+for <code class="command">gawk</code> version 4.1:
+
+<ul class="itemize mark-minus">
+<li>Ultrix
+</li></ul>
+
+</li><li>Support for the following systems was removed from the code
+for <code class="command">gawk</code> version 4.2:
+
+<ul class="itemize mark-minus">
+<li>MirBSD
+
+</li><li>GNU/Linux on Alpha
+</li></ul>
+
+</li><li>Support for the following systems was removed from the code
+for <code class="command">gawk</code> version 5.2:
+
+
+<ul class="itemize mark-minus">
+<li>OS/2
+
+</li><li>DJGPP
+
+</li><li>VAX/VMS
+
+</li></ul>
+
+</li></ul>
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Feature-History.html">History of <code class="command">gawk</code> Features</a>, Previous: <a href="BTL.html">Extensions in Brian Kernighan&rsquo;s <code class="command">awk</code></a>, Up: <a href="Language-History.html">The Evolution of the <code class="command">awk</code> Language</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

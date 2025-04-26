@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Other Inherited Files (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Other Inherited Files (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Other Inherited Files (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Special-Files.html" rel="up" title="Special Files">
+<link href="Special-Network.html" rel="next" title="Special Network">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Other-Inherited-Files">
+<div class="nav-panel">
+<p>
+Next: <a href="Special-Network.html" accesskey="n" rel="next">Special Files for Network Communications</a>, Up: <a href="Special-Files.html" accesskey="u" rel="up">Special File names in <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Accessing-Other-Open-Files-with-gawk"><span>5.8.1 Accessing Other Open Files with <code class="command">gawk</code><a class="copiable-link" href="Other-Inherited-Files.html#Accessing-Other-Open-Files-with-gawk"> &para;</a></span></h4>
+
+<p>Besides the <code class="code">/dev/stdin</code>, <code class="code">/dev/stdout</code>, and <code class="code">/dev/stderr</code>
+special file names mentioned earlier, <code class="command">gawk</code> provides syntax
+for accessing any other inherited open file:
+</p>
+<dl class="table">
+<dt><samp class="file">/dev/fd/<var class="var">N</var></samp></dt>
+<dd><p>The file associated with file descriptor <var class="var">N</var>.  Such a file must
+be opened by the program initiating the <code class="command">awk</code> execution (typically
+the shell).  Unless special pains are taken in the shell from which
+<code class="command">gawk</code> is invoked, only descriptors 0, 1, and 2 are available.
+</p></dd>
+</dl>
+
+<p>The file names <samp class="file">/dev/stdin</samp>, <samp class="file">/dev/stdout</samp>, and <samp class="file">/dev/stderr</samp>
+are essentially aliases for <samp class="file">/dev/fd/0</samp>, <samp class="file">/dev/fd/1</samp>, and
+<samp class="file">/dev/fd/2</samp>, respectively. However, those names are more self-explanatory.
+</p>
+<p>Note that using <code class="code">close()</code> on a file name of the
+form <code class="code">&quot;/dev/fd/<var class="var">N</var>&quot;</code>, for file descriptor numbers
+above two, does actually close the given file descriptor.
+</p>
+</div>
+
+
+
+</body>
+</html>

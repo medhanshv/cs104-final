@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Strange values (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Strange values (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Strange values (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Inexactness-of-computations.html" rel="up" title="Inexactness of computations">
+<link href="Errors-accumulate.html" rel="prev" title="Errors accumulate">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Strange-values">
+<div class="nav-panel">
+<p>
+Previous: <a href="Errors-accumulate.html" accesskey="p" rel="prev">Errors Accumulate</a>, Up: <a href="Inexactness-of-computations.html" accesskey="u" rel="up">Floating-Point Arithmetic Is Not Exact</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Floating-Point-Values-They-Didn_0027t-Talk-About-In-School"><span>16.4.1.4 Floating Point Values They Didn&rsquo;t Talk About In School<a class="copiable-link" href="Strange-values.html#Floating-Point-Values-They-Didn_0027t-Talk-About-In-School"> &para;</a></span></h4>
+
+<p>Both IEEE 754 floating-point hardware, and MPFR, support two kinds of
+values that you probably didn&rsquo;t learn about in school.  The first is
+<em class="dfn">infinity</em>, a special value, that can be either negative or positive,
+and which is either smaller than any other value (negative infinity),
+or larger than any other value (positive infinity).  When such values
+are generated, <code class="command">gawk</code> prints them as either &lsquo;<samp class="samp">-inf</samp>&rsquo; or
+&lsquo;<samp class="samp">+inf</samp>&rsquo;, respectively.  It accepts those strings as data input and
+converts them to the proper floating-point values internally.
+</p>
+<p>Infinity values of the same sign compare as equal to each other.
+Otherwise, operations (addition, subtraction, etc.) involving another
+number and infinity produce mathematically reasonable results.
+</p>
+<p>The second kind of value is &ldquo;not a number&rdquo;, or NaN for
+short.<a class="footnote" id="DOCF102" href="Strange-values.html#FOOT102"><sup>102</sup></a> This is a special value that results
+from attempting a calculation that has no answer as a real number.
+In such a case, programs can either receive a floating-point exception,
+or get NaN back as the result. The IEEE 754 standard recommends
+that systems return NaN. Some examples:
+</p>
+<dl class="table">
+<dt><code class="code">sqrt(-1)</code></dt>
+<dd><p>This
+makes sense in the range of complex numbers, but not in the
+range of real numbers, so the result is NaN.
+</p>
+</dd>
+<dt><code class="code">log(-8)</code></dt>
+<dd><p>&minus;8 is out of the domain of <code class="code">log()</code>, so the result is NaN.
+</p></dd>
+</dl>
+
+<p>NaN values are strange. In particular, they cannot be compared with other
+floating point values; any such comparison, except for &ldquo;is not equal
+to&rdquo;, returns false.  NaN values are so much unequal to other values that
+even comparing two identical NaN values with <code class="code">!=</code> returns true!
+</p>
+<p>NaN values can also be signed, although it depends upon the implementation
+as to which sign you get for any operation that returns a NaN. For
+example, on some systems, <code class="code">sqrt(-1)</code> returns a negative NaN. On
+others, it returns a positive NaN.
+</p>
+<p>When such values are generated, <code class="command">gawk</code> prints them as either
+&lsquo;<samp class="samp">-nan</samp>&rsquo; or &lsquo;<samp class="samp">+nan</samp>&rsquo;, respectively.  Here too, <code class="command">gawk</code>
+accepts those strings as data input and converts them to the proper
+floating-point values internally.
+</p>
+<p>If you want to dive more deeply into this topic, you can find
+test programs in C, <code class="command">awk</code> and Python in the directory
+<samp class="file">awklib/eg/test-programs</samp> in the <code class="command">gawk</code> distribution.
+These programs enable comparison among programming languages as to how
+they handle NaN and infinity values.
+</p>
+
+
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT102" href="Strange-values.html#DOCF102">(102)</a></h5>
+<p>Thanks to Michael Brennan for this description, which we
+have paraphrased, and for the examples.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Errors-accumulate.html">Errors Accumulate</a>, Up: <a href="Inexactness-of-computations.html">Floating-Point Arithmetic Is Not Exact</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

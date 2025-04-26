@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Plugin License (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Plugin License (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Plugin License (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Dynamic-Extensions.html" rel="up" title="Dynamic Extensions">
+<link href="Extension-Mechanism-Outline.html" rel="next" title="Extension Mechanism Outline">
+<link href="Extension-Intro.html" rel="prev" title="Extension Intro">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Plugin-License">
+<div class="nav-panel">
+<p>
+Next: <a href="Extension-Mechanism-Outline.html" accesskey="n" rel="next">How It Works at a High Level</a>, Previous: <a href="Extension-Intro.html" accesskey="p" rel="prev">Introduction</a>, Up: <a href="Dynamic-Extensions.html" accesskey="u" rel="up">Writing Extensions for <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Extension-Licensing"><span>17.2 Extension Licensing<a class="copiable-link" href="Plugin-License.html#Extension-Licensing"> &para;</a></span></h3>
+
+<p>Every dynamic extension must be distributed under a license that is
+compatible with the GNU GPL (see <a class="pxref" href="Copying.html">GNU General Public License</a>).
+</p>
+<p>In order for the extension to tell <code class="command">gawk</code> that it is
+properly licensed, the extension must define the global symbol
+<code class="code">plugin_is_GPL_compatible</code>.  If this symbol does not exist,
+<code class="command">gawk</code> emits a fatal error and exits when it tries to load
+your extension.
+</p>
+<p>The declared type of the symbol should be <code class="code">int</code>.  It does not need
+to be in any allocated section, though.  The code merely asserts that
+the symbol exists in the global scope.  Something like this is enough:
+</p>
+<div class="example">
+<pre class="example-preformatted">int plugin_is_GPL_compatible;
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

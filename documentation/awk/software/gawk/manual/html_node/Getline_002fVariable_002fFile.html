@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Getline/Variable/File (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Getline/Variable/File (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Getline/Variable/File (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Getline.html" rel="up" title="Getline">
+<link href="Getline_002fPipe.html" rel="next" title="Getline/Pipe">
+<link href="Getline_002fFile.html" rel="prev" title="Getline/File">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Getline_002fVariable_002fFile">
+<div class="nav-panel">
+<p>
+Next: <a href="Getline_002fPipe.html" accesskey="n" rel="next">Using <code class="code">getline</code> from a Pipe</a>, Previous: <a href="Getline_002fFile.html" accesskey="p" rel="prev">Using <code class="code">getline</code> from a File</a>, Up: <a href="Getline.html" accesskey="u" rel="up">Explicit Input with <code class="code">getline</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Using-getline-into-a-Variable-from-a-File"><span>4.10.4 Using <code class="code">getline</code> into a Variable from a File<a class="copiable-link" href="Getline_002fVariable_002fFile.html#Using-getline-into-a-Variable-from-a-File"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-variables-getline-function-into_002c-using-1"></a>
+
+<p>Use &lsquo;<samp class="samp">getline <var class="var">var</var> &lt; <var class="var">file</var></samp>&rsquo; to read input
+from the file
+<var class="var">file</var>, and put it in the variable <var class="var">var</var>.  As earlier, <var class="var">file</var>
+is a string-valued expression that specifies the file from which to read.
+</p>
+<p>In this version of <code class="code">getline</code>, none of the predefined variables are
+changed and the record is not split into fields.  The only variable
+changed is <var class="var">var</var>.<a class="footnote" id="DOCF27" href="Getline_002fVariable_002fFile.html#FOOT27"><sup>27</sup></a>
+For example, the following program copies all the input files to the
+output, except for records that say &lsquo;<samp class="samp">@include&nbsp;<var class="var">filename</var></samp>&rsquo;<!-- /@w -->.
+Such a record is replaced by the contents of the file
+<var class="var">filename</var>:
+</p>
+<div class="example">
+<pre class="example-preformatted">{
+     if (NF == 2 &amp;&amp; $1 == &quot;@include&quot;) {
+          while ((getline line &lt; $2) &gt; 0)
+               print line
+          close($2)
+     } else
+          print
+}
+</pre></div>
+
+<p>Note here how the name of the extra input file is not built into
+the program; it is taken directly from the data, specifically from the second field on
+the <code class="code">@include</code> line.
+</p>
+<p>The <code class="code">close()</code> function is called to ensure that if two identical
+<code class="code">@include</code> lines appear in the input, the entire specified file is
+included twice.
+See <a class="xref" href="Close-Files-And-Pipes.html">Closing Input and Output Redirections</a>.
+</p>
+<p>One deficiency of this program is that it does not process nested
+<code class="code">@include</code> directives
+(i.e., <code class="code">@include</code> directives in included files)
+the way a true macro preprocessor would.
+See <a class="xref" href="Igawk-Program.html">An Easy Way to Use Library Functions</a> for a program
+that does handle nested <code class="code">@include</code> directives.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT27" href="Getline_002fVariable_002fFile.html#DOCF27">(27)</a></h5>
+<p>This is not quite true. <code class="code">RT</code> could
+be changed if <code class="code">RS</code> is a regular expression.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Getline_002fPipe.html">Using <code class="code">getline</code> from a Pipe</a>, Previous: <a href="Getline_002fFile.html">Using <code class="code">getline</code> from a File</a>, Up: <a href="Getline.html">Explicit Input with <code class="code">getline</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

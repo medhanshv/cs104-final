@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>AWKLIBPATH Variable (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="AWKLIBPATH Variable (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="AWKLIBPATH Variable (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Environment-Variables.html" rel="up" title="Environment Variables">
+<link href="Other-Environment-Variables.html" rel="next" title="Other Environment Variables">
+<link href="AWKPATH-Variable.html" rel="prev" title="AWKPATH Variable">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="AWKLIBPATH-Variable">
+<div class="nav-panel">
+<p>
+Next: <a href="Other-Environment-Variables.html" accesskey="n" rel="next">Other Environment Variables</a>, Previous: <a href="AWKPATH-Variable.html" accesskey="p" rel="prev">The <code class="env">AWKPATH</code> Environment Variable</a>, Up: <a href="Environment-Variables.html" accesskey="u" rel="up">The Environment Variables <code class="command">gawk</code> Uses</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="The-AWKLIBPATH-Environment-Variable"><span>2.5.2 The <code class="env">AWKLIBPATH</code> Environment Variable<a class="copiable-link" href="AWKLIBPATH-Variable.html#The-AWKLIBPATH-Environment-Variable"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-AWKLIBPATH-environment-variable-1"></a>
+<a class="index-entry-id" id="index-environment-variables-AWKLIBPATH-1"></a>
+<a class="index-entry-id" id="index-directories-searching-for-loadable-extensions"></a>
+<a class="index-entry-id" id="index-search-paths-for-loadable-extensions"></a>
+<a class="index-entry-id" id="index-differences-in-awk-and-gawk-AWKLIBPATH-environment-variable"></a>
+<a class="index-entry-id" id="index-_0040-_0028at_002dsign_0029-_0040load-directive-1"></a>
+<a class="index-entry-id" id="index-at_002dsign-_0028_0040_0029-_0040load-directive-1"></a>
+<a class="index-entry-id" id="index-_0040load-directive-1"></a>
+
+<p>The <code class="env">AWKLIBPATH</code> environment variable is similar to the <code class="env">AWKPATH</code>
+variable, but it is used to search for loadable extensions (stored as
+system shared libraries) specified with the <samp class="option">-l</samp> option rather
+than for source files.  If the extension is not found, the path is
+searched again after adding the appropriate shared library suffix for
+the platform.  For example, on GNU/Linux systems, the suffix &lsquo;<samp class="samp">.so</samp>&rsquo;
+is used.  The search path specified is also used for extensions loaded
+via the <code class="code">@load</code> directive (see <a class="pxref" href="Loading-Shared-Libraries.html">Loading Dynamic Extensions into Your Program</a>).
+</p>
+<p>If <code class="env">AWKLIBPATH</code> does not exist in the environment, or if it has
+an empty value, <code class="command">gawk</code> uses a default path; this
+is typically &lsquo;<samp class="samp">/usr/local/lib/gawk</samp>&rsquo;, although it can vary depending
+upon how <code class="command">gawk</code> was built.<a class="footnote" id="DOCF15" href="AWKLIBPATH-Variable.html#FOOT15"><sup>15</sup></a>
+</p>
+<p>See <a class="xref" href="Shell-Startup-Files.html">Shell Startup Files</a>, for information on functions that help to
+manipulate the <code class="env">AWKLIBPATH</code> variable.
+</p>
+<p><code class="command">gawk</code> places the value of the search path that it used into
+<code class="code">ENVIRON[&quot;AWKLIBPATH&quot;]</code>. This provides access to the actual search
+path value from within an <code class="command">awk</code> program.
+</p>
+<p>Although you can change <code class="code">ENVIRON[&quot;AWKLIBPATH&quot;]</code> within your
+<code class="command">awk</code> program, this has no effect on the running program&rsquo;s
+behavior.  This makes sense: the <code class="env">AWKLIBPATH</code> environment variable
+is used to find any requested extensions, and they are loaded before
+the program starts to run.  Once your program is running, all the
+extensions have been found, and <code class="command">gawk</code> no longer needs to use
+<code class="env">AWKLIBPATH</code>.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT15" href="AWKLIBPATH-Variable.html#DOCF15">(15)</a></h5>
+<p>Your version of <code class="command">gawk</code>
+may use a different directory; it
+will depend upon how <code class="command">gawk</code> was built and installed. The actual
+directory is the value of <code class="code">$(pkgextensiondir)</code> generated when
+<code class="command">gawk</code> was configured.
+(For more detail, see the <samp class="file">INSTALL</samp> file in the source distribution,
+and see <a class="ref" href="Quick-Installation.html">Compiling <code class="command">gawk</code> for Unix-Like Systems</a>.
+You probably don&rsquo;t need to worry about this,
+though.)</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Other-Environment-Variables.html">Other Environment Variables</a>, Previous: <a href="AWKPATH-Variable.html">The <code class="env">AWKPATH</code> Environment Variable</a>, Up: <a href="Environment-Variables.html">The Environment Variables <code class="command">gawk</code> Uses</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,1 @@
+/usr/bin/env bash car_sales.sh sales_2.csv 2 200000 niggablack

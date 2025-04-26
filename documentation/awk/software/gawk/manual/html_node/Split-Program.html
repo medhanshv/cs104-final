@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Split Program (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Split Program (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Split Program (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Clones.html" rel="up" title="Clones">
+<link href="Tee-Program.html" rel="next" title="Tee Program">
+<link href="Id-Program.html" rel="prev" title="Id Program">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+pre.display-preformatted {font-family: inherit}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Split-Program">
+<div class="nav-panel">
+<p>
+Next: <a href="Tee-Program.html" accesskey="n" rel="next">Duplicating Output into Multiple Files</a>, Previous: <a href="Id-Program.html" accesskey="p" rel="prev">Printing Out User Information</a>, Up: <a href="Clones.html" accesskey="u" rel="up">Reinventing Wheels for Fun and Profit</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Splitting-a-Large-File-into-Pieces"><span>11.2.4 Splitting a Large File into Pieces<a class="copiable-link" href="Split-Program.html#Splitting-a-Large-File-into-Pieces"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-files-splitting"></a>
+<a class="index-entry-id" id="index-split-utility"></a>
+<p>The <code class="command">split</code> utility splits large text files into smaller pieces.
+The usage follows the POSIX standard for <code class="command">split</code> and is as follows:
+</p>
+<div class="display">
+<pre class="display-preformatted"><code class="command">split</code> [<samp class="option">-l</samp> <var class="var">count</var>] [<samp class="option">-a</samp> <var class="var">suffix-len</var>] [<var class="var">file</var> [<var class="var">outname</var>]]
+<code class="command">split</code> <samp class="option">-b</samp> <var class="var">N</var>[<code class="code">k</code>|<code class="code">m</code>]] [<samp class="option">-a</samp> <var class="var">suffix-len</var>] [<var class="var">file</var> [<var class="var">outname</var>]]
+</pre></div>
+
+<p>By default, the output files are named <samp class="file">xaa</samp>, <samp class="file">xab</samp>, and so
+on. Each file has 1,000 lines in it, with the likely exception of the
+last file.
+</p>
+<p>The <code class="command">split</code> program has evolved over time, and the current POSIX
+version is more complicated than the original Unix version.  The options
+and what they do are as follows:
+</p>
+<dl class="table">
+<dt><samp class="option">-a</samp> <var class="var">suffix-len</var></dt>
+<dd><p>Use <var class="var">suffix-len</var> characters for the suffix. For example, if <var class="var">suffix-len</var>
+is four, the output files would range from <samp class="file">xaaaa</samp> to <samp class="file">xzzzz</samp>.
+</p>
+</dd>
+<dt><samp class="option">-b</samp> <var class="var">N</var>[<code class="code">k</code>|<code class="code">m</code>]]</dt>
+<dd><p>Instead of each file containing a specified number of lines, each file
+should have (at most) <var class="var">N</var> bytes.  Supplying a trailing &lsquo;<samp class="samp">k</samp>&rsquo;
+multiplies <var class="var">N</var> by 1,024, yielding kilobytes.  Supplying a trailing
+&lsquo;<samp class="samp">m</samp>&rsquo; multiplies <var class="var">N</var> by 1,048,576 (<em class="math">1,024 * 1,024</em>)
+yielding megabytes.  (This option is mutually exclusive with <samp class="option">-l</samp>).
+</p>
+</dd>
+<dt><samp class="option">-l</samp> <var class="var">count</var></dt>
+<dd><p>Each file should have at most <var class="var">count</var> lines, instead of the default
+1,000.  (This option is mutually exclusive with <samp class="option">-b</samp>).
+</p></dd>
+</dl>
+
+<p>If supplied, <var class="var">file</var> is the input file to read. Otherwise standard
+input is processed.  If supplied, <var class="var">outname</var> is the leading prefix
+to use for file names, instead of &lsquo;<samp class="samp">x</samp>&rsquo;.
+</p>
+<a class="index-entry-id" id="index-LC_005fALL-environment-variable"></a>
+<a class="index-entry-id" id="index-environment-variables-LC_005fALL"></a>
+<p>In order to use the <samp class="option">-b</samp> option, <code class="command">gawk</code> should be invoked
+with its <samp class="option">-b</samp> option (see <a class="pxref" href="Options.html">Command-Line Options</a>), or with the environment
+variable <code class="env">LC_ALL</code> set to &lsquo;<samp class="samp">C</samp>&rsquo;, so that each input byte is treated
+as a separate character.<a class="footnote" id="DOCF78" href="Split-Program.html#FOOT78"><sup>78</sup></a>
+</p>
+<p>Here is an implementation of <code class="command">split</code> in <code class="command">awk</code>. It uses the
+<code class="code">getopt()</code> function presented in <a class="ref" href="Getopt-Function.html">Processing Command-Line Options</a>.
+</p>
+<p>The program begins with a standard descriptive comment and then
+a <code class="code">usage()</code> function describing the options. The variable
+<code class="code">common</code> keeps the function&rsquo;s lines short so that they
+look nice on the page:
+</p>
+<a class="index-entry-id" id="index-split_002eawk-program"></a>
+<div class="example">
+<pre class="example-preformatted"># split.awk --- do split in awk
+#
+# Requires getopt() library function.
+
+function usage(     common)
+{
+    common = &quot;[-a suffix-len] [file [outname]]&quot;
+    printf(&quot;usage: split [-l count]  %s\n&quot;, common) &gt; &quot;/dev/stderr&quot;
+    printf(&quot;       split [-b N[k|m]] %s\n&quot;, common) &gt; &quot;/dev/stderr&quot;
+    exit 1
+}
+</pre></div>
+
+<p>Next, in a <code class="code">BEGIN</code> rule we set the default values and parse the arguments.
+After that we initialize the data structures used to cycle the suffix
+from &lsquo;<samp class="samp">aa&hellip;</samp>&rsquo; to &lsquo;<samp class="samp">zz&hellip;</samp>&rsquo;. Finally we set the name of
+the first output file:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+    # Set defaults:
+    Suffix_length = 2
+    Line_count = 1000
+    Byte_count = 0
+    Outfile = &quot;x&quot;
+
+    parse_arguments()
+
+    init_suffix_data()
+
+    Output = (Outfile compute_suffix())
+}
+</pre></div>
+
+<p>Parsing the arguments is straightforward.  The program follows our
+convention (see <a class="pxref" href="Library-Names.html">Naming Library Function Global Variables</a>) of having important global variables
+start with an uppercase letter:
+</p>
+<div class="example">
+<pre class="example-preformatted">function parse_arguments(   i, c, l, modifier)
+{
+    while ((c = getopt(ARGC, ARGV, &quot;a:b:l:&quot;)) != -1) {
+        if (c == &quot;a&quot;)
+            Suffix_length = Optarg + 0
+        else if (c == &quot;b&quot;) {
+            Byte_count = Optarg + 0
+            Line_count = 0
+
+            l = length(Optarg)
+            modifier = substr(Optarg, l, 1)
+            if (modifier == &quot;k&quot;)
+                Byte_count *= 1024
+            else if (modifier == &quot;m&quot;)
+                Byte_count *= 1024 * 1024
+        } else if (c == &quot;l&quot;) {
+            Line_count = Optarg + 0
+            Byte_count = 0
+        } else
+            usage()
+    }
+
+    # Clear out options
+    for (i = 1; i &lt; Optind; i++)
+        ARGV[i] = &quot;&quot;
+
+    # Check for filename
+    if (ARGV[Optind]) {
+        Optind++
+
+        # Check for different prefix
+        if (ARGV[Optind]) {
+            Outfile = ARGV[Optind]
+            ARGV[Optind] = &quot;&quot;
+
+            if (++Optind &lt; ARGC)
+                usage()
+        }
+    }
+}
+</pre></div>
+
+<p>Managing the file name suffix is interesting.
+Given a suffix of length three, say, the values go from
+&lsquo;<samp class="samp">aaa</samp>&rsquo;, &lsquo;<samp class="samp">aab</samp>&rsquo;, &lsquo;<samp class="samp">aac</samp>&rsquo; and so on, all the way to
+&lsquo;<samp class="samp">zzx</samp>&rsquo;, &lsquo;<samp class="samp">zzy</samp>&rsquo;, and finally &lsquo;<samp class="samp">zzz</samp>&rsquo;.
+There are two important aspects to this:
+</p>
+<ul class="itemize mark-bullet">
+<li>We have to be
+able to easily generate these suffixes, and in particular
+easily handle &ldquo;rolling over&rdquo;; for example, going from
+&lsquo;<samp class="samp">abz</samp>&rsquo; to &lsquo;<samp class="samp">aca</samp>&rsquo;.
+
+</li><li>We have to tell when we&rsquo;ve finished with the last file,
+so that if we still have more input data we can print an
+error message and exit. The trick is to handle this <em class="emph">after</em>
+using the last suffix, and not when the final suffix is created.
+</li></ul>
+
+<p>The computation is handled by <code class="code">compute_suffix()</code>.
+This function is called every time a new file is opened.
+</p>
+<p>The flow here is messy, because we want to generate &lsquo;<samp class="samp">zzzz</samp>&rsquo; (say),
+and use it, and only produce an error after all the file name
+suffixes have been used up. The logical steps are as follows:
+</p>
+<ol class="enumerate">
+<li> Generate the suffix, saving the value in <code class="code">result</code> to return.
+To do this, the supplementary array <code class="code">Suffix_ind</code> contains one
+element for each letter in the suffix.  Each element ranges from 1 to
+26, acting as the index into a string containing all the lowercase
+letters of the English alphabet.
+It is initialized by <code class="code">init_suffix_data()</code>.
+<code class="code">result</code> is built up one letter at a time, using each <code class="code">substr()</code>.
+
+</li><li> Prepare the data structures for the next time <code class="code">compute_suffix()</code>
+is called. To do this, we loop over <code class="code">Suffix_ind</code>, <em class="emph">backwards</em>.
+If the current element is less than 26, it&rsquo;s incremented and the loop
+breaks (&lsquo;<samp class="samp">abq</samp>&rsquo; goes to &lsquo;<samp class="samp">abr</samp>&rsquo;). Otherwise, the element is
+reset to one and we move down the list (&lsquo;<samp class="samp">abz</samp>&rsquo; to &lsquo;<samp class="samp">aca</samp>&rsquo;).
+Thus, the <code class="code">Suffix_ind</code> array is always &ldquo;one step ahead&rdquo; of the actual
+file name suffix to be returned.
+
+</li><li> Check if we&rsquo;ve gone past the limit of possible file names.
+If <code class="code">Reached_last</code> is true, print a message and exit. Otherwise,
+check if <code class="code">Suffix_ind</code> describes a suffix where all the letters are
+&lsquo;<samp class="samp">z</samp>&rsquo;. If that&rsquo;s the case we&rsquo;re about to return the final suffix. If
+so, we set <code class="code">Reached_last</code> to true so that the <em class="emph">next</em> call to
+<code class="code">compute_suffix()</code> will cause a failure.
+</li></ol>
+
+<p>Physically, the steps in the function occur in the order 3, 1, 2:
+</p>
+<div class="example">
+<pre class="example-preformatted">function compute_suffix(    i, result, letters)
+{
+    # Logical step 3
+    if (Reached_last) {
+        printf(&quot;split: too many files!\n&quot;) &gt; &quot;/dev/stderr&quot;
+        exit 1
+    } else if (on_last_file())
+        Reached_last = 1    # fail when wrapping after 'zzz'
+
+    # Logical step 1
+    result = &quot;&quot;
+    letters = &quot;abcdefghijklmnopqrstuvwxyz&quot;
+    for (i = 1; i &lt;= Suffix_length; i++)
+        result = result substr(letters, Suffix_ind[i], 1)
+
+    # Logical step 2
+    for (i = Suffix_length; i &gt;= 1; i--) {
+        if (++Suffix_ind[i] &gt; 26) {
+            Suffix_ind[i] = 1
+        } else
+            break
+    }
+
+    return result
+}
+</pre></div>
+
+<p>The <code class="code">Suffix_ind</code> array and <code class="code">Reached_last</code> are initialized
+by <code class="code">init_suffix_data()</code>:
+</p>
+<div class="example">
+<pre class="example-preformatted">function init_suffix_data(  i)
+{
+    for (i = 1; i &lt;= Suffix_length; i++)
+        Suffix_ind[i] = 1
+
+    Reached_last = 0
+}
+</pre></div>
+
+<p>The function <code class="code">on_last_file()</code> returns true if <code class="code">Suffix_ind</code> describes
+a suffix where all the letters are &lsquo;<samp class="samp">z</samp>&rsquo; by checking that all the elements
+in the array are equal to 26:
+</p>
+<div class="example">
+<pre class="example-preformatted">function on_last_file(  i, on_last)
+{
+    on_last = 1
+    for (i = 1; i &lt;= Suffix_length; i++) {
+        on_last = on_last &amp;&amp; (Suffix_ind[i] == 26)
+    }
+
+    return on_last
+}
+</pre></div>
+
+<p>The actual work of splitting the input file is done by the next two rules.
+Since splitting by line count and splitting by byte count are mutually
+exclusive, we simply use two separate rules, one for when <code class="code">Line_count</code>
+is greater than zero, and another for when <code class="code">Byte_count</code> is greater than zero.
+</p>
+<p>The variable <code class="code">tcount</code> counts how many lines have been processed so far.
+When it exceeds <code class="code">Line_count</code>, it&rsquo;s time to close the previous file and
+switch to a new one:
+</p>
+<div class="example">
+<pre class="example-preformatted">Line_count &gt; 0 {
+    if (++tcount &gt; Line_count) {
+        close(Output)
+        Output = (Outfile compute_suffix())
+        tcount = 1
+    }
+    print &gt; Output
+}
+</pre></div>
+
+<p>The rule for handling bytes is more complicated.  Since lines most likely
+vary in length, the <code class="code">Byte_count</code> boundary may be hit in the middle of
+an input record.  In that case, <code class="command">split</code> has to write enough of the
+first bytes of the input record to finish up <code class="code">Byte_count</code> bytes, close
+the file, open a new file, and write the rest of the record to the new file.
+The logic here does all that:
+</p>
+<div class="example">
+<pre class="example-preformatted">Byte_count &gt; 0 {
+    # `+ 1' is for the final newline
+    if (tcount + length($0) + 1 &gt; Byte_count) { # would overflow
+        # compute leading bytes
+        leading_bytes = Byte_count - tcount
+
+        # write leading bytes
+        printf(&quot;%s&quot;, substr($0, 1, leading_bytes)) &gt; Output
+
+        # close old file, open new file
+        close(Output)
+        Output = (Outfile compute_suffix())
+
+        # set up first bytes for new file
+        $0 = substr($0, leading_bytes + 1)  # trailing bytes
+        tcount = 0
+    }
+
+    # write full record or trailing bytes
+    tcount += length($0) + 1
+    print &gt; Output
+}
+</pre></div>
+
+<p>Finally, the <code class="code">END</code> rule cleans up by closing the last output file:
+</p>
+<div class="example">
+<pre class="example-preformatted">END {
+    close(Output)
+}
+</pre></div>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT78" href="Split-Program.html#DOCF78">(78)</a></h5>
+<p>Using <samp class="option">-b</samp> twice requires
+separating <code class="command">gawk</code>&rsquo;s options from those of the program.  For example:
+&lsquo;<samp class="samp">gawk -f getopt.awk -f split.awk -b -- -b 42m large-file.txt split-</samp>&rsquo;.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Tee-Program.html">Duplicating Output into Multiple Files</a>, Previous: <a href="Id-Program.html">Printing Out User Information</a>, Up: <a href="Clones.html">Reinventing Wheels for Fun and Profit</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

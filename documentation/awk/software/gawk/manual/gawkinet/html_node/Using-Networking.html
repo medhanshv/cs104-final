@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>Using Networking (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="Using Networking (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="Using Networking (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Some-Applications-and-Techniques.html" rel="next" title="Some Applications and Techniques">
+<link href="Introduction.html" rel="prev" title="Introduction">
+<style type="text/css">
+<!--
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Using-Networking">
+<div class="nav-panel">
+<p>
+Next: <a href="Some-Applications-and-Techniques.html" accesskey="n" rel="next">Some Applications and Techniques</a>, Previous: <a href="Introduction.html" accesskey="p" rel="prev">Networking Concepts</a>, Up: <a href="index.html" accesskey="u" rel="up">General Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Networking-With-gawk">2 Networking With <code class="command">gawk</code></h2>
+
+<a class="index-entry-id" id="index-networks"></a>
+<a class="index-entry-id" id="index-gawk"></a>
+<p>The <code class="command">awk</code> programming language was originally developed as a
+pattern-matching language for writing short programs to perform
+data manipulation tasks.
+<code class="command">awk</code>&rsquo;s strength is the manipulation of textual data
+that is stored in files.
+It was never meant to be used for networking purposes.
+To exploit its features in a
+networking context, it&rsquo;s necessary to use an access mode for network connections
+that resembles the access of files as closely as possible.
+</p>
+<a class="index-entry-id" id="index-Perl"></a>
+<a class="index-entry-id" id="index-Python"></a>
+<a class="index-entry-id" id="index-Tcl_002fTk"></a>
+<p><code class="command">awk</code> is also meant to be a prototyping language. It is used
+to demonstrate feasibility and to play with features and user interfaces.
+This can be done with file-like handling of network
+connections.
+<code class="command">gawk</code> trades the lack
+of many of the advanced features of the TCP/IP family of protocols
+for the convenience of simple connection handling.
+The advanced
+features are available when programming in C or Perl. In fact, the
+network programming
+in this chapter
+is very similar to what is described in books such as
+<cite class="cite">Internet Programming with Python</cite>,
+<cite class="cite">Advanced Perl Programming</cite>,
+or
+<cite class="cite">Web Client Programming with Perl</cite>.
+</p>
+<a class="index-entry-id" id="index-Perl-1"></a>
+<a class="index-entry-id" id="index-Python-1"></a>
+<a class="index-entry-id" id="index-Tcl_002fTk-1"></a>
+<p>However, you can do the programming here without first having to learn object-oriented
+ideology; underlying languages such as Tcl/Tk, Perl, Python; or all of
+the libraries necessary to extend these languages before they are ready for the Internet.
+</p>
+<a class="index-entry-id" id="index-TCP-_0028Transmission-Control-Protocol_0029"></a>
+<p>This chapter demonstrates how to use the TCP protocol. The
+UDP protocol is much less important for most users.
+</p>
+
+<ul class="mini-toc">
+<li><a href="Gawk-Special-Files.html" accesskey="1"><code class="command">gawk</code>&rsquo;s Networking Mechanisms</a></li>
+<li><a href="TCP-Connecting.html" accesskey="2">Establishing a TCP Connection</a></li>
+<li><a href="Troubleshooting.html" accesskey="3">Troubleshooting Connection Problems</a></li>
+<li><a href="Interacting.html" accesskey="4">Interacting with a Network Service</a></li>
+<li><a href="Setting-Up.html" accesskey="5">Setting Up a Service</a></li>
+<li><a href="Email.html" accesskey="6">Reading Email</a></li>
+<li><a href="Web-page.html" accesskey="7">Reading a Web Page</a></li>
+<li><a href="Primitive-Service.html" accesskey="8">A Primitive Web Service</a></li>
+<li><a href="Interacting-Service.html" accesskey="9">A Web Service with Interaction</a></li>
+<li><a href="Simple-Server.html">A Simple Web Server</a></li>
+<li><a href="Caveats.html">Network Programming Caveats</a></li>
+<li><a href="Challenges.html">Where To Go From Here</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Some-Applications-and-Techniques.html">Some Applications and Techniques</a>, Previous: <a href="Introduction.html">Networking Concepts</a>, Up: <a href="index.html">General Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

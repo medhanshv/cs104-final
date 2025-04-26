@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Increment Ops (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Increment Ops (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Increment Ops (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="All-Operators.html" rel="up" title="All Operators">
+<link href="Assignment-Ops.html" rel="prev" title="Assignment Ops">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.center {text-align:center}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Increment-Ops">
+<div class="nav-panel">
+<p>
+Previous: <a href="Assignment-Ops.html" accesskey="p" rel="prev">Assignment Expressions</a>, Up: <a href="All-Operators.html" accesskey="u" rel="up">Operators: Doing Something with Values</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Increment-and-Decrement-Operators"><span>6.2.4 Increment and Decrement Operators<a class="copiable-link" href="Increment-Ops.html#Increment-and-Decrement-Operators"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-increment-operators"></a>
+<a class="index-entry-id" id="index-operators-decrement_002fincrement"></a>
+<p><em class="dfn">Increment</em> and <em class="dfn">decrement operators</em> increase or decrease the value of
+a variable by one.  An assignment operator can do the same thing, so
+the increment operators add no power to the <code class="command">awk</code> language; however, they
+are convenient abbreviations for very common operations.
+</p>
+<a class="index-entry-id" id="index-side-effects-1"></a>
+<a class="index-entry-id" id="index-_002b-_0028plus-sign_0029-_002b_002b-operator"></a>
+<a class="index-entry-id" id="index-plus-sign-_0028_002b_0029-_002b_002b-operator"></a>
+<a class="index-entry-id" id="index-side-effects-decrement_002fincrement-operators"></a>
+<p>The operator used for adding one is written &lsquo;<samp class="samp">++</samp>&rsquo;.  It can be used to increment
+a variable either before or after taking its value.
+To <em class="dfn">pre-increment</em> a variable <code class="code">v</code>, write &lsquo;<samp class="samp">++v</samp>&rsquo;.  This adds
+one to the value of <code class="code">v</code>&mdash;that new value is also the value of the
+expression. (The assignment expression &lsquo;<samp class="samp">v += 1</samp>&rsquo; is completely equivalent.)
+Writing the &lsquo;<samp class="samp">++</samp>&rsquo; after the variable specifies <em class="dfn">post-increment</em>.  This
+increments the variable value just the same; the difference is that the
+value of the increment expression itself is the variable&rsquo;s <em class="emph">old</em>
+value.  Thus, if <code class="code">foo</code> has the value four, then the expression &lsquo;<samp class="samp">foo++</samp>&rsquo;
+has the value four, but it changes the value of <code class="code">foo</code> to five.
+In other words, the operator returns the old value of the variable,
+but with the side effect of incrementing it.
+</p>
+<p>The post-increment &lsquo;<samp class="samp">foo++</samp>&rsquo; is nearly the same as writing &lsquo;<samp class="samp">(foo
++= 1) - 1</samp>&rsquo;.  It is not perfectly equivalent because all numbers in
+<code class="command">awk</code> are floating point&mdash;in floating point, &lsquo;<samp class="samp">foo + 1 - 1</samp>&rsquo; does
+not necessarily equal <code class="code">foo</code>.  But the difference is minute as
+long as you stick to numbers that are fairly small (less than
+10<sup class="sup">12</sup>).
+</p>
+<a class="index-entry-id" id="index-_0024-_0028dollar-sign_0029-incrementing-fields-and-arrays"></a>
+<a class="index-entry-id" id="index-dollar-sign-_0028_0024_0029-incrementing-fields-and-arrays"></a>
+<p>Fields and array elements are incremented
+just like variables.  (Use &lsquo;<samp class="samp">$(i++)</samp>&rsquo; when you want to do a field reference
+and a variable increment at the same time.  The parentheses are necessary
+because of the precedence of the field reference operator &lsquo;<samp class="samp">$</samp>&rsquo;.)
+</p>
+<a class="index-entry-id" id="index-decrement-operators"></a>
+<p>The decrement operator &lsquo;<samp class="samp">--</samp>&rsquo; works just like &lsquo;<samp class="samp">++</samp>&rsquo;, except that
+it subtracts one instead of adding it.  As with &lsquo;<samp class="samp">++</samp>&rsquo;, it can be used before
+the lvalue to pre-decrement or after it to post-decrement.
+Following is a summary of increment and decrement expressions:
+</p>
+<dl class="table">
+<dd><a class="index-entry-id" id="index-_002b-_0028plus-sign_0029-_002b_002b-operator-1"></a>
+<a class="index-entry-id" id="index-plus-sign-_0028_002b_0029-_002b_002b-operator-1"></a>
+</dd>
+<dt><code class="code">++<var class="var">lvalue</var></code></dt>
+<dd><p>Increment <var class="var">lvalue</var>, returning the new value as the
+value of the expression.
+</p>
+</dd>
+<dt><code class="code"><var class="var">lvalue</var>++</code></dt>
+<dd><p>Increment <var class="var">lvalue</var>, returning the <em class="emph">old</em> value of <var class="var">lvalue</var>
+as the value of the expression.
+</p>
+<a class="index-entry-id" id="index-_002d-_0028hyphen_0029-_002d_002d-operator"></a>
+<a class="index-entry-id" id="index-hyphen-_0028_002d_0029-_002d_002d-operator"></a>
+</dd>
+<dt><code class="code">--<var class="var">lvalue</var></code></dt>
+<dd><p>Decrement <var class="var">lvalue</var>, returning the new value as the
+value of the expression.
+(This expression is
+like &lsquo;<samp class="samp">++<var class="var">lvalue</var></samp>&rsquo;, but instead of adding, it subtracts.)
+</p>
+</dd>
+<dt><code class="code"><var class="var">lvalue</var>--</code></dt>
+<dd><p>Decrement <var class="var">lvalue</var>, returning the <em class="emph">old</em> value of <var class="var">lvalue</var>
+as the value of the expression.
+(This expression is
+like &lsquo;<samp class="samp"><var class="var">lvalue</var>++</samp>&rsquo;, but instead of adding, it subtracts.)
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-sidebar-Operator-Evaluation-Order"></a>
+<table class="cartouche" border="1"><tr><th>
+Operator Evaluation Order</th></tr><tr><td>
+<a class="index-entry-id" id="index-precedence"></a>
+<a class="index-entry-id" id="index-operators-precedence-of"></a>
+<a class="index-entry-id" id="index-portability-operators"></a>
+<a class="index-entry-id" id="index-evaluation-order"></a>
+<a class="index-entry-id" id="index-Marx_002c-Groucho"></a>
+<blockquote class="quotation">
+<p><i class="i">Doctor, it hurts when I do this!<br>
+Then don&rsquo;t do that!</i>
+</p></blockquote>
+<div class="center">&mdash; <em class="emph">Groucho Marx</em>
+</div>
+<p>What happens for something like the following?
+</p>
+<div class="example">
+<pre class="example-preformatted">b = 6
+print b += b++
+</pre></div>
+
+<p>Or something even stranger?
+</p>
+<div class="example">
+<pre class="example-preformatted">b = 6
+b += ++b + b++
+print b
+</pre></div>
+
+<a class="index-entry-id" id="index-side-effects-2"></a>
+<p>In other words, when do the various side effects prescribed by the
+postfix operators (&lsquo;<samp class="samp">b++</samp>&rsquo;) take effect?
+When side effects happen is <em class="dfn">implementation-defined</em>.
+In other words, it is up to the particular version of <code class="command">awk</code>.
+The result for the first example may be 12 or 13, and for the second, it
+may be 22 or 23.
+</p>
+<p>In short, doing things like this is not recommended and definitely
+not anything that you can rely upon for portability.
+You should avoid such things in your own programs.
+</p></td></tr></table>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Assignment-Ops.html">Assignment Expressions</a>, Up: <a href="All-Operators.html">Operators: Doing Something with Values</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

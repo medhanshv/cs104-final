@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>TCP/IP Networking (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="TCP/IP Networking (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="TCP/IP Networking (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Advanced-Features.html" rel="up" title="Advanced Features">
+<link href="Profiling.html" rel="next" title="Profiling">
+<link href="Two_002dway-I_002fO.html" rel="prev" title="Two-way I/O">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.center {text-align:center}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="TCP_002fIP-Networking">
+<div class="nav-panel">
+<p>
+Next: <a href="Profiling.html" accesskey="n" rel="next">Profiling Your <code class="command">awk</code> Programs</a>, Previous: <a href="Two_002dway-I_002fO.html" accesskey="p" rel="prev">Two-Way Communications with Another Process</a>, Up: <a href="Advanced-Features.html" accesskey="u" rel="up">Advanced Features of <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Using-gawk-for-Network-Programming"><span>12.5 Using <code class="command">gawk</code> for Network Programming<a class="copiable-link" href="TCP_002fIP-Networking.html#Using-gawk-for-Network-Programming"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-advanced-features-network-programming"></a>
+<a class="index-entry-id" id="index-networks-programming"></a>
+<a class="index-entry-id" id="index-TCP_002fIP"></a>
+<a class="index-entry-id" id="index-_002finet_002f_2026-special-files-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-files-_002finet_002f_2026-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-_002finet4_002f_2026-special-files-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-files-_002finet4_002f_2026-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-_002finet6_002f_2026-special-files-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-files-_002finet6_002f_2026-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-EMRED"></a>
+<blockquote class="quotation">
+<p><code class="code">EMRED</code>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<i class="i">A host is a host from coast to coast,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;and nobody talks to a host that&rsquo;s close,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;unless the host that isn&rsquo;t close<br>
+&nbsp;&nbsp;&nbsp;&nbsp;is busy, hung, or dead.</i>
+</p></blockquote>
+<div class="center">&mdash; <em class="emph">Mike O&rsquo;Brien (aka Mr. Protocol)</em>
+</div>
+
+<p>In addition to being able to open a two-way pipeline to a coprocess
+on the same system
+(see <a class="pxref" href="Two_002dway-I_002fO.html">Two-Way Communications with Another Process</a>),
+it is possible to make a two-way connection to
+another process on another system across an IP network connection.
+</p>
+<p>You can think of this as just a <em class="emph">very long</em> two-way pipeline to
+a coprocess.
+The way <code class="command">gawk</code> decides that you want to use TCP/IP networking is
+by recognizing special file names that begin with one of &lsquo;<samp class="samp">/inet/</samp>&rsquo;,
+&lsquo;<samp class="samp">/inet4/</samp>&rsquo;, or &lsquo;<samp class="samp">/inet6/</samp>&rsquo;.
+</p>
+<p>The full syntax of the special file name is
+<samp class="file">/<var class="var">net-type</var>/<var class="var">protocol</var>/<var class="var">local-port</var>/<var class="var">remote-host</var>/<var class="var">remote-port</var></samp>.
+The components are:
+</p>
+<dl class="table">
+<dt><var class="var">net-type</var></dt>
+<dd><p>Specifies the kind of Internet connection to make.
+Use &lsquo;<samp class="samp">/inet4/</samp>&rsquo; to force IPv4, and
+&lsquo;<samp class="samp">/inet6/</samp>&rsquo; to force IPv6.
+Plain &lsquo;<samp class="samp">/inet/</samp>&rsquo; (which used to be the only option) uses
+the system default, most likely IPv4.
+</p>
+</dd>
+<dt><var class="var">protocol</var></dt>
+<dd><p>The protocol to use over IP.  This must be either &lsquo;<samp class="samp">tcp</samp>&rsquo;, or
+&lsquo;<samp class="samp">udp</samp>&rsquo;, for a TCP or UDP IP connection,
+respectively.  TCP should be used for most applications.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-C-library-functions-getaddrinfo_0028_0029"></a>
+<a id="index-getaddrinfo_0028_0029-function-_0028C-library_0029"></a><span><var class="var">local-port</var><a class="copiable-link" href="TCP_002fIP-Networking.html#index-getaddrinfo_0028_0029-function-_0028C-library_0029"> &para;</a></span></dt>
+<dd><p>The local TCP or UDP port number to use.  Use a port number of &lsquo;<samp class="samp">0</samp>&rsquo;
+when you want the system to pick a port. This is what you should do
+when writing a TCP or UDP client.
+You may also use a well-known service name, such as &lsquo;<samp class="samp">smtp</samp>&rsquo;
+or &lsquo;<samp class="samp">http</samp>&rsquo;, in which case <code class="command">gawk</code> attempts to determine
+the predefined port number using the C <code class="code">getaddrinfo()</code> function.
+</p>
+</dd>
+<dt><var class="var">remote-host</var></dt>
+<dd><p>The IP address or fully qualified domain name of the Internet
+host to which you want to connect.
+</p>
+</dd>
+<dt><var class="var">remote-port</var></dt>
+<dd><p>The TCP or UDP port number to use on the given <var class="var">remote-host</var>.
+Again, use &lsquo;<samp class="samp">0</samp>&rsquo; if you don&rsquo;t care, or else a well-known
+service name.
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-gawk-ERRNO-variable-in-4"></a>
+<a class="index-entry-id" id="index-ERRNO-variable-1"></a>
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> Failure in opening a two-way socket will result in a nonfatal error
+being returned to the calling code. The value of <code class="code">ERRNO</code> indicates
+the error (see <a class="pxref" href="Auto_002dset.html">Built-in Variables That Convey Information</a>).
+</p></blockquote>
+
+<p>Consider the following very simple example:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+    Service = &quot;/inet/tcp/0/localhost/daytime&quot;
+    Service |&amp; getline
+    print $0
+    close(Service)
+}
+</pre></div>
+
+<p>This program reads the current date and time from the local system&rsquo;s
+TCP <code class="code">daytime</code> server.
+It then prints the results and closes the connection.
+</p>
+<p>Because this topic is extensive, the use of <code class="command">gawk</code> for
+TCP/IP programming is documented separately.
+See
+<a class="uref" href="../gawkinet/index.html"><cite class="cite">TCP/IP Internetworking with <code class="command">gawk</code></cite></a>,
+which comes as part of the <code class="command">gawk</code> distribution,
+for a much more complete introduction and discussion, as well as
+extensive examples.
+</p>
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> <code class="command">gawk</code> can only open direct sockets. There is currently
+no way to access services available over Secure Socket Layer
+(SSL); this includes any web service whose URL starts with &lsquo;<samp class="samp">https://</samp>&rsquo;.
+</p></blockquote>
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Profiling.html">Profiling Your <code class="command">awk</code> Programs</a>, Previous: <a href="Two_002dway-I_002fO.html">Two-Way Communications with Another Process</a>, Up: <a href="Advanced-Features.html">Advanced Features of <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

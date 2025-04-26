@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Cygwin (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Cygwin (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Cygwin (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="PC-Installation.html" rel="up" title="PC Installation">
+<link href="MSYS.html" rel="next" title="MSYS">
+<link href="PC-Using.html" rel="prev" title="PC Using">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="appendixsubsubsec-level-extent" id="Cygwin">
+<div class="nav-panel">
+<p>
+Next: <a href="MSYS.html" accesskey="n" rel="next">Using <code class="command">gawk</code> In The MSYS Environment</a>, Previous: <a href="PC-Using.html" accesskey="p" rel="prev">Using <code class="command">gawk</code> on PC Operating Systems</a>, Up: <a href="PC-Installation.html" accesskey="u" rel="up">Installation on MS-Windows</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="appendixsubsubsec" id="Using-gawk-In-The-Cygwin-Environment"><span>B.3.1.4 Using <code class="command">gawk</code> In The Cygwin Environment<a class="copiable-link" href="Cygwin.html#Using-gawk-In-The-Cygwin-Environment"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-compiling-gawk-for-Cygwin"></a>
+
+<p><code class="command">gawk</code> can be built and used &ldquo;out of the box&rdquo; under MS-Windows
+if you are using the <a class="uref" href="http://www.cygwin.com">Cygwin environment</a>.
+This environment provides an excellent simulation of GNU/Linux, using
+Bash, GCC, GNU Make,
+and other GNU programs.  Compilation and installation for Cygwin is the
+same as for a Unix system:
+</p>
+<div class="example">
+<pre class="example-preformatted">tar -xvpzf gawk-5.3.1.tar.gz
+cd gawk-5.3.1
+./configure
+make &amp;&amp; make check
+</pre></div>
+
+<p>When compared to GNU/Linux on the same system, the &lsquo;<samp class="samp">configure</samp>&rsquo;
+step on Cygwin takes considerably longer.  However, it does finish,
+and then the &lsquo;<samp class="samp">make</samp>&rsquo; proceeds as usual.
+</p>
+<a class="index-entry-id" id="index-installing-gawk-Cygwin"></a>
+<p>You may also install <code class="command">gawk</code> using the regular Cygwin installer.
+In general Cygwin supplies the latest released version.
+</p>
+<p>Recent versions of Cygwin open all files in binary mode. This means
+that you should use &lsquo;<samp class="samp">RS = &quot;\r?\n&quot;</samp>&rsquo; in order to be able to
+handle standard MS-Windows text files with carriage-return plus
+line-feed line endings.
+</p>
+<p>The Cygwin environment supports
+both the &lsquo;<samp class="samp">|&amp;</samp>&rsquo; operator and TCP/IP networking
+(see <a class="pxref" href="TCP_002fIP-Networking.html">Using <code class="command">gawk</code> for Network Programming</a>).
+</p>
+</div>
+
+
+
+</body>
+</html>

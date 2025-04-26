@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>CGI Lib (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="CGI Lib (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="CGI Lib (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Interacting-Service.html" rel="up" title="Interacting Service">
+<link href="Interacting-Service.html" rel="prev" title="Interacting Service">
+<style type="text/css">
+<!--
+div.center {text-align:center}
+div.example {margin-left: 3.2em}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="CGI-Lib">
+<div class="nav-panel">
+<p>
+Previous: <a href="Interacting-Service.html" accesskey="p" rel="prev">A Web Service with Interaction</a>, Up: <a href="Interacting-Service.html" accesskey="u" rel="up">A Web Service with Interaction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="A-Simple-CGI-Library">2.9.1 A Simple CGI Library</h4>
+<blockquote class="quotation">
+<p><i class="i">HTTP is like being married: you have to be able to handle whatever
+you&rsquo;re given, while being very careful what you send back.</i><br>
+</p></blockquote>
+<div class="center">&mdash; <em class="emph">Phil Smith III,<br> <a class="uref" href="http://www.netfunny.com/rhf/jokes/99/Mar/http.html">http://www.netfunny.com/rhf/jokes/99/Mar/http.html</a></em>
+</div>
+<a class="index-entry-id" id="index-CGI-_0028Common-Gateway-Interface_0029-1"></a>
+<p>In <a class="ref" href="Interacting-Service.html">A Web Service with Interaction</a>,
+we saw the function <code class="code">CGI_setup()</code> as part of the web server
+&ldquo;core logic&rdquo; framework. The code presented there handles almost
+everything necessary for CGI requests.
+One thing it doesn&rsquo;t do is handle encoded characters in the requests.
+For example, an &lsquo;<samp class="samp">&amp;</samp>&rsquo; is encoded as a percent sign followed by
+the hexadecimal value: &lsquo;<samp class="samp">%26</samp>&rsquo;.  These encoded values should be
+decoded.
+Following is a simple library to perform these tasks.
+This code is used for all web server examples
+throughout the rest of this web page.
+If you want to use it for your own web server, store the source code
+into a file named <samp class="file">inetlib.awk</samp>. Then you can include
+these functions into your code by placing the following statement
+into your program
+(on the first line of your script):
+</p>
+<div class="example">
+<pre class="example-preformatted">@include inetlib.awk
+</pre></div>
+
+<p>But beware, this mechanism is
+only possible if you invoke your web server script with <code class="command">igawk</code>
+instead of the usual <code class="command">awk</code> or <code class="command">gawk</code>.
+Here is the code:
+</p>
+<div class="example">
+<pre class="example-preformatted"># CGI Library and core of a web server
+# Global arrays
+#   GETARG --- arguments to CGI GET command
+#   MENU   --- menu items (path names)
+#   PARAM  --- parameters of form x=y
+
+# Optional variable MyHost contains host address
+# Optional variable MyPort contains port number
+# Needs TopHeader, TopDoc, TopFooter
+# Sets MyPrefix, HttpService, Status, Reason
+
+BEGIN {
+  if (MyHost == &quot;&quot;) {
+     &quot;uname -n&quot; | getline MyHost
+     close(&quot;uname -n&quot;)
+  }
+  if (MyPort ==  0) MyPort = 8080
+  HttpService = &quot;/inet/tcp/&quot; MyPort &quot;/0/0&quot;
+  MyPrefix    = &quot;http://&quot; MyHost &quot;:&quot; MyPort
+  SetUpServer()
+  while (&quot;awk&quot; != &quot;complex&quot;) {
+    # header lines are terminated this way
+    RS = ORS    = &quot;\r\n&quot;
+    Status      = 200             # this means OK
+    Reason      = &quot;OK&quot;
+    Header      = TopHeader
+    Document    = TopDoc
+    Footer      = TopFooter
+    if        (GETARG[&quot;Method&quot;] == &quot;GET&quot;) {
+        HandleGET()
+    } else if (GETARG[&quot;Method&quot;] == &quot;HEAD&quot;) {
+        # not yet implemented
+    } else if (GETARG[&quot;Method&quot;] != &quot;&quot;) {
+        print &quot;bad method&quot;, GETARG[&quot;Method&quot;]
+    }
+    Prompt = Header Document Footer
+    print &quot;HTTP/1.0&quot;, Status, Reason     |&amp; HttpService
+    print &quot;Connection: Close&quot;            |&amp; HttpService
+    print &quot;Pragma: no-cache&quot;             |&amp; HttpService
+    len = length(Prompt) + length(ORS)
+    print &quot;Content-length:&quot;, len         |&amp; HttpService
+    print ORS Prompt                     |&amp; HttpService
+    # ignore all the header lines
+    while ((HttpService |&amp; getline) &gt; 0)
+        continue
+    # stop talking to this client
+    close(HttpService)
+    # wait for new client request
+    HttpService |&amp; getline
+    # do some logging
+    print systime(), strftime(), $0
+    CGI_setup($1, $2, $3)
+  }
+}
+
+function CGI_setup(method, uri, version,    i)
+{
+    delete GETARG
+    delete MENU
+    delete PARAM
+    GETARG[&quot;Method&quot;] = method
+    GETARG[&quot;URI&quot;] = uri
+    GETARG[&quot;Version&quot;] = version
+
+    i = index(uri, &quot;?&quot;)
+    if (i &gt; 0) {  # is there a &quot;?&quot; indicating a CGI request?
+        split(substr(uri, 1, i-1), MENU, &quot;[/:]&quot;)
+        split(substr(uri, i+1), PARAM, &quot;&amp;&quot;)
+        for (i in PARAM) {
+            PARAM[i] = _CGI_decode(PARAM[i])
+            j = index(PARAM[i], &quot;=&quot;)
+            GETARG[substr(PARAM[i], 1, j-1)] = \
+                                         substr(PARAM[i], j+1)
+        }
+    } else { # there is no &quot;?&quot;, no need for splitting PARAMs
+        split(uri, MENU, &quot;[/:]&quot;)
+    }
+    for (i in MENU)     # decode characters in path
+        if (i &gt; 4)      # but not those in host name
+            MENU[i] = _CGI_decode(MENU[i])
+}
+</pre></div>
+
+<p>This isolates details in a single function, <code class="code">CGI_setup()</code>.
+Decoding of encoded characters is pushed off to a helper function,
+<code class="code">_CGI_decode()</code>. The use of the leading underscore (&lsquo;<samp class="samp">_</samp>&rsquo;) in
+the function name is intended to indicate that it is an &ldquo;internal&rdquo;
+function, although there is nothing to enforce this:
+</p>
+<div class="example">
+<pre class="example-preformatted">function _CGI_decode(str,   hexdigs, i, pre, code1, code2,
+                            val, result)
+{
+   hexdigs = &quot;123456789abcdef&quot;
+
+   i = index(str, &quot;%&quot;)
+   if (i == 0) # no work to do
+      return str
+
+   do {
+      pre = substr(str, 1, i-1)   # part before %xx
+      code1 = substr(str, i+1, 1) # first hex digit
+      code2 = substr(str, i+2, 1) # second hex digit
+      str = substr(str, i+3)      # rest of string
+
+      code1 = tolower(code1)
+      code2 = tolower(code2)
+      val = index(hexdigs, code1) * 16 \
+            + index(hexdigs, code2)
+
+      result = result pre sprintf(&quot;%c&quot;, val)
+      i = index(str, &quot;%&quot;)
+   } while (i != 0)
+   if (length(str) &gt; 0)
+      result = result str
+   return result
+}
+</pre></div>
+
+<p>This works by splitting the string apart around an encoded character.
+The two digits are converted to lowercase characters and looked up in a string
+of hex digits.  Note that <code class="code">0</code> is not in the string on purpose;
+<code class="code">index()</code> returns zero when it&rsquo;s not found, automatically giving
+the correct value!  Once the hexadecimal value is converted from
+characters in a string into a numerical value, <code class="code">sprintf()</code>
+converts the value back into a real character.
+The following is a simple test harness for the above functions:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+  CGI_setup(&quot;GET&quot;,
+  &quot;http://www.gnu.org/cgi-bin/foo?p1=stuff&amp;p2=stuff%26junk&quot; \
+       &quot;&amp;percent=a %25 sign&quot;,
+  &quot;1.0&quot;)
+  for (i in MENU)
+      printf &quot;MENU[\&quot;%s\&quot;] = %s\n&quot;, i, MENU[i]
+  for (i in PARAM)
+      printf &quot;PARAM[\&quot;%s\&quot;] = %s\n&quot;, i, PARAM[i]
+  for (i in GETARG)
+      printf &quot;GETARG[\&quot;%s\&quot;] = %s\n&quot;, i, GETARG[i]
+}
+</pre></div>
+
+<p>And this is the result when we run it:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ gawk -f testserv.awk
+-| MENU[&quot;4&quot;] = www.gnu.org
+-| MENU[&quot;5&quot;] = cgi-bin
+-| MENU[&quot;6&quot;] = foo
+-| MENU[&quot;1&quot;] = http
+-| MENU[&quot;2&quot;] =
+-| MENU[&quot;3&quot;] =
+-| PARAM[&quot;1&quot;] = p1=stuff
+-| PARAM[&quot;2&quot;] = p2=stuff&amp;junk
+-| PARAM[&quot;3&quot;] = percent=a % sign
+-| GETARG[&quot;p1&quot;] = stuff
+-| GETARG[&quot;percent&quot;] = a % sign
+-| GETARG[&quot;p2&quot;] = stuff&amp;junk
+-| GETARG[&quot;Method&quot;] = GET
+-| GETARG[&quot;Version&quot;] = 1.0
+-| GETARG[&quot;URI&quot;] = http://www.gnu.org/cgi-bin/foo?p1=stuff&amp;
+p2=stuff%26junk&amp;percent=a %25 sign
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Interacting-Service.html">A Web Service with Interaction</a>, Up: <a href="Interacting-Service.html">A Web Service with Interaction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

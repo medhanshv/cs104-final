@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Debugger Execution Control (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Debugger Execution Control (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Debugger Execution Control (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="List-of-Debugger-Commands.html" rel="up" title="List of Debugger Commands">
+<link href="Viewing-And-Changing-Data.html" rel="next" title="Viewing And Changing Data">
+<link href="Breakpoint-Control.html" rel="prev" title="Breakpoint Control">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Debugger-Execution-Control">
+<div class="nav-panel">
+<p>
+Next: <a href="Viewing-And-Changing-Data.html" accesskey="n" rel="next">Viewing and Changing Data</a>, Previous: <a href="Breakpoint-Control.html" accesskey="p" rel="prev">Control of Breakpoints</a>, Up: <a href="List-of-Debugger-Commands.html" accesskey="u" rel="up">Main Debugger Commands</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Control-of-Execution"><span>14.3.2 Control of Execution<a class="copiable-link" href="Debugger-Execution-Control.html#Control-of-Execution"> &para;</a></span></h4>
+
+<p>Now that your breakpoints are ready, you can start running the program
+and observing its behavior.  There are more commands for controlling
+execution of the program than we saw in our earlier example:
+</p>
+<dl class="table">
+<dd><a class="index-entry-id" id="index-debugger-commands-commands"></a>
+<a class="index-entry-id" id="index-commands-debugger-command"></a>
+<a class="index-entry-id" id="index-debugger-commands-silent"></a>
+<a class="index-entry-id" id="index-silent-debugger-command"></a>
+<a class="index-entry-id" id="index-debugger-commands-end"></a>
+<a class="index-entry-id" id="index-end-debugger-command"></a>
+<a class="index-entry-id" id="index-breakpoint-commands-to-execute-at"></a>
+</dd>
+<dt><a id="index-commands-to-execute-at-breakpoint"></a><span><code class="code">commands</code> [<var class="var">n</var>]<a class="copiable-link" href="Debugger-Execution-Control.html#index-commands-to-execute-at-breakpoint"> &para;</a></span></dt>
+<dt><code class="code">silent</code></dt>
+<dt>&hellip;</dt>
+<dt><code class="code">end</code></dt>
+<dd><p>Set a list of commands to be executed upon stopping at
+a breakpoint or watchpoint. <var class="var">n</var> is the breakpoint or watchpoint number.
+Without a number, the last one set is used. The actual commands follow,
+starting on the next line, and terminated by the <code class="code">end</code> command.
+If the command <code class="code">silent</code> is in the list, the usual messages about
+stopping at a breakpoint and the source line are not printed. Any command
+in the list that resumes execution (e.g., <code class="code">continue</code>) terminates the list
+(an implicit <code class="code">end</code>), and subsequent commands are ignored.
+For example:
+</p>
+<div class="example">
+<pre class="example-preformatted">gawk&gt; <kbd class="kbd">commands</kbd>
+&gt; <kbd class="kbd">silent</kbd>
+&gt; <kbd class="kbd">printf &quot;A silent breakpoint; i = %d\n&quot;, i</kbd>
+&gt; <kbd class="kbd">info locals</kbd>
+&gt; <kbd class="kbd">set i = 10</kbd>
+&gt; <kbd class="kbd">continue</kbd>
+&gt; <kbd class="kbd">end</kbd>
+gawk&gt;
+</pre></div>
+
+<a class="index-entry-id" id="index-debugger-commands-c-_0028continue_0029"></a>
+<a class="index-entry-id" id="index-debugger-commands-continue"></a>
+</dd>
+<dt><a class="index-entry-id" id="index-continue-debugger-command"></a>
+<a id="index-continue-program_002c-in-debugger"></a><span><code class="code">continue</code> [<var class="var">count</var>]<a class="copiable-link" href="Debugger-Execution-Control.html#index-continue-program_002c-in-debugger"> &para;</a></span></dt>
+<dt><code class="code">c</code> [<var class="var">count</var>]</dt>
+<dd><p>Resume program execution. If continued from a breakpoint and <var class="var">count</var> is
+specified, ignore the breakpoint at that location the next <var class="var">count</var> times
+before stopping.
+</p>
+<a class="index-entry-id" id="index-debugger-commands-finish"></a>
+</dd>
+<dt><a id="index-finish-debugger-command"></a><span><code class="code">finish</code><a class="copiable-link" href="Debugger-Execution-Control.html#index-finish-debugger-command"> &para;</a></span></dt>
+<dd><p>Execute until the selected stack frame returns.
+Print the returned value.
+</p>
+<a class="index-entry-id" id="index-debugger-commands-n-_0028next_0029-1"></a>
+<a class="index-entry-id" id="index-debugger-commands-next-1"></a>
+</dd>
+<dt><a class="index-entry-id" id="index-n-debugger-command-_0028alias-for-next_0029"></a>
+<a class="index-entry-id" id="index-single_002dstep-execution_002c-in-the-debugger"></a>
+<a id="index-next-debugger-command"></a><span><code class="code">next</code> [<var class="var">count</var>]<a class="copiable-link" href="Debugger-Execution-Control.html#index-next-debugger-command"> &para;</a></span></dt>
+<dt><code class="code">n</code> [<var class="var">count</var>]</dt>
+<dd><p>Continue execution to the next source line, stepping over function calls.
+The argument <var class="var">count</var> controls how many times to repeat the action, as
+in <code class="code">step</code>.
+</p>
+<a class="index-entry-id" id="index-debugger-commands-ni-_0028nexti_0029"></a>
+<a class="index-entry-id" id="index-debugger-commands-nexti"></a>
+</dd>
+<dt><a class="index-entry-id" id="index-ni-debugger-command-_0028alias-for-nexti_0029"></a>
+<a id="index-nexti-debugger-command"></a><span><code class="code">nexti</code> [<var class="var">count</var>]<a class="copiable-link" href="Debugger-Execution-Control.html#index-nexti-debugger-command"> &para;</a></span></dt>
+<dt><code class="code">ni</code> [<var class="var">count</var>]</dt>
+<dd><p>Execute one (or <var class="var">count</var>) instruction(s), stepping over function calls.
+</p>
+<a class="index-entry-id" id="index-debugger-commands-return"></a>
+</dd>
+<dt><a id="index-return-debugger-command"></a><span><code class="code">return</code> [<var class="var">value</var>]<a class="copiable-link" href="Debugger-Execution-Control.html#index-return-debugger-command"> &para;</a></span></dt>
+<dd><p>Cancel execution of a function call. If <var class="var">value</var> (either a string or a
+number) is specified, it is used as the function&rsquo;s return value. If used in a
+frame other than the innermost one (the currently executing function; i.e.,
+frame number 0), discard all inner frames in addition to the selected one,
+and the caller of that frame becomes the innermost frame.
+</p>
+<a class="index-entry-id" id="index-debugger-commands-r-_0028run_0029"></a>
+<a class="index-entry-id" id="index-debugger-commands-run-1"></a>
+</dd>
+<dt><a class="index-entry-id" id="index-r-debugger-command-_0028alias-for-run_0029"></a>
+<a id="index-run-debugger-command"></a><span><code class="code">run</code><a class="copiable-link" href="Debugger-Execution-Control.html#index-run-debugger-command"> &para;</a></span></dt>
+<dt><code class="code">r</code></dt>
+<dd><p>Start/restart execution of the program. When restarting, the debugger
+retains the current breakpoints, watchpoints, command history,
+automatic display variables, and debugger options.
+</p>
+<a class="index-entry-id" id="index-debugger-commands-s-_0028step_0029"></a>
+<a class="index-entry-id" id="index-debugger-commands-step"></a>
+</dd>
+<dt><a class="index-entry-id" id="index-s-debugger-command-_0028alias-for-step_0029"></a>
+<a id="index-step-debugger-command"></a><span><code class="code">step</code> [<var class="var">count</var>]<a class="copiable-link" href="Debugger-Execution-Control.html#index-step-debugger-command"> &para;</a></span></dt>
+<dt><code class="code">s</code> [<var class="var">count</var>]</dt>
+<dd><p>Continue execution until control reaches a different source line in the
+current stack frame, stepping inside any function called within
+the line.  If the argument <var class="var">count</var> is supplied, steps that many times before
+stopping, unless it encounters a breakpoint or watchpoint.
+</p>
+<a class="index-entry-id" id="index-debugger-commands-si-_0028stepi_0029"></a>
+<a class="index-entry-id" id="index-debugger-commands-stepi"></a>
+</dd>
+<dt><a class="index-entry-id" id="index-si-debugger-command-_0028alias-for-stepi_0029"></a>
+<a id="index-stepi-debugger-command"></a><span><code class="code">stepi</code> [<var class="var">count</var>]<a class="copiable-link" href="Debugger-Execution-Control.html#index-stepi-debugger-command"> &para;</a></span></dt>
+<dt><code class="code">si</code> [<var class="var">count</var>]</dt>
+<dd><p>Execute one (or <var class="var">count</var>) instruction(s), stepping inside function calls.
+(For illustration of what is meant by an &ldquo;instruction&rdquo; in <code class="command">gawk</code>,
+see the output shown under <code class="code">dump</code> in <a class="ref" href="Miscellaneous-Debugger-Commands.html">Miscellaneous Commands</a>.)
+</p>
+<a class="index-entry-id" id="index-debugger-commands-u-_0028until_0029"></a>
+<a class="index-entry-id" id="index-debugger-commands-until"></a>
+</dd>
+<dt><a class="index-entry-id" id="index-u-debugger-command-_0028alias-for-until_0029"></a>
+<a id="index-until-debugger-command"></a><span><code class="code">until</code> [[<var class="var">filename</var><code class="code">:</code>]<var class="var">n</var> | <var class="var">function</var>]<a class="copiable-link" href="Debugger-Execution-Control.html#index-until-debugger-command"> &para;</a></span></dt>
+<dt><code class="code">u</code> [[<var class="var">filename</var><code class="code">:</code>]<var class="var">n</var> | <var class="var">function</var>]</dt>
+<dd><p>Without any argument, continue execution until a line past the current
+line in the current stack frame is reached. With an argument,
+continue execution until the specified location is reached, or the current
+stack frame returns.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Viewing-And-Changing-Data.html">Viewing and Changing Data</a>, Previous: <a href="Breakpoint-Control.html">Control of Breakpoints</a>, Up: <a href="List-of-Debugger-Commands.html">Main Debugger Commands</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

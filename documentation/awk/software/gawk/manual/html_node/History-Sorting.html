@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>History Sorting (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="History Sorting (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="History Sorting (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Miscellaneous-Programs.html" rel="up" title="Miscellaneous Programs">
+<link href="Extract-Program.html" rel="next" title="Extract Program">
+<link href="Word-Sorting.html" rel="prev" title="Word Sorting">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="History-Sorting">
+<div class="nav-panel">
+<p>
+Next: <a href="Extract-Program.html" accesskey="n" rel="next">Extracting Programs from Texinfo Source Files</a>, Previous: <a href="Word-Sorting.html" accesskey="p" rel="prev">Generating Word-Usage Counts</a>, Up: <a href="Miscellaneous-Programs.html" accesskey="u" rel="up">A Grab Bag of <code class="command">awk</code> Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Removing-Duplicates-from-Unsorted-Text"><span>11.3.6 Removing Duplicates from Unsorted Text<a class="copiable-link" href="History-Sorting.html#Removing-Duplicates-from-Unsorted-Text"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-lines-duplicate_002c-removing"></a>
+<p>The <code class="command">uniq</code> program
+(see <a class="pxref" href="Uniq-Program.html">Printing Nonduplicated Lines of Text</a>)
+removes duplicate lines from <em class="emph">sorted</em> data.
+</p>
+<p>Suppose, however, you need to remove duplicate lines from a data file but
+that you want to preserve the order the lines are in.  A good example of
+this might be a shell history file.  The history file keeps a copy of all
+the commands you have entered, and it is not unusual to repeat a command
+several times in a row.  Occasionally you might want to compact the history
+by removing duplicate entries.  Yet it is desirable to maintain the order
+of the original commands.
+</p>
+<p>This simple program does the job.  It uses two arrays.  The <code class="code">data</code>
+array is indexed by the text of each line.
+For each line, <code class="code">data[$0]</code> is incremented.
+If a particular line has not
+been seen before, then <code class="code">data[$0]</code> is zero.
+In this case, the text of the line is stored in <code class="code">lines[count]</code>.
+Each element of <code class="code">lines</code> is a unique command, and the indices of
+<code class="code">lines</code> indicate the order in which those lines are encountered.
+The <code class="code">END</code> rule simply prints out the lines, in order:
+</p>
+<a class="index-entry-id" id="index-Rakitzis_002c-Byron"></a>
+<a class="index-entry-id" id="index-histsort_002eawk-program"></a>
+<div class="example">
+<pre class="example-preformatted"># histsort.awk --- compact a shell history file
+# Thanks to Byron Rakitzis for the general idea
+
+</pre><div class="group"><pre class="example-preformatted">{
+    if (data[$0]++ == 0)
+        lines[++count] = $0
+}
+</pre></div><pre class="example-preformatted">
+
+</pre><div class="group"><pre class="example-preformatted">END {
+    for (i = 1; i &lt;= count; i++)
+        print lines[i]
+}
+</pre></div></div>
+
+<p>This program also provides a foundation for generating other useful
+information.  For example, using the following <code class="code">print</code> statement in the
+<code class="code">END</code> rule indicates how often a particular command is used:
+</p>
+<div class="example">
+<pre class="example-preformatted">print data[lines[i]], lines[i]
+</pre></div>
+
+<p>This works because <code class="code">data[$0]</code> is incremented each time a line is
+seen.
+</p>
+<p>Rick van Rein offers the following one-liner to do the same job of
+removing duplicates from unsorted text:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk '{ if (! seen[$0]++) print }'
+</pre></div>
+
+<p>This can be simplified even further, at the risk of becoming
+almost too obscure:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk '! seen[$0]++'
+</pre></div>
+
+<p>This version uses the expression as a pattern, relying on
+<code class="command">awk</code>&rsquo;s default action of printing the line when
+the pattern is true.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Extract-Program.html">Extracting Programs from Texinfo Source Files</a>, Previous: <a href="Word-Sorting.html">Generating Word-Usage Counts</a>, Up: <a href="Miscellaneous-Programs.html">A Grab Bag of <code class="command">awk</code> Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

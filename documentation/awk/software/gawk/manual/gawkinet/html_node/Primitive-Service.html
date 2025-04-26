@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>Primitive Service (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="Primitive Service (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="Primitive Service (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Using-Networking.html" rel="up" title="Using Networking">
+<link href="Interacting-Service.html" rel="next" title="Interacting Service">
+<link href="Web-page.html" rel="prev" title="Web page">
+<style type="text/css">
+<!--
+div.example {margin-left: 3.2em}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Primitive-Service">
+<div class="nav-panel">
+<p>
+Next: <a href="Interacting-Service.html" accesskey="n" rel="next">A Web Service with Interaction</a>, Previous: <a href="Web-page.html" accesskey="p" rel="prev">Reading a Web Page</a>, Up: <a href="Using-Networking.html" accesskey="u" rel="up">Networking With <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="A-Primitive-Web-Service">2.8 A Primitive Web Service</h3>
+<a class="index-entry-id" id="index-web-service"></a>
+<p>Now we know enough about HTTP to set up a primitive web service that just
+says <code class="code">&quot;Hello, world&quot;</code> when someone connects to it with a browser.
+Compared
+to the situation in the preceding section, our program changes the role. It
+tries to behave just like the server we have observed. Since we are setting
+up a server here, we have to insert the port number in the &lsquo;<samp class="samp">localport</samp>&rsquo;
+field of the special file name. The other two fields (<var class="var">hostname</var> and
+<var class="var">remoteport</var>) have to contain a &lsquo;<samp class="samp">0</samp>&rsquo; because we do not know in
+advance which host will connect to our service.
+</p>
+<p>In the early 1990s, all a server had to do was send an HTML document and
+close the connection. Here, we adhere to the modern syntax of HTTP.
+The steps are as follows:
+</p>
+<ol class="enumerate">
+<li> Send a status line telling the web browser that everything
+is okay.
+
+</li><li> Send a line to tell the browser how many bytes follow in the
+body of the message. This was not necessary earlier because both
+parties knew that the document ended when the connection closed. Nowadays
+it is possible to stay connected after the transmission of one web page.
+This avoids the network traffic necessary for repeatedly establishing
+TCP connections for requesting several images. Thus, it is necessary to tell
+the receiving party how many bytes will be sent. The header is terminated
+as usual with an empty line.
+
+</li><li> Send the <code class="code">&quot;Hello, world&quot;</code> body
+in HTML.
+The useless <code class="code">while</code> loop swallows the request of the browser.
+We could actually omit the loop, and on most machines the program would still
+work.
+First, start the following program:
+</li></ol>
+
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+  RS = ORS = &quot;\r\n&quot;
+  HttpService = &quot;/inet/tcp/8080/0/0&quot;
+  Hello = &quot;&lt;HTML&gt;&lt;HEAD&gt;&quot; \
+          &quot;&lt;TITLE&gt;A Famous Greeting&lt;/TITLE&gt;&lt;/HEAD&gt;&quot; \
+          &quot;&lt;BODY&gt;&lt;H1&gt;Hello, world&lt;/H1&gt;&lt;/BODY&gt;&lt;/HTML&gt;&quot;
+  Len = length(Hello) + length(ORS)
+  print &quot;HTTP/1.0 200 OK&quot;          |&amp; HttpService
+  print &quot;Content-Length: &quot; Len ORS |&amp; HttpService
+  print Hello                      |&amp; HttpService
+  while ((HttpService |&amp; getline) &gt; 0)
+     continue;
+  close(HttpService)
+}
+</pre></div>
+
+<p>Now, on the same machine, start your favorite browser and let it point to
+<a class="uref" href="http://localhost:8080">http://localhost:8080</a> (the browser needs to know on which port
+our server is listening for requests). If this does not work, the browser
+probably tries to connect to a proxy server that does not know your machine.
+If so, change the browser&rsquo;s configuration so that the browser does not try to
+use a proxy to connect to your machine.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Interacting-Service.html">A Web Service with Interaction</a>, Previous: <a href="Web-page.html">Reading a Web Page</a>, Up: <a href="Using-Networking.html">Networking With <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>I/O Functions (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="I/O Functions (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="I/O Functions (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Built_002din.html" rel="up" title="Built-in">
+<link href="Time-Functions.html" rel="next" title="Time Functions">
+<link href="String-Functions.html" rel="prev" title="String Functions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="I_002fO-Functions">
+<div class="nav-panel">
+<p>
+Next: <a href="Time-Functions.html" accesskey="n" rel="next">Time Functions</a>, Previous: <a href="String-Functions.html" accesskey="p" rel="prev">String-Manipulation Functions</a>, Up: <a href="Built_002din.html" accesskey="u" rel="up">Built-in Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Input_002fOutput-Functions"><span>9.1.5 Input/Output Functions<a class="copiable-link" href="I_002fO-Functions.html#Input_002fOutput-Functions"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-input_002foutput-functions"></a>
+
+<p>The following functions relate to input/output (I/O).
+Optional parameters are enclosed in square brackets ([ ]):
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-files-closing"></a>
+<a id="index-close_0028_0029-function-1"></a><span><code class="code">close(</code><var class="var">filename</var> [<code class="code">,</code> <var class="var">how</var>]<code class="code">)</code><a class="copiable-link" href="I_002fO-Functions.html#index-close_0028_0029-function-1"> &para;</a></span></dt>
+<dd><a class="index-entry-id" id="index-close-file-or-coprocess"></a>
+<p>Close the file <var class="var">filename</var> for input or output. Alternatively, the
+argument may be a shell command that was used for creating a coprocess, or
+for redirecting to or from a pipe; then the coprocess or pipe is closed.
+See <a class="xref" href="Close-Files-And-Pipes.html">Closing Input and Output Redirections</a>
+for more information.
+</p>
+<p>When closing a coprocess, it is occasionally useful to first close
+one end of the two-way pipe and then to close the other.  This is done
+by providing a second argument to <code class="code">close()</code>.  This second argument
+(<var class="var">how</var>)
+should be one of the two string values <code class="code">&quot;to&quot;</code> or <code class="code">&quot;from&quot;</code>,
+indicating which end of the pipe to close.  Case in the string does
+not matter.
+See <a class="xref" href="Two_002dway-I_002fO.html">Two-Way Communications with Another Process</a>,
+which discusses this feature in more detail and gives an example.
+</p>
+<p>Note that the second argument to <code class="code">close()</code> is a <code class="command">gawk</code>
+extension; it is not available in compatibility mode (see <a class="pxref" href="Options.html">Command-Line Options</a>).
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-flush-buffered-output"></a>
+<a id="index-fflush_0028_0029-function"></a><span><code class="code">fflush(</code>[<var class="var">filename</var>]<code class="code">)</code><a class="copiable-link" href="I_002fO-Functions.html#index-fflush_0028_0029-function"> &para;</a></span></dt>
+<dd><p>Flush any buffered output associated with <var class="var">filename</var>, which is either a
+file opened for writing or a shell command for redirecting output to
+a pipe or coprocess.
+</p>
+<a class="index-entry-id" id="index-buffers-flushing"></a>
+<a class="index-entry-id" id="index-output-buffering"></a>
+<p>Many utility programs <em class="dfn">buffer</em> their output (i.e., they save information
+to write to a disk file or the screen in memory until there is enough
+for it to be worthwhile to send the data to the output device).
+This is often more efficient than writing
+every little bit of information as soon as it is ready.  However, sometimes
+it is necessary to force a program to <em class="dfn">flush</em> its buffers (i.e.,
+write the information to its destination, even if a buffer is not full).
+This is the purpose of the <code class="code">fflush()</code> function&mdash;<code class="command">gawk</code> also
+buffers its output, and the <code class="code">fflush()</code> function forces
+<code class="command">gawk</code> to flush its buffers.
+</p>
+<a class="index-entry-id" id="index-extensions-common-fflush_0028_0029-function"></a>
+<a class="index-entry-id" id="index-Brian-Kernighan_0027s-awk-14"></a>
+<p>Brian Kernighan added <code class="code">fflush()</code> to his <code class="command">awk</code> in April
+1992.  For two decades, it was a common extension.  In December
+2012, it was accepted for inclusion into the POSIX standard.
+See <a class="uref" href="http://austingroupbugs.net/view.php?id=634">the Austin Group website</a>.
+</p>
+<p>POSIX standardizes <code class="code">fflush()</code> as follows: if there
+is no argument, or if the argument is the null string (<code class="code">&quot;&quot;</code><!-- /@w -->),
+then <code class="command">awk</code> flushes the buffers for <em class="emph">all</em> open output files
+and pipes.
+</p>
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> Prior to version 4.0.2, <code class="command">gawk</code>
+would flush only the standard output if there was no argument,
+and flush all output files and pipes if the argument was the null
+string. This was changed in order to be compatible with BWK
+<code class="command">awk</code>, in the hope that standardizing this
+feature in POSIX would then be easier (which indeed proved to be the case).
+</p>
+<p>With <code class="command">gawk</code>,
+you can use &lsquo;<samp class="samp">fflush(&quot;/dev/stdout&quot;)</samp>&rsquo; if you wish to flush
+only the standard output.
+</p></blockquote>
+
+<a class="index-entry-id" id="index-troubleshooting-fflush_0028_0029-function"></a>
+<p><code class="code">fflush()</code> returns zero if the buffer is successfully flushed;
+otherwise, it returns a nonzero value. (<code class="command">gawk</code> returns &minus;1.)
+In the case where all buffers are flushed, the return value is zero
+only if all buffers were flushed successfully.  Otherwise, it is
+&minus;1, and <code class="command">gawk</code> warns about the problem <var class="var">filename</var>.
+</p>
+<p><code class="command">gawk</code> also issues a warning message if you attempt to flush
+a file or pipe that was opened for reading (such as with <code class="code">getline</code>),
+or if <var class="var">filename</var> is not an open file, pipe, or coprocess.
+In such a case, <code class="code">fflush()</code> returns &minus;1, as well.
+</p>
+</dd>
+</dl>
+
+<a class="index-entry-id" id="index-sidebar-Interactive-Versus-Noninteractive-Buffering"></a>
+<table class="cartouche" border="1"><tr><th>
+Interactive Versus Noninteractive Buffering</th></tr><tr><td>
+<a class="index-entry-id" id="index-buffering-interactive-vs_002e-noninteractive"></a>
+
+<p>As a side point, buffering issues can be even more confusing if
+your program is <em class="dfn">interactive</em> (i.e., communicating
+with a user sitting at a keyboard).<a class="footnote" id="DOCF54" href="I_002fO-Functions.html#FOOT54"><sup>54</sup></a>
+</p>
+<p>Interactive programs generally <em class="dfn">line buffer</em> their output (i.e., they
+write out every line).  Noninteractive programs wait until they have
+a full buffer, which may be many lines of output.
+Here is an example of the difference:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">awk '{ print $1 + $2 }'</kbd>
+<kbd class="kbd">1 1</kbd>
+-| 2
+<kbd class="kbd">2 3</kbd>
+-| 5
+<kbd class="kbd">Ctrl-d</kbd>
+</pre></div>
+
+<p>Each line of output is printed immediately. Compare that behavior
+with this example:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">awk '{ print $1 + $2 }' | cat</kbd>
+<kbd class="kbd">1 1</kbd>
+<kbd class="kbd">2 3</kbd>
+<kbd class="kbd">Ctrl-d</kbd>
+-| 2
+-| 5
+</pre></div>
+
+<p>Here, no output is printed until after the <kbd class="kbd">Ctrl-d</kbd> is typed, because
+it is all buffered and sent down the pipe to <code class="command">cat</code> in one shot.
+</p></td></tr></table>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-invoke-shell-command"></a>
+<a class="index-entry-id" id="index-interacting-with-other-programs"></a>
+<a id="index-system_0028_0029-function"></a><span><code class="code">system(<var class="var">command</var>)</code><a class="copiable-link" href="I_002fO-Functions.html#index-system_0028_0029-function"> &para;</a></span></dt>
+<dd><p>Execute the operating system
+command <var class="var">command</var> and then return to the <code class="command">awk</code> program.
+Return <var class="var">command</var>&rsquo;s exit status (see further on).
+</p>
+<p>For example, if the following fragment of code is put in your <code class="command">awk</code>
+program:
+</p>
+<div class="example">
+<pre class="example-preformatted">END {
+     system(&quot;date | mail -s 'awk run done' root&quot;)
+}
+</pre></div>
+
+<p>the system administrator is sent mail when the <code class="command">awk</code> program
+finishes processing input and begins its end-of-input processing.
+</p>
+<p>Note that redirecting <code class="code">print</code> or <code class="code">printf</code> into a pipe is often
+enough to accomplish your task.  If you need to run many commands, it
+is more efficient to simply print them down a pipeline to the shell:
+</p>
+<div class="example">
+<pre class="example-preformatted">while (<var class="var">more stuff to do</var>)
+    print <var class="var">command</var> | &quot;/bin/sh&quot;
+close(&quot;/bin/sh&quot;)
+</pre></div>
+
+<a class="index-entry-id" id="index-troubleshooting-system_0028_0029-function"></a>
+<a class="index-entry-id" id="index-_002d_002dsandbox-option-disabling-system_0028_0029-function"></a>
+<p>However, if your <code class="command">awk</code>
+program is interactive, <code class="code">system()</code> is useful for running large
+self-contained programs, such as a shell or an editor.
+Some operating systems cannot implement the <code class="code">system()</code> function.
+<code class="code">system()</code> causes a fatal error if it is not supported.
+</p>
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> When <samp class="option">--sandbox</samp> is specified, the <code class="code">system()</code> function is disabled
+(see <a class="pxref" href="Options.html">Command-Line Options</a>).
+</p></blockquote>
+
+<p>On POSIX systems, a command&rsquo;s exit status is a 16-bit number. The exit
+value passed to the C <code class="code">exit()</code> function is held in the high-order
+eight bits. The low-order bits indicate if the process was killed by a
+signal (bit 7) and if so, the guilty signal number (bits 0&ndash;6).
+</p>
+<p>Traditionally, <code class="command">awk</code>&rsquo;s <code class="code">system()</code> function has simply
+returned the exit status value divided by 256. In the normal case this
+gives the exit status but in the case of death-by-signal it yields
+a fractional floating-point value.<a class="footnote" id="DOCF55" href="I_002fO-Functions.html#FOOT55"><sup>55</sup></a> POSIX states that <code class="command">awk</code>&rsquo;s
+<code class="code">system()</code> should return the full 16-bit value.
+</p>
+<p><code class="command">gawk</code> steers a middle ground.
+The return values are summarized in <a class="ref" href="I_002fO-Functions.html#table_002dsystem_002dreturn_002dvalues">Table 9.5</a>.
+</p>
+<div class="float" id="table_002dsystem_002dreturn_002dvalues">
+<table class="multitable">
+<thead><tr><th width="40%">Situation</th><th width="60%">Return value from <code class="code">system()</code></th></tr></thead>
+<tbody><tr><td width="40%"><samp class="option">--traditional</samp></td><td width="60%">C <code class="code">system()</code>&rsquo;s value divided by 256</td></tr>
+<tr><td width="40%"><samp class="option">--posix</samp></td><td width="60%">C <code class="code">system()</code>&rsquo;s value</td></tr>
+<tr><td width="40%">Normal exit of command</td><td width="60%">Command&rsquo;s exit status</td></tr>
+<tr><td width="40%">Death by signal of command</td><td width="60%">256 + number of murderous signal</td></tr>
+<tr><td width="40%">Death by signal of command with core dump</td><td width="60%">512 + number of murderous signal</td></tr>
+<tr><td width="40%">Some kind of error</td><td width="60%">&minus;1</td></tr>
+</tbody>
+</table>
+<div class="caption"><p><strong class="strong">Table 9.5: </strong>Return values from <code class="code">system()</code></p></div></div></dd>
+</dl>
+
+<p>As of August, 2018, BWK <code class="command">awk</code> now follows <code class="command">gawk</code>&rsquo;s behavior
+for the return value of <code class="code">system()</code>.
+</p>
+<a class="index-entry-id" id="index-sidebar-Controlling-Output-Buffering-with-system_0028_0029"></a>
+<table class="cartouche" border="1"><tr><th>
+Controlling Output Buffering with <code class="code">system()</code></th></tr><tr><td>
+<a class="index-entry-id" id="index-buffers-flushing-1"></a>
+<a class="index-entry-id" id="index-buffering-input_002foutput"></a>
+<a class="index-entry-id" id="index-output-buffering-1"></a>
+
+<p>The <code class="code">fflush()</code> function provides explicit control over output buffering for
+individual files and pipes.  However, its use is not portable to many older
+<code class="command">awk</code> implementations.  An alternative method to flush output
+buffers is to call <code class="code">system()</code> with a null string as its argument:
+</p>
+<div class="example">
+<pre class="example-preformatted">system(&quot;&quot;)   # flush output
+</pre></div>
+
+<p><code class="command">gawk</code> treats this use of the <code class="code">system()</code> function as a special
+case and is smart enough not to run a shell (or other command
+interpreter) with the empty command.  Therefore, with <code class="command">gawk</code>, this
+idiom is not only useful, it is also efficient.  Although this method should work
+with other <code class="command">awk</code> implementations, it does not necessarily avoid
+starting an unnecessary shell.  (Other implementations may only
+flush the buffer associated with the standard output and not necessarily
+all buffered output.)
+</p>
+<p>If you think about what a programmer expects, it makes sense that
+<code class="code">system()</code> should flush any pending output.  The following program:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+     print &quot;first print&quot;
+     system(&quot;echo system echo&quot;)
+     print &quot;second print&quot;
+}
+</pre></div>
+
+<p>must print:
+</p>
+<div class="example">
+<pre class="example-preformatted">first print
+system echo
+second print
+</pre></div>
+
+<p>and not:
+</p>
+<div class="example">
+<pre class="example-preformatted">system echo
+first print
+second print
+</pre></div>
+
+<p>If <code class="command">awk</code> did not flush its buffers before calling <code class="code">system()</code>,
+you would see the latter (undesirable) output.
+</p></td></tr></table>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT54" href="I_002fO-Functions.html#DOCF54">(54)</a></h5>
+<p>A program is interactive
+if the standard output is connected to a terminal device. On modern
+systems, this means your keyboard and screen.</p>
+<h5 class="footnote-body-heading"><a id="FOOT55" href="I_002fO-Functions.html#DOCF55">(55)</a></h5>
+<p>In private correspondence,
+Dr. Kernighan has indicated to me that the way this was done
+was probably a mistake.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Time-Functions.html">Time Functions</a>, Previous: <a href="String-Functions.html">String-Manipulation Functions</a>, Up: <a href="Built_002din.html">Built-in Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

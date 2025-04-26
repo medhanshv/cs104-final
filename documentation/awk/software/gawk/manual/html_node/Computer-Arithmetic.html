@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Computer Arithmetic (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Computer Arithmetic (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Computer Arithmetic (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Arbitrary-Precision-Arithmetic.html" rel="up" title="Arbitrary Precision Arithmetic">
+<link href="Math-Definitions.html" rel="next" title="Math Definitions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.center {text-align:center}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Computer-Arithmetic">
+<div class="nav-panel">
+<p>
+Next: <a href="Math-Definitions.html" accesskey="n" rel="next">Other Stuff to Know</a>, Up: <a href="Arbitrary-Precision-Arithmetic.html" accesskey="u" rel="up">Arithmetic and Arbitrary-Precision Arithmetic with <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="A-General-Description-of-Computer-Arithmetic"><span>16.1 A General Description of Computer Arithmetic<a class="copiable-link" href="Computer-Arithmetic.html#A-General-Description-of-Computer-Arithmetic"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-Sherman_002c-Allan"></a>
+<blockquote class="quotation">
+<p>Have you ever considered that the plural of &ldquo;half&rdquo; is &ldquo;whole&rdquo;?
+</p></blockquote>
+<div class="center">&mdash; <em class="emph">Allan Sherman</em>
+</div>
+<p>Until now, we have worked with data as either numbers or
+strings.  Ultimately, however, computers represent everything in terms
+of <em class="dfn">binary digits</em>, or <em class="dfn">bits</em>.  A decimal digit can take on any
+of 10 values: zero through nine.  A binary digit can take on any of two
+values, zero or one.  Using binary, computers (and computer software)
+can represent and manipulate numerical and character data.  In general,
+the more bits you can use to represent a particular thing, the greater
+the range of possible values it can take on.
+</p>
+<p>Modern computers support at least two, and often more, ways to do
+arithmetic.  Each kind of arithmetic uses a different representation
+(organization of the bits) for the numbers.  The kinds of arithmetic
+that interest us are:
+</p>
+<dl class="table">
+<dt>Decimal arithmetic</dt>
+<dd><p>This is the kind of arithmetic you learned in elementary school, using
+paper and pencil (and/or a calculator). In theory, numbers can have an
+arbitrary number of digits on either side (or both sides) of the decimal
+point, and the results of a computation are always exact.
+</p>
+<p>Some modern systems can do decimal arithmetic in hardware, but usually you
+need a special software library to provide access to these instructions.
+There are also libraries that do decimal arithmetic entirely in software.
+</p>
+<p>Despite the fact that some users expect <code class="command">gawk</code> to be performing
+decimal arithmetic,<a class="footnote" id="DOCF99" href="Computer-Arithmetic.html#FOOT99"><sup>99</sup></a> it does not do so.
+</p>
+</dd>
+<dt>Integer arithmetic</dt>
+<dd><p>In school, integer values were referred to as &ldquo;whole&rdquo; numbers&mdash;that
+is, numbers without any fractional part, such as 1, 42, or &minus;17.
+The advantage to integer numbers is that they represent values exactly.
+The disadvantage is that their range is limited.
+</p>
+<a class="index-entry-id" id="index-unsigned-integers"></a>
+<a class="index-entry-id" id="index-integers-unsigned"></a>
+<p>In computers, integer values come in two flavors: <em class="dfn">signed</em> and
+<em class="dfn">unsigned</em>.  Signed values may be negative or positive, whereas
+unsigned values are always greater than or equal
+to zero.
+</p>
+<p>In computer systems, integer arithmetic is exact, but the possible
+range of values is limited.  Integer arithmetic is generally faster than
+floating-point arithmetic.
+</p>
+<a class="index-entry-id" id="index-floating_002dpoint-numbers"></a>
+</dd>
+<dt>Floating-point arithmetic</dt>
+<dd><p>Floating-point numbers represent what were called in school &ldquo;real&rdquo;
+numbers (i.e., those that have a fractional part, such as 3.1415927).
+The advantage to floating-point numbers is that they can represent a
+much larger range of values than can integers.  The disadvantage is that
+there are numbers that they cannot represent exactly.
+</p>
+<p>Modern systems support floating-point arithmetic in hardware, with a
+limited range of values.  There are software libraries that allow
+the use of arbitrary-precision floating-point calculations.
+</p>
+<a class="index-entry-id" id="index-floating_002dpoint-numbers-single_002dprecision"></a>
+<a class="index-entry-id" id="index-floating_002dpoint-numbers-double_002dprecision"></a>
+<a class="index-entry-id" id="index-floating_002dpoint-numbers-arbitrary_002dprecision-1"></a>
+<a class="index-entry-id" id="index-single_002dprecision"></a>
+<a class="index-entry-id" id="index-double_002dprecision"></a>
+<a class="index-entry-id" id="index-arbitrary-precision-1"></a>
+<p>POSIX <code class="command">awk</code> uses <em class="dfn">double-precision</em> floating-point numbers, which
+can hold more digits than <em class="dfn">single-precision</em> floating-point numbers.
+<code class="command">gawk</code> has facilities for performing arbitrary-precision
+floating-point arithmetic, which we describe in more detail shortly.
+</p></dd>
+</dl>
+
+<p>Computers work with integer and floating-point values of different
+ranges. Integer values are usually either 32 or 64 bits in size.
+Single-precision floating-point values occupy 32 bits, whereas double-precision
+floating-point values occupy 64 bits.
+(Quadruple-precision floating point values also exist. They occupy 128 bits,
+but such numbers are not available in <code class="command">awk</code>.)
+Floating-point values are always
+signed. The possible ranges of values are shown in <a class="ref" href="Computer-Arithmetic.html#table_002dnumeric_002dranges">Table 16.1</a>
+and <a class="ref" href="Computer-Arithmetic.html#table_002dfloating_002dpoint_002dranges">Table 16.2</a>.
+</p>
+<div class="float" id="table_002dnumeric_002dranges">
+<table class="multitable">
+<thead><tr><th width="34%">Representation</th><th width="33%">Minimum value</th><th width="33%">Maximum value</th></tr></thead>
+<tbody><tr><td width="34%">32-bit signed integer</td><td width="33%">&minus;2,147,483,648</td><td width="33%">2,147,483,647</td></tr>
+<tr><td width="34%">32-bit unsigned integer</td><td width="33%">0</td><td width="33%">4,294,967,295</td></tr>
+<tr><td width="34%">64-bit signed integer</td><td width="33%">&minus;9,223,372,036,854,775,808</td><td width="33%">9,223,372,036,854,775,807</td></tr>
+<tr><td width="34%">64-bit unsigned integer</td><td width="33%">0</td><td width="33%">18,446,744,073,709,551,615</td></tr>
+</tbody>
+</table>
+<div class="caption"><p><strong class="strong">Table 16.1: </strong>Value ranges for integer representations</p></div></div>
+<div class="float" id="table_002dfloating_002dpoint_002dranges">
+<table class="multitable">
+<thead><tr><th width="38%">Representation</th><th width="22%">Minimum positive nonzero value</th><th width="22%">Minimum finite value</th><th width="23%">Maximum finite value</th></tr></thead>
+<tbody><tr><td width="38%">Single-precision floating-point</td><td width="22%">1.175494*10<sup class="sup">-38</sup></td><td width="22%">-3.402823*10<sup class="sup">38</sup></td><td width="23%">3.402823*10<sup class="sup">38</sup></td></tr>
+<tr><td width="38%">Double-precision floating-point</td><td width="22%">2.225074*10<sup class="sup">-308</sup></td><td width="22%">-1.797693*10<sup class="sup">308</sup></td><td width="23%">1.797693*10<sup class="sup">308</sup></td></tr>
+<tr><td width="38%">Quadruple-precision floating-point</td><td width="22%">3.362103*10<sup class="sup">-4932</sup></td><td width="22%">-1.189731*10<sup class="sup">4932</sup></td><td width="23%">1.189731*10<sup class="sup">4932</sup></td></tr>
+</tbody>
+</table>
+<div class="caption"><p><strong class="strong">Table 16.2: </strong>Approximate value ranges for floating-point number representations</p></div></div>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT99" href="Computer-Arithmetic.html#DOCF99">(99)</a></h5>
+<p>We don&rsquo;t know why they expect this, but
+they do.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Math-Definitions.html">Other Stuff to Know</a>, Up: <a href="Arbitrary-Precision-Arithmetic.html">Arithmetic and Arbitrary-Precision Arithmetic with <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

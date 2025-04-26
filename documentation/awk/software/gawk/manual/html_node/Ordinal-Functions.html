@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Ordinal Functions (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Ordinal Functions (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Ordinal Functions (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="General-Functions.html" rel="up" title="General Functions">
+<link href="Join-Function.html" rel="next" title="Join Function">
+<link href="Cliff-Random-Function.html" rel="prev" title="Cliff Random Function">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Ordinal-Functions">
+<div class="nav-panel">
+<p>
+Next: <a href="Join-Function.html" accesskey="n" rel="next">Merging an Array into a String</a>, Previous: <a href="Cliff-Random-Function.html" accesskey="p" rel="prev">The Cliff Random Number Generator</a>, Up: <a href="General-Functions.html" accesskey="u" rel="up">General Programming</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Translating-Between-Characters-and-Numbers"><span>10.2.5 Translating Between Characters and Numbers<a class="copiable-link" href="Ordinal-Functions.html#Translating-Between-Characters-and-Numbers"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-libraries-of-awk-functions-character-values-as-numbers"></a>
+<a class="index-entry-id" id="index-functions-library-character-values-as-numbers"></a>
+<a class="index-entry-id" id="index-characters-values-of-as-numbers"></a>
+<a class="index-entry-id" id="index-numbers-as-values-of-characters"></a>
+<p>One commercial implementation of <code class="command">awk</code> supplies a built-in function,
+<code class="code">ord()</code>, which takes a character and returns the numeric value for that
+character in the machine&rsquo;s character set.  If the string passed to
+<code class="code">ord()</code> has more than one character, only the first one is used.
+</p>
+<p>The inverse of this function is <code class="code">chr()</code> (from the function of the same
+name in Pascal), which takes a number and returns the corresponding character.
+Both functions are written very nicely in <code class="command">awk</code>; there is no real
+reason to build them into the <code class="command">awk</code> interpreter:
+</p>
+<a class="index-entry-id" id="index-ord_0028_0029-user_002ddefined-function"></a>
+<a class="index-entry-id" id="index-user_002ddefined-function-ord_0028_0029"></a>
+<a class="index-entry-id" id="index-chr_0028_0029-user_002ddefined-function"></a>
+<a class="index-entry-id" id="index-user_002ddefined-function-chr_0028_0029"></a>
+<a class="index-entry-id" id="index-_005ford_005finit_0028_0029-user_002ddefined-function"></a>
+<a class="index-entry-id" id="index-user_002ddefined-function-_005ford_005finit_0028_0029"></a>
+<div class="example">
+<pre class="example-preformatted"># ord.awk --- do ord and chr
+
+# Global identifiers:
+#    _ord_:        numerical values indexed by characters
+#    _ord_init:    function to initialize _ord_
+
+BEGIN    { _ord_init() }
+
+function _ord_init(    low, high, i, t)
+{
+    low = sprintf(&quot;%c&quot;, 7) # BEL is ascii 7
+    if (low == &quot;\a&quot;) {    # regular ascii
+        low = 0
+        high = 127
+    } else if (sprintf(&quot;%c&quot;, 128 + 7) == &quot;\a&quot;) {
+        # ascii, mark parity
+        low = 128
+        high = 255
+    } else {        # ebcdic(!)
+        low = 0
+        high = 255
+    }
+
+    for (i = low; i &lt;= high; i++) {
+        t = sprintf(&quot;%c&quot;, i)
+        _ord_[t] = i
+    }
+}
+</pre></div>
+
+<a class="index-entry-id" id="index-character-sets-_0028machine-character-encodings_0029"></a>
+<a class="index-entry-id" id="index-ASCII-3"></a>
+<a class="index-entry-id" id="index-EBCDIC"></a>
+<a class="index-entry-id" id="index-Unicode"></a>
+<a class="index-entry-id" id="index-mark-parity"></a>
+<p>Some explanation of the numbers used by <code class="code">_ord_init()</code> is worthwhile.
+The most prominent character set in use today is ASCII.<a class="footnote" id="DOCF71" href="Ordinal-Functions.html#FOOT71"><sup>71</sup></a>
+Although an
+8-bit byte can hold 256 distinct values (from 0 to 255), ASCII only
+defines characters that use the values from 0 to 127.<a class="footnote" id="DOCF72" href="Ordinal-Functions.html#FOOT72"><sup>72</sup></a>
+In the now distant past,
+at least one minicomputer manufacturer
+used ASCII, but with mark parity, meaning that the leftmost bit in the byte
+is always 1.  This means that on those systems, characters
+have numeric values from 128 to 255.
+Finally, large mainframe systems use the EBCDIC character set, which
+uses all 256 values.
+There are other character sets in use on some older systems, but
+they are not really worth worrying about:
+</p>
+<div class="example">
+<pre class="example-preformatted">function ord(str,    c)
+{
+    # only first character is of interest
+    c = substr(str, 1, 1)
+    return _ord_[c]
+}
+
+function chr(c)
+{
+    # force c to be numeric by adding 0
+    return sprintf(&quot;%c&quot;, c + 0)
+}
+
+#### test code ####
+# BEGIN {
+#    for (;;) {
+#        printf(&quot;enter a character: &quot;)
+#        if (getline var &lt;= 0)
+#            break
+#        printf(&quot;ord(%s) = %d\n&quot;, var, ord(var))
+#    }
+# }
+</pre></div>
+
+<p>An obvious improvement to these functions is to move the code for the
+<code class="code">_ord_init<!-- /@w --></code> function into the body of the <code class="code">BEGIN</code> rule.  It was
+written this way initially for ease of development.
+There is a &ldquo;test program&rdquo; in a <code class="code">BEGIN</code> rule, to test the
+function.  It is commented out for production use.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT71" href="Ordinal-Functions.html#DOCF71">(71)</a></h5>
+<p>This
+is changing; many systems use Unicode, a very large character set
+that includes ASCII as a subset.  On systems with full Unicode support,
+a character can occupy up to 32 bits, making simple tests such as
+used here prohibitively expensive.</p>
+<h5 class="footnote-body-heading"><a id="FOOT72" href="Ordinal-Functions.html#DOCF72">(72)</a></h5>
+<p>ASCII
+has been extended in many countries to use the values from 128 to 255
+for country-specific characters.  If your  system uses these extensions,
+you can simplify <code class="code">_ord_init()</code> to loop from 0 to 255.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Join-Function.html">Merging an Array into a String</a>, Previous: <a href="Cliff-Random-Function.html">The Cliff Random Number Generator</a>, Up: <a href="General-Functions.html">General Programming</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

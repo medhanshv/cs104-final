@@ -1,0 +1,1 @@
+/usr/bin/env bash car_sales.sh sales_3.csv 2 5000

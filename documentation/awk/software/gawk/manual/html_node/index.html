@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Top (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Top (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Top (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html#Top" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="https://www.gnu.org/manual" rel="up" title="(dir)">
+<link href="Foreword3.html" rel="next" title="Foreword3">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.toc-numbered-mark {list-style: none}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="top-level-extent" id="Top">
+<div class="nav-panel">
+<p>
+Next: <a href="Foreword3.html" accesskey="n" rel="next">Foreword to the Third Edition</a>, Up: <a href="https://www.gnu.org/manual" accesskey="u" rel="up">(dir)</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h1 class="top" id="General-Introduction"><span>General Introduction<a class="copiable-link" href="index.html#General-Introduction"> &para;</a></span></h1>
+
+<p>This file documents <code class="command">awk</code>, a program that you can use to select
+particular records in a file and perform operations upon them.
+</p>
+
+<p>Copyright &copy; 1989, 1991, 1992, 1993, 1996&ndash;2005, 2007, 2009&ndash;2024 <br>
+Free Software Foundation, Inc.
+</p><br>
+<br>
+
+<p>This is Edition 5.3 of <cite class="cite">GAWK: Effective AWK Programming: A User&rsquo;s Guide for GNU Awk</cite>,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+</p>
+<p>Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being &ldquo;GNU General Public License&rdquo;, with the
+Front-Cover Texts being &ldquo;A GNU Manual&rdquo;, and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+&ldquo;GNU Free Documentation License&rdquo;.
+</p>
+<ol class="enumerate" type="a" start="1">
+<li> The FSF&rsquo;s Back-Cover Text is: &ldquo;You have the freedom to
+copy and modify this GNU manual.&rdquo;
+</li></ol>
+
+
+
+
+
+<div class="element-shortcontents" id="SEC_Shortcontents">
+<h2 class="shortcontents-heading">Short Table of Contents</h2>
+
+<div class="shortcontents">
+<ul class="toc-numbered-mark">
+<li><ul class="toc-numbered-mark">
+<li><a id="stoc-Foreword-to-the-Third-Edition" href="index.html#toc-Foreword-to-the-Third-Edition">Foreword to the Third Edition</a></li>
+<li><a id="stoc-Foreword-to-the-Fourth-Edition" href="index.html#toc-Foreword-to-the-Fourth-Edition">Foreword to the Fourth Edition</a></li>
+<li><a id="stoc-Preface-1" href="index.html#toc-Preface-1">Preface</a></li>
+</ul></li>
+<li><a id="stoc-Part-I_003a-The-awk-Language" href="index.html#toc-Part-I_003a-The-awk-Language">Part I:<br>The <code class="command">awk</code> Language</a><ul class="toc-numbered-mark">
+<li><a id="stoc-Getting-Started-with-awk" href="index.html#toc-Getting-Started-with-awk">1 Getting Started with <code class="command">awk</code></a></li>
+<li><a id="stoc-Running-awk-and-gawk" href="index.html#toc-Running-awk-and-gawk">2 Running <code class="command">awk</code> and <code class="command">gawk</code></a></li>
+<li><a id="stoc-Regular-Expressions" href="index.html#toc-Regular-Expressions">3 Regular Expressions</a></li>
+<li><a id="stoc-Reading-Input-Files" href="index.html#toc-Reading-Input-Files">4 Reading Input Files</a></li>
+<li><a id="stoc-Printing-Output" href="index.html#toc-Printing-Output">5 Printing Output</a></li>
+<li><a id="stoc-Expressions-1" href="index.html#toc-Expressions-1">6 Expressions</a></li>
+<li><a id="stoc-Patterns_002c-Actions_002c-and-Variables" href="index.html#toc-Patterns_002c-Actions_002c-and-Variables">7 Patterns, Actions, and Variables</a></li>
+<li><a id="stoc-Arrays-in-awk" href="index.html#toc-Arrays-in-awk">8 Arrays in <code class="command">awk</code></a></li>
+<li><a id="stoc-Functions-1" href="index.html#toc-Functions-1">9 Functions</a></li>
+</ul></li>
+<li><a id="stoc-Part-II_003a-Problem-Solving-with-awk" href="index.html#toc-Part-II_003a-Problem-Solving-with-awk">Part II:<br>Problem Solving with <code class="command">awk</code></a><ul class="toc-numbered-mark">
+<li><a id="stoc-A-Library-of-awk-Functions" href="index.html#toc-A-Library-of-awk-Functions">10 A Library of <code class="command">awk</code> Functions</a></li>
+<li><a id="stoc-Practical-awk-Programs" href="index.html#toc-Practical-awk-Programs">11 Practical <code class="command">awk</code> Programs</a></li>
+</ul></li>
+<li><a id="stoc-Part-III_003a-Moving-Beyond-Standard-awk-with-gawk" href="index.html#toc-Part-III_003a-Moving-Beyond-Standard-awk-with-gawk">Part III:<br>Moving Beyond Standard <code class="command">awk</code> with <code class="command">gawk</code></a><ul class="toc-numbered-mark">
+<li><a id="stoc-Advanced-Features-of-gawk" href="index.html#toc-Advanced-Features-of-gawk">12 Advanced Features of <code class="command">gawk</code></a></li>
+<li><a id="stoc-Internationalization-with-gawk" href="index.html#toc-Internationalization-with-gawk">13 Internationalization with <code class="command">gawk</code></a></li>
+<li><a id="stoc-Debugging-awk-Programs" href="index.html#toc-Debugging-awk-Programs">14 Debugging <code class="command">awk</code> Programs</a></li>
+<li><a id="stoc-Namespaces-in-gawk" href="index.html#toc-Namespaces-in-gawk">15 Namespaces in <code class="command">gawk</code></a></li>
+<li><a id="stoc-Arithmetic-and-Arbitrary_002dPrecision-Arithmetic-with-gawk" href="index.html#toc-Arithmetic-and-Arbitrary_002dPrecision-Arithmetic-with-gawk">16 Arithmetic and Arbitrary-Precision Arithmetic with <code class="command">gawk</code></a></li>
+<li><a id="stoc-Writing-Extensions-for-gawk" href="index.html#toc-Writing-Extensions-for-gawk">17 Writing Extensions for <code class="command">gawk</code></a></li>
+</ul></li>
+<li><a id="stoc-Part-IV_003a-Appendices" href="index.html#toc-Part-IV_003a-Appendices">Part IV:<br>Appendices</a><ul class="toc-numbered-mark">
+<li><a id="stoc-The-Evolution-of-the-awk-Language" href="index.html#toc-The-Evolution-of-the-awk-Language">Appendix A The Evolution of the <code class="command">awk</code> Language</a></li>
+<li><a id="stoc-Installing-gawk" href="index.html#toc-Installing-gawk">Appendix B Installing <code class="command">gawk</code></a></li>
+<li><a id="stoc-Implementation-Notes" href="index.html#toc-Implementation-Notes">Appendix C Implementation Notes</a></li>
+<li><a id="stoc-Basic-Programming-Concepts" href="index.html#toc-Basic-Programming-Concepts">Appendix D Basic Programming Concepts</a></li>
+<li><a id="stoc-Glossary-1" href="index.html#toc-Glossary-1">Glossary</a></li>
+<li><a id="stoc-GNU-General-Public-License" href="index.html#toc-GNU-General-Public-License">GNU General Public License</a></li>
+<li><a id="stoc-GNU-Free-Documentation-License-1" href="index.html#toc-GNU-Free-Documentation-License-1">GNU Free Documentation License</a></li>
+<li><a id="stoc-Index-1" href="index.html#toc-Index-1" rel="index">Index</a></li>
+</ul></li>
+
+</ul>
+</div>
+</div>
+<div class="element-contents" id="SEC_Contents">
+<h2 class="contents-heading">Table of Contents</h2>
+
+<div class="contents">
+<ul class="toc-numbered-mark">
+<li>
+<ul class="toc-numbered-mark">
+  <li><a id="toc-Foreword-to-the-Third-Edition" href="Foreword3.html">Foreword to the Third Edition</a></li>
+  <li><a id="toc-Foreword-to-the-Fourth-Edition" href="Foreword4.html">Foreword to the Fourth Edition</a></li>
+  <li><a id="toc-Preface-1" href="Preface.html">Preface</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-History-of-awk-and-gawk" href="History.html">History of <code class="command">awk</code> and <code class="command">gawk</code></a></li>
+    <li><a id="toc-A-Rose-by-Any-Other-Name" href="Names.html">A Rose by Any Other Name</a></li>
+    <li><a id="toc-Using-This-Book" href="This-Manual.html">Using This Book</a></li>
+    <li><a id="toc-Typographical-Conventions" href="Conventions.html">Typographical Conventions</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Dark-Corners" href="Conventions.html#Dark-Corners">Dark Corners</a></li>
+    </ul></li>
+    <li><a id="toc-The-GNU-Project-and-This-Book" href="Manual-History.html">The GNU Project and This Book</a></li>
+    <li><a id="toc-How-to-Contribute" href="How-To-Contribute.html">How to Contribute</a></li>
+    <li><a id="toc-Acknowledgments-1" href="Acknowledgments.html">Acknowledgments</a></li>
+  </ul></li>
+</ul></li>
+<li><a id="toc-Part-I_003a-The-awk-Language" href="Getting-Started.html#Part-I_003a-The-awk-Language">Part I:<br>The <code class="command">awk</code> Language</a>
+<ul class="toc-numbered-mark">
+  <li><a id="toc-Getting-Started-with-awk" href="Getting-Started.html">1 Getting Started with <code class="command">awk</code></a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-How-to-Run-awk-Programs" href="Running-gawk.html">1.1 How to Run <code class="command">awk</code> Programs</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-One_002dShot-Throwaway-awk-Programs" href="One_002dshot.html">1.1.1 One-Shot Throwaway <code class="command">awk</code> Programs</a></li>
+      <li><a id="toc-Running-awk-Without-Input-Files" href="Read-Terminal.html">1.1.2 Running <code class="command">awk</code> Without Input Files</a></li>
+      <li><a id="toc-Running-Long-Programs" href="Long.html">1.1.3 Running Long Programs</a></li>
+      <li><a id="toc-Executable-awk-Programs" href="Executable-Scripts.html">1.1.4 Executable <code class="command">awk</code> Programs</a></li>
+      <li><a id="toc-Comments-in-awk-Programs" href="Comments.html">1.1.5 Comments in <code class="command">awk</code> Programs</a></li>
+      <li><a id="toc-Shell-Quoting-Issues" href="Quoting.html">1.1.6 Shell Quoting Issues</a>
+      <ul class="toc-numbered-mark">
+        <li><a id="toc-Quoting-in-MS_002dWindows-Batch-Files" href="DOS-Quoting.html">1.1.6.1 Quoting in MS-Windows Batch Files</a></li>
+      </ul></li>
+    </ul></li>
+    <li><a id="toc-Data-files-for-the-Examples" href="Sample-Data-Files.html">1.2 Data files for the Examples</a></li>
+    <li><a id="toc-Some-Simple-Examples" href="Very-Simple.html">1.3 Some Simple Examples</a></li>
+    <li><a id="toc-An-Example-with-Two-Rules" href="Two-Rules.html">1.4 An Example with Two Rules</a></li>
+    <li><a id="toc-A-More-Complex-Example" href="More-Complex.html">1.5 A More Complex Example</a></li>
+    <li><a id="toc-awk-Statements-Versus-Lines" href="Statements_002fLines.html">1.6 <code class="command">awk</code> Statements Versus Lines</a></li>
+    <li><a id="toc-Other-Features-of-awk" href="Other-Features.html">1.7 Other Features of <code class="command">awk</code></a></li>
+    <li><a id="toc-When-to-Use-awk" href="When.html">1.8 When to Use <code class="command">awk</code></a></li>
+    <li><a id="toc-Summary" href="Intro-Summary.html">1.9 Summary</a></li>
+  </ul></li>
+  <li><a id="toc-Running-awk-and-gawk" href="Invoking-Gawk.html">2 Running <code class="command">awk</code> and <code class="command">gawk</code></a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Invoking-awk" href="Command-Line.html">2.1 Invoking <code class="command">awk</code></a></li>
+    <li><a id="toc-Command_002dLine-Options" href="Options.html">2.2 Command-Line Options</a></li>
+    <li><a id="toc-Other-Command_002dLine-Arguments" href="Other-Arguments.html">2.3 Other Command-Line Arguments</a></li>
+    <li><a id="toc-Naming-Standard-Input-1" href="Naming-Standard-Input.html">2.4 Naming Standard Input</a></li>
+    <li><a id="toc-The-Environment-Variables-gawk-Uses" href="Environment-Variables.html">2.5 The Environment Variables <code class="command">gawk</code> Uses</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-The-AWKPATH-Environment-Variable" href="AWKPATH-Variable.html">2.5.1 The <code class="env">AWKPATH</code> Environment Variable</a></li>
+      <li><a id="toc-The-AWKLIBPATH-Environment-Variable" href="AWKLIBPATH-Variable.html">2.5.2 The <code class="env">AWKLIBPATH</code> Environment Variable</a></li>
+      <li><a id="toc-Other-Environment-Variables-1" href="Other-Environment-Variables.html">2.5.3 Other Environment Variables</a></li>
+    </ul></li>
+    <li><a id="toc-gawk_0027s-Exit-Status" href="Exit-Status.html">2.6 <code class="command">gawk</code>&rsquo;s Exit Status</a></li>
+    <li><a id="toc-Including-Other-Files-into-Your-Program" href="Include-Files.html">2.7 Including Other Files into Your Program</a></li>
+    <li><a id="toc-Loading-Dynamic-Extensions-into-Your-Program" href="Loading-Shared-Libraries.html">2.8 Loading Dynamic Extensions into Your Program</a></li>
+    <li><a id="toc-Obsolete-Options-and_002for-Features" href="Obsolete.html">2.9 Obsolete Options and/or Features</a></li>
+    <li><a id="toc-Undocumented-Options-and-Features" href="Undocumented.html">2.10 Undocumented Options and Features</a></li>
+    <li><a id="toc-Summary-1" href="Invoking-Summary.html">2.11 Summary</a></li>
+  </ul></li>
+  <li><a id="toc-Regular-Expressions" href="Regexp.html">3 Regular Expressions</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-How-to-Use-Regular-Expressions" href="Regexp-Usage.html">3.1 How to Use Regular Expressions</a></li>
+    <li><a id="toc-Escape-Sequences-1" href="Escape-Sequences.html">3.2 Escape Sequences</a></li>
+    <li><a id="toc-Regular-Expression-Operators" href="Regexp-Operators.html">3.3 Regular Expression Operators</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Regexp-Operators-in-awk" href="Regexp-Operator-Details.html">3.3.1 Regexp Operators in <code class="command">awk</code></a></li>
+      <li><a id="toc-Some-Notes-On-Interval-Expressions" href="Interval-Expressions.html">3.3.2 Some Notes On Interval Expressions</a></li>
+    </ul></li>
+    <li><a id="toc-Using-Bracket-Expressions" href="Bracket-Expressions.html">3.4 Using Bracket Expressions</a></li>
+    <li><a id="toc-How-Much-Text-Matches_003f" href="Leftmost-Longest.html">3.5 How Much Text Matches?</a></li>
+    <li><a id="toc-Using-Dynamic-Regexps" href="Computed-Regexps.html">3.6 Using Dynamic Regexps</a></li>
+    <li><a id="toc-gawk_002dSpecific-Regexp-Operators" href="GNU-Regexp-Operators.html">3.7 <code class="command">gawk</code>-Specific Regexp Operators</a></li>
+    <li><a id="toc-Case-Sensitivity-in-Matching" href="Case_002dsensitivity.html">3.8 Case Sensitivity in Matching</a></li>
+    <li><a id="toc-Summary-2" href="Regexp-Summary.html">3.9 Summary</a></li>
+  </ul></li>
+  <li><a id="toc-Reading-Input-Files" href="Reading-Files.html">4 Reading Input Files</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-How-Input-Is-Split-into-Records" href="Records.html">4.1 How Input Is Split into Records</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Record-Splitting-with-Standard-awk" href="awk-split-records.html">4.1.1 Record Splitting with Standard <code class="command">awk</code></a></li>
+      <li><a id="toc-Record-Splitting-with-gawk" href="gawk-split-records.html">4.1.2 Record Splitting with <code class="command">gawk</code></a></li>
+    </ul></li>
+    <li><a id="toc-Examining-Fields" href="Fields.html">4.2 Examining Fields</a></li>
+    <li><a id="toc-Nonconstant-Field-Numbers" href="Nonconstant-Fields.html">4.3 Nonconstant Field Numbers</a></li>
+    <li><a id="toc-Changing-the-Contents-of-a-Field" href="Changing-Fields.html">4.4 Changing the Contents of a Field</a></li>
+    <li><a id="toc-Specifying-How-Fields-Are-Separated" href="Field-Separators.html">4.5 Specifying How Fields Are Separated</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Whitespace-Normally-Separates-Fields" href="Default-Field-Splitting.html">4.5.1 Whitespace Normally Separates Fields</a></li>
+      <li><a id="toc-Using-Regular-Expressions-to-Separate-Fields" href="Regexp-Field-Splitting.html">4.5.2 Using Regular Expressions to Separate Fields</a></li>
+      <li><a id="toc-Making-Each-Character-a-Separate-Field" href="Single-Character-Fields.html">4.5.3 Making Each Character a Separate Field</a></li>
+      <li><a id="toc-Working-With-Comma-Separated-Value-Files" href="Comma-Separated-Fields.html">4.5.4 Working With Comma Separated Value Files</a></li>
+      <li><a id="toc-Setting-FS-from-the-Command-Line" href="Command-Line-Field-Separator.html">4.5.5 Setting <code class="code">FS</code> from the Command Line</a></li>
+      <li><a id="toc-Making-the-Full-Line-Be-a-Single-Field" href="Full-Line-Fields.html">4.5.6 Making the Full Line Be a Single Field</a></li>
+      <li><a id="toc-Field_002dSplitting-Summary" href="Field-Splitting-Summary.html">4.5.7 Field-Splitting Summary</a></li>
+    </ul></li>
+    <li><a id="toc-Reading-Fixed_002dWidth-Data" href="Constant-Size.html">4.6 Reading Fixed-Width Data</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Processing-Fixed_002dWidth-Data" href="Fixed-width-data.html">4.6.1 Processing Fixed-Width Data</a></li>
+      <li><a id="toc-Skipping-Intervening-Fields" href="Skipping-intervening.html">4.6.2 Skipping Intervening Fields</a></li>
+      <li><a id="toc-Capturing-Optional-Trailing-Data" href="Allowing-trailing-data.html">4.6.3 Capturing Optional Trailing Data</a></li>
+      <li><a id="toc-Field-Values-With-Fixed_002dWidth-Data" href="Fields-with-fixed-data.html">4.6.4 Field Values With Fixed-Width Data</a></li>
+    </ul></li>
+    <li><a id="toc-Defining-Fields-by-Content" href="Splitting-By-Content.html">4.7 Defining Fields by Content</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-More-on-CSV-Files" href="More-CSV.html">4.7.1 More on CSV Files</a></li>
+      <li><a id="toc-FS-Versus-FPAT_003a-A-Subtle-Difference" href="FS-versus-FPAT.html">4.7.2 <code class="code">FS</code> Versus <code class="code">FPAT</code>: A Subtle Difference</a></li>
+    </ul></li>
+    <li><a id="toc-Checking-How-gawk-Is-Splitting-Records" href="Testing-field-creation.html">4.8 Checking How <code class="command">gawk</code> Is Splitting Records</a></li>
+    <li><a id="toc-Multiple_002dLine-Records" href="Multiple-Line.html">4.9 Multiple-Line Records</a></li>
+    <li><a id="toc-Explicit-Input-with-getline" href="Getline.html">4.10 Explicit Input with <code class="code">getline</code></a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Using-getline-with-No-Arguments" href="Plain-Getline.html">4.10.1 Using <code class="code">getline</code> with No Arguments</a></li>
+      <li><a id="toc-Using-getline-into-a-Variable" href="Getline_002fVariable.html">4.10.2 Using <code class="code">getline</code> into a Variable</a></li>
+      <li><a id="toc-Using-getline-from-a-File" href="Getline_002fFile.html">4.10.3 Using <code class="code">getline</code> from a File</a></li>
+      <li><a id="toc-Using-getline-into-a-Variable-from-a-File" href="Getline_002fVariable_002fFile.html">4.10.4 Using <code class="code">getline</code> into a Variable from a File</a></li>
+      <li><a id="toc-Using-getline-from-a-Pipe" href="Getline_002fPipe.html">4.10.5 Using <code class="code">getline</code> from a Pipe</a></li>
+      <li><a id="toc-Using-getline-into-a-Variable-from-a-Pipe" href="Getline_002fVariable_002fPipe.html">4.10.6 Using <code class="code">getline</code> into a Variable from a Pipe</a></li>
+      <li><a id="toc-Using-getline-from-a-Coprocess" href="Getline_002fCoprocess.html">4.10.7 Using <code class="code">getline</code> from a Coprocess</a></li>
+      <li><a id="toc-Using-getline-into-a-Variable-from-a-Coprocess" href="Getline_002fVariable_002fCoprocess.html">4.10.8 Using <code class="code">getline</code> into a Variable from a Coprocess</a></li>
+      <li><a id="toc-Points-to-Remember-About-getline" href="Getline-Notes.html">4.10.9 Points to Remember About <code class="code">getline</code></a></li>
+      <li><a id="toc-Summary-of-getline-Variants" href="Getline-Summary.html">4.10.10 Summary of <code class="code">getline</code> Variants</a></li>
+    </ul></li>
+    <li><a id="toc-Reading-Input-with-a-Timeout" href="Read-Timeout.html">4.11 Reading Input with a Timeout</a></li>
+    <li><a id="toc-Retrying-Reads-After-Certain-Input-Errors" href="Retrying-Input.html">4.12 Retrying Reads After Certain Input Errors</a></li>
+    <li><a id="toc-Directories-on-the-Command-Line" href="Command_002dline-directories.html">4.13 Directories on the Command Line</a></li>
+    <li><a id="toc-Summary-3" href="Input-Summary.html">4.14 Summary</a></li>
+    <li><a id="toc-Exercises" href="Input-Exercises.html">4.15 Exercises</a></li>
+  </ul></li>
+  <li><a id="toc-Printing-Output" href="Printing.html">5 Printing Output</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-The-print-Statement" href="Print.html">5.1 The <code class="code">print</code> Statement</a></li>
+    <li><a id="toc-print-Statement-Examples" href="Print-Examples.html">5.2 <code class="code">print</code> Statement Examples</a></li>
+    <li><a id="toc-Output-Separators-1" href="Output-Separators.html">5.3 Output Separators</a></li>
+    <li><a id="toc-Controlling-Numeric-Output-with-print" href="OFMT.html">5.4 Controlling Numeric Output with <code class="code">print</code></a></li>
+    <li><a id="toc-Using-printf-Statements-for-Fancier-Printing" href="Printf.html">5.5 Using <code class="code">printf</code> Statements for Fancier Printing</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Introduction-to-the-printf-Statement" href="Basic-Printf.html">5.5.1 Introduction to the <code class="code">printf</code> Statement</a></li>
+      <li><a id="toc-Format_002dControl-Letters" href="Control-Letters.html">5.5.2 Format-Control Letters</a></li>
+      <li><a id="toc-Modifiers-for-printf-Formats" href="Format-Modifiers.html">5.5.3 Modifiers for <code class="code">printf</code> Formats</a></li>
+      <li><a id="toc-Examples-Using-printf" href="Printf-Examples.html">5.5.4 Examples Using <code class="code">printf</code></a></li>
+    </ul></li>
+    <li><a id="toc-Redirecting-Output-of-print-and-printf" href="Redirection.html">5.6 Redirecting Output of <code class="code">print</code> and <code class="code">printf</code></a></li>
+    <li><a id="toc-Special-Files-for-Standard-Preopened-Data-Streams" href="Special-FD.html">5.7 Special Files for Standard Preopened Data Streams</a></li>
+    <li><a id="toc-Special-File-names-in-gawk" href="Special-Files.html">5.8 Special File names in <code class="command">gawk</code></a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Accessing-Other-Open-Files-with-gawk" href="Other-Inherited-Files.html">5.8.1 Accessing Other Open Files with <code class="command">gawk</code></a></li>
+      <li><a id="toc-Special-Files-for-Network-Communications" href="Special-Network.html">5.8.2 Special Files for Network Communications</a></li>
+      <li><a id="toc-Special-File-name-Caveats" href="Special-Caveats.html">5.8.3 Special File name Caveats</a></li>
+    </ul></li>
+    <li><a id="toc-Closing-Input-and-Output-Redirections" href="Close-Files-And-Pipes.html">5.9 Closing Input and Output Redirections</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Using-close_0028_0029_0027s-Return-Value" href="Close-Return-Value.html">5.9.1 Using <code class="code">close()</code>&rsquo;s Return Value</a></li>
+    </ul></li>
+    <li><a id="toc-Speeding-Up-Pipe-Output" href="Noflush.html">5.10 Speeding Up Pipe Output</a></li>
+    <li><a id="toc-Enabling-Nonfatal-Output" href="Nonfatal.html">5.11 Enabling Nonfatal Output</a></li>
+    <li><a id="toc-Summary-4" href="Output-Summary.html">5.12 Summary</a></li>
+    <li><a id="toc-Exercises-1" href="Output-Exercises.html">5.13 Exercises</a></li>
+  </ul></li>
+  <li><a id="toc-Expressions-1" href="Expressions.html">6 Expressions</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Constants_002c-Variables_002c-and-Conversions" href="Values.html">6.1 Constants, Variables, and Conversions</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Constant-Expressions" href="Constants.html">6.1.1 Constant Expressions</a>
+      <ul class="toc-numbered-mark">
+        <li><a id="toc-Numeric-and-String-Constants" href="Scalar-Constants.html">6.1.1.1 Numeric and String Constants</a></li>
+        <li><a id="toc-Octal-and-Hexadecimal-Numbers" href="Nondecimal_002dnumbers.html">6.1.1.2 Octal and Hexadecimal Numbers</a></li>
+        <li><a id="toc-Regular-Expression-Constants" href="Regexp-Constants.html">6.1.1.3 Regular Expression Constants</a></li>
+      </ul></li>
+      <li><a id="toc-Using-Regular-Expression-Constants" href="Using-Constant-Regexps.html">6.1.2 Using Regular Expression Constants</a>
+      <ul class="toc-numbered-mark">
+        <li><a id="toc-Standard-Regular-Expression-Constants" href="Standard-Regexp-Constants.html">6.1.2.1 Standard Regular Expression Constants</a></li>
+        <li><a id="toc-Strongly-Typed-Regexp-Constants" href="Strong-Regexp-Constants.html">6.1.2.2 Strongly Typed Regexp Constants</a></li>
+      </ul></li>
+      <li><a id="toc-Variables-1" href="Variables.html">6.1.3 Variables</a>
+      <ul class="toc-numbered-mark">
+        <li><a id="toc-Using-Variables-in-a-Program" href="Using-Variables.html">6.1.3.1 Using Variables in a Program</a></li>
+        <li><a id="toc-Assigning-Variables-on-the-Command-Line" href="Assignment-Options.html">6.1.3.2 Assigning Variables on the Command Line</a></li>
+      </ul></li>
+      <li><a id="toc-Conversion-of-Strings-and-Numbers" href="Conversion.html">6.1.4 Conversion of Strings and Numbers</a>
+      <ul class="toc-numbered-mark">
+        <li><a id="toc-How-awk-Converts-Between-Strings-and-Numbers" href="Strings-And-Numbers.html">6.1.4.1 How <code class="command">awk</code> Converts Between Strings and Numbers</a></li>
+        <li><a id="toc-Locales-Can-Influence-Conversion" href="Locale-influences-conversions.html">6.1.4.2 Locales Can Influence Conversion</a></li>
+      </ul></li>
+    </ul></li>
+    <li><a id="toc-Operators_003a-Doing-Something-with-Values" href="All-Operators.html">6.2 Operators: Doing Something with Values</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Arithmetic-Operators" href="Arithmetic-Ops.html">6.2.1 Arithmetic Operators</a></li>
+      <li><a id="toc-String-Concatenation" href="Concatenation.html">6.2.2 String Concatenation</a></li>
+      <li><a id="toc-Assignment-Expressions" href="Assignment-Ops.html">6.2.3 Assignment Expressions</a></li>
+      <li><a id="toc-Increment-and-Decrement-Operators" href="Increment-Ops.html">6.2.4 Increment and Decrement Operators</a></li>
+    </ul></li>
+    <li><a id="toc-Truth-Values-and-Conditions-1" href="Truth-Values-and-Conditions.html">6.3 Truth Values and Conditions</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-True-and-False-in-awk" href="Truth-Values.html">6.3.1 True and False in <code class="command">awk</code></a></li>
+      <li><a id="toc-Variable-Typing-and-Comparison-Expressions" href="Typing-and-Comparison.html">6.3.2 Variable Typing and Comparison Expressions</a>
+      <ul class="toc-numbered-mark">
+        <li><a id="toc-String-Type-versus-Numeric-Type" href="Variable-Typing.html">6.3.2.1 String Type versus Numeric Type</a></li>
+        <li><a id="toc-Comparison-Operators-1" href="Comparison-Operators.html">6.3.2.2 Comparison Operators</a></li>
+        <li><a id="toc-String-Comparison-Based-on-Locale-Collating-Order" href="POSIX-String-Comparison.html">6.3.2.3 String Comparison Based on Locale Collating Order</a></li>
+      </ul></li>
+      <li><a id="toc-Boolean-Expressions" href="Boolean-Ops.html">6.3.3 Boolean Expressions</a></li>
+      <li><a id="toc-Conditional-Expressions" href="Conditional-Exp.html">6.3.4 Conditional Expressions</a></li>
+    </ul></li>
+    <li><a id="toc-Function-Calls-1" href="Function-Calls.html">6.4 Function Calls</a></li>
+    <li><a id="toc-Operator-Precedence-_0028How-Operators-Nest_0029" href="Precedence.html">6.5 Operator Precedence (How Operators Nest)</a></li>
+    <li><a id="toc-Where-You-Are-Makes-a-Difference" href="Locales.html">6.6 Where You Are Makes a Difference</a></li>
+    <li><a id="toc-Summary-5" href="Expressions-Summary.html">6.7 Summary</a></li>
+  </ul></li>
+  <li><a id="toc-Patterns_002c-Actions_002c-and-Variables" href="Patterns-and-Actions.html">7 Patterns, Actions, and Variables</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Pattern-Elements" href="Pattern-Overview.html">7.1 Pattern Elements</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Regular-Expressions-as-Patterns" href="Regexp-Patterns.html">7.1.1 Regular Expressions as Patterns</a></li>
+      <li><a id="toc-Expressions-as-Patterns" href="Expression-Patterns.html">7.1.2 Expressions as Patterns</a></li>
+      <li><a id="toc-Specifying-Record-Ranges-with-Patterns" href="Ranges.html">7.1.3 Specifying Record Ranges with Patterns</a></li>
+      <li><a id="toc-The-BEGIN-and-END-Special-Patterns" href="BEGIN_002fEND.html">7.1.4 The <code class="code">BEGIN</code> and <code class="code">END</code> Special Patterns</a>
+      <ul class="toc-numbered-mark">
+        <li><a id="toc-Startup-and-Cleanup-Actions" href="Using-BEGIN_002fEND.html">7.1.4.1 Startup and Cleanup Actions</a></li>
+        <li><a id="toc-Input_002fOutput-from-BEGIN-and-END-Rules" href="I_002fO-And-BEGIN_002fEND.html">7.1.4.2 Input/Output from <code class="code">BEGIN</code> and <code class="code">END</code> Rules</a></li>
+      </ul></li>
+      <li><a id="toc-The-BEGINFILE-and-ENDFILE-Special-Patterns" href="BEGINFILE_002fENDFILE.html">7.1.5 The <code class="code">BEGINFILE</code> and <code class="code">ENDFILE</code> Special Patterns</a></li>
+      <li><a id="toc-The-Empty-Pattern" href="Empty.html">7.1.6 The Empty Pattern</a></li>
+    </ul></li>
+    <li><a id="toc-Using-Shell-Variables-in-Programs" href="Using-Shell-Variables.html">7.2 Using Shell Variables in Programs</a></li>
+    <li><a id="toc-Actions" href="Action-Overview.html">7.3 Actions</a></li>
+    <li><a id="toc-Control-Statements-in-Actions" href="Statements.html">7.4 Control Statements in Actions</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-The-if_002delse-Statement" href="If-Statement.html">7.4.1 The <code class="code">if</code>-<code class="code">else</code> Statement</a></li>
+      <li><a id="toc-The-while-Statement" href="While-Statement.html">7.4.2 The <code class="code">while</code> Statement</a></li>
+      <li><a id="toc-The-do_002dwhile-Statement" href="Do-Statement.html">7.4.3 The <code class="code">do</code>-<code class="code">while</code> Statement</a></li>
+      <li><a id="toc-The-for-Statement" href="For-Statement.html">7.4.4 The <code class="code">for</code> Statement</a></li>
+      <li><a id="toc-The-switch-Statement" href="Switch-Statement.html">7.4.5 The <code class="code">switch</code> Statement</a></li>
+      <li><a id="toc-The-break-Statement" href="Break-Statement.html">7.4.6 The <code class="code">break</code> Statement</a></li>
+      <li><a id="toc-The-continue-Statement" href="Continue-Statement.html">7.4.7 The <code class="code">continue</code> Statement</a></li>
+      <li><a id="toc-The-next-Statement" href="Next-Statement.html">7.4.8 The <code class="code">next</code> Statement</a></li>
+      <li><a id="toc-The-nextfile-Statement" href="Nextfile-Statement.html">7.4.9 The <code class="code">nextfile</code> Statement</a></li>
+      <li><a id="toc-The-exit-Statement" href="Exit-Statement.html">7.4.10 The <code class="code">exit</code> Statement</a></li>
+    </ul></li>
+    <li><a id="toc-Predefined-Variables" href="Built_002din-Variables.html">7.5 Predefined Variables</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Built_002din-Variables-That-Control-awk" href="User_002dmodified.html">7.5.1 Built-in Variables That Control <code class="command">awk</code></a></li>
+      <li><a id="toc-Built_002din-Variables-That-Convey-Information" href="Auto_002dset.html">7.5.2 Built-in Variables That Convey Information</a></li>
+      <li><a id="toc-Using-ARGC-and-ARGV" href="ARGC-and-ARGV.html">7.5.3 Using <code class="code">ARGC</code> and <code class="code">ARGV</code></a></li>
+    </ul></li>
+    <li><a id="toc-Summary-6" href="Pattern-Action-Summary.html">7.6 Summary</a></li>
+  </ul></li>
+  <li><a id="toc-Arrays-in-awk" href="Arrays.html">8 Arrays in <code class="command">awk</code></a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-The-Basics-of-Arrays" href="Array-Basics.html">8.1 The Basics of Arrays</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Introduction-to-Arrays" href="Array-Intro.html">8.1.1 Introduction to Arrays</a></li>
+      <li><a id="toc-Referring-to-an-Array-Element" href="Reference-to-Elements.html">8.1.2 Referring to an Array Element</a></li>
+      <li><a id="toc-Assigning-Array-Elements" href="Assigning-Elements.html">8.1.3 Assigning Array Elements</a></li>
+      <li><a id="toc-Basic-Array-Example" href="Array-Example.html">8.1.4 Basic Array Example</a></li>
+      <li><a id="toc-Scanning-All-Elements-of-an-Array" href="Scanning-an-Array.html">8.1.5 Scanning All Elements of an Array</a></li>
+      <li><a id="toc-Using-Predefined-Array-Scanning-Orders-with-gawk" href="Controlling-Scanning.html">8.1.6 Using Predefined Array Scanning Orders with <code class="command">gawk</code></a></li>
+    </ul></li>
+    <li><a id="toc-Using-Numbers-to-Subscript-Arrays" href="Numeric-Array-Subscripts.html">8.2 Using Numbers to Subscript Arrays</a></li>
+    <li><a id="toc-Using-Uninitialized-Variables-as-Subscripts" href="Uninitialized-Subscripts.html">8.3 Using Uninitialized Variables as Subscripts</a></li>
+    <li><a id="toc-The-delete-Statement" href="Delete.html">8.4 The <code class="code">delete</code> Statement</a></li>
+    <li><a id="toc-Multidimensional-Arrays" href="Multidimensional.html">8.5 Multidimensional Arrays</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Scanning-Multidimensional-Arrays" href="Multiscanning.html">8.5.1 Scanning Multidimensional Arrays</a></li>
+    </ul></li>
+    <li><a id="toc-Arrays-of-Arrays-1" href="Arrays-of-Arrays.html">8.6 Arrays of Arrays</a></li>
+    <li><a id="toc-Summary-7" href="Arrays-Summary.html">8.7 Summary</a></li>
+  </ul></li>
+  <li><a id="toc-Functions-1" href="Functions.html">9 Functions</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Built_002din-Functions" href="Built_002din.html">9.1 Built-in Functions</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Calling-Built_002din-Functions" href="Calling-Built_002din.html">9.1.1 Calling Built-in Functions</a></li>
+      <li><a id="toc-Generating-Boolean-Values" href="Boolean-Functions.html">9.1.2 Generating Boolean Values</a></li>
+      <li><a id="toc-Numeric-Functions-1" href="Numeric-Functions.html">9.1.3 Numeric Functions</a></li>
+      <li><a id="toc-String_002dManipulation-Functions" href="String-Functions.html">9.1.4 String-Manipulation Functions</a>
+      <ul class="toc-numbered-mark">
+        <li><a id="toc-More-about-_005c-and-_0026-with-sub_0028_0029_002c-gsub_0028_0029_002c-and-gensub_0028_0029" href="Gory-Details.html">9.1.4.1 More about &lsquo;<samp class="samp">\</samp>&rsquo; and &lsquo;<samp class="samp">&amp;</samp>&rsquo; with <code class="code">sub()</code>, <code class="code">gsub()</code>, and <code class="code">gensub()</code></a></li>
+      </ul></li>
+      <li><a id="toc-Input_002fOutput-Functions" href="I_002fO-Functions.html">9.1.5 Input/Output Functions</a></li>
+      <li><a id="toc-Time-Functions-1" href="Time-Functions.html">9.1.6 Time Functions</a></li>
+      <li><a id="toc-Bit_002dManipulation-Functions" href="Bitwise-Functions.html">9.1.7 Bit-Manipulation Functions</a></li>
+      <li><a id="toc-Getting-Type-Information" href="Type-Functions.html">9.1.8 Getting Type Information</a></li>
+      <li><a id="toc-String_002dTranslation-Functions" href="I18N-Functions.html">9.1.9 String-Translation Functions</a></li>
+    </ul></li>
+    <li><a id="toc-User_002dDefined-Functions" href="User_002ddefined.html">9.2 User-Defined Functions</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Function-Definition-Syntax" href="Definition-Syntax.html">9.2.1 Function Definition Syntax</a></li>
+      <li><a id="toc-Function-Definition-Examples" href="Function-Example.html">9.2.2 Function Definition Examples</a></li>
+      <li><a id="toc-Calling-User_002dDefined-Functions" href="Function-Calling.html">9.2.3 Calling User-Defined Functions</a>
+      <ul class="toc-numbered-mark">
+        <li><a id="toc-Writing-a-Function-Call" href="Calling-A-Function.html">9.2.3.1 Writing a Function Call</a></li>
+        <li><a id="toc-Controlling-Variable-Scope" href="Variable-Scope.html">9.2.3.2 Controlling Variable Scope</a></li>
+        <li><a id="toc-Passing-Function-Arguments-by-Value-Or-by-Reference" href="Pass-By-Value_002fReference.html">9.2.3.3 Passing Function Arguments by Value Or by Reference</a></li>
+        <li><a id="toc-Other-Points-About-Calling-Functions" href="Function-Caveats.html">9.2.3.4 Other Points About Calling Functions</a></li>
+      </ul></li>
+      <li><a id="toc-The-return-Statement" href="Return-Statement.html">9.2.4 The <code class="code">return</code> Statement</a></li>
+    </ul></li>
+    <li><a id="toc-Variable-Typing-Is-Dynamic" href="Dynamic-Typing.html">9.3 Variable Typing Is Dynamic</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Dynamic-Typing-In-Standard-awk" href="Dynamic-Typing-Awk.html">9.3.1 Dynamic Typing In Standard <code class="command">awk</code></a></li>
+      <li><a id="toc-Dynamic-Typing-In-gawk" href="Dynamic-Typing-Gawk.html">9.3.2 Dynamic Typing In <code class="command">gawk</code></a></li>
+    </ul></li>
+    <li><a id="toc-Indirect-Function-Calls" href="Indirect-Calls.html">9.4 Indirect Function Calls</a></li>
+    <li><a id="toc-Summary-8" href="Functions-Summary.html">9.5 Summary</a></li>
+  </ul></li>
+</ul></li>
+<li><a id="toc-Part-II_003a-Problem-Solving-with-awk" href="Library-Functions.html#Part-II_003a-Problem-Solving-with-awk">Part II:<br>Problem Solving with <code class="command">awk</code></a>
+<ul class="toc-numbered-mark">
+  <li><a id="toc-A-Library-of-awk-Functions" href="Library-Functions.html">10 A Library of <code class="command">awk</code> Functions</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Naming-Library-Function-Global-Variables" href="Library-Names.html">10.1 Naming Library Function Global Variables</a></li>
+    <li><a id="toc-General-Programming" href="General-Functions.html">10.2 General Programming</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Converting-Strings-to-Numbers" href="Strtonum-Function.html">10.2.1 Converting Strings to Numbers</a></li>
+      <li><a id="toc-Assertions" href="Assert-Function.html">10.2.2 Assertions</a></li>
+      <li><a id="toc-Rounding-Numbers" href="Round-Function.html">10.2.3 Rounding Numbers</a></li>
+      <li><a id="toc-The-Cliff-Random-Number-Generator" href="Cliff-Random-Function.html">10.2.4 The Cliff Random Number Generator</a></li>
+      <li><a id="toc-Translating-Between-Characters-and-Numbers" href="Ordinal-Functions.html">10.2.5 Translating Between Characters and Numbers</a></li>
+      <li><a id="toc-Merging-an-Array-into-a-String" href="Join-Function.html">10.2.6 Merging an Array into a String</a></li>
+      <li><a id="toc-Managing-the-Time-of-Day" href="Getlocaltime-Function.html">10.2.7 Managing the Time of Day</a></li>
+      <li><a id="toc-Reading-a-Whole-File-at-Once" href="Readfile-Function.html">10.2.8 Reading a Whole File at Once</a></li>
+      <li><a id="toc-Quoting-Strings-to-Pass-to-the-Shell" href="Shell-Quoting.html">10.2.9 Quoting Strings to Pass to the Shell</a></li>
+      <li><a id="toc-Checking-Whether-A-Value-Is-Numeric" href="Isnumeric-Function.html">10.2.10 Checking Whether A Value Is Numeric</a></li>
+      <li><a id="toc-Producing-CSV-Data" href="To-CSV-Function.html">10.2.11 Producing CSV Data</a></li>
+    </ul></li>
+    <li><a id="toc-Data-file-Management" href="Data-File-Management.html">10.3 Data file Management</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Noting-Data-file-Boundaries" href="Filetrans-Function.html">10.3.1 Noting Data file Boundaries</a></li>
+      <li><a id="toc-Rereading-the-Current-File" href="Rewind-Function.html">10.3.2 Rereading the Current File</a></li>
+      <li><a id="toc-Checking-for-Readable-Data-files" href="File-Checking.html">10.3.3 Checking for Readable Data files</a></li>
+      <li><a id="toc-Checking-for-Zero_002dLength-Files" href="Empty-Files.html">10.3.4 Checking for Zero-Length Files</a></li>
+      <li><a id="toc-Treating-Assignments-as-File-names" href="Ignoring-Assigns.html">10.3.5 Treating Assignments as File names</a></li>
+    </ul></li>
+    <li><a id="toc-Processing-Command_002dLine-Options" href="Getopt-Function.html">10.4 Processing Command-Line Options</a></li>
+    <li><a id="toc-Reading-the-User-Database" href="Passwd-Functions.html">10.5 Reading the User Database</a></li>
+    <li><a id="toc-Reading-the-Group-Database" href="Group-Functions.html">10.6 Reading the Group Database</a></li>
+    <li><a id="toc-Traversing-Arrays-of-Arrays" href="Walking-Arrays.html">10.7 Traversing Arrays of Arrays</a></li>
+    <li><a id="toc-Summary-9" href="Library-Functions-Summary.html">10.8 Summary</a></li>
+    <li><a id="toc-Exercises-2" href="Library-Exercises.html">10.9 Exercises</a></li>
+  </ul></li>
+  <li><a id="toc-Practical-awk-Programs" href="Sample-Programs.html">11 Practical <code class="command">awk</code> Programs</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Running-the-Example-Programs" href="Running-Examples.html">11.1 Running the Example Programs</a></li>
+    <li><a id="toc-Reinventing-Wheels-for-Fun-and-Profit" href="Clones.html">11.2 Reinventing Wheels for Fun and Profit</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Cutting-Out-Fields-and-Columns" href="Cut-Program.html">11.2.1 Cutting Out Fields and Columns</a></li>
+      <li><a id="toc-Searching-for-Regular-Expressions-in-Files" href="Egrep-Program.html">11.2.2 Searching for Regular Expressions in Files</a></li>
+      <li><a id="toc-Printing-Out-User-Information" href="Id-Program.html">11.2.3 Printing Out User Information</a></li>
+      <li><a id="toc-Splitting-a-Large-File-into-Pieces" href="Split-Program.html">11.2.4 Splitting a Large File into Pieces</a></li>
+      <li><a id="toc-Duplicating-Output-into-Multiple-Files" href="Tee-Program.html">11.2.5 Duplicating Output into Multiple Files</a></li>
+      <li><a id="toc-Printing-Nonduplicated-Lines-of-Text" href="Uniq-Program.html">11.2.6 Printing Nonduplicated Lines of Text</a></li>
+      <li><a id="toc-Counting-Things" href="Wc-Program.html">11.2.7 Counting Things</a>
+      <ul class="toc-numbered-mark">
+        <li><a id="toc-Modern-Character-Sets" href="Bytes-vs_002e-Characters.html">11.2.7.1 Modern Character Sets</a></li>
+        <li><a id="toc-A-Brief-Introduction-To-Extensions" href="Using-extensions.html">11.2.7.2 A Brief Introduction To Extensions</a></li>
+        <li><a id="toc-Code-for-wc_002eawk" href="wc-program.html">11.2.7.3 Code for <samp class="file">wc.awk</samp></a></li>
+      </ul></li>
+    </ul></li>
+    <li><a id="toc-A-Grab-Bag-of-awk-Programs" href="Miscellaneous-Programs.html">11.3 A Grab Bag of <code class="command">awk</code> Programs</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Finding-Duplicated-Words-in-a-Document" href="Dupword-Program.html">11.3.1 Finding Duplicated Words in a Document</a></li>
+      <li><a id="toc-An-Alarm-Clock-Program" href="Alarm-Program.html">11.3.2 An Alarm Clock Program</a></li>
+      <li><a id="toc-Transliterating-Characters" href="Translate-Program.html">11.3.3 Transliterating Characters</a></li>
+      <li><a id="toc-Printing-Mailing-Labels" href="Labels-Program.html">11.3.4 Printing Mailing Labels</a></li>
+      <li><a id="toc-Generating-Word_002dUsage-Counts" href="Word-Sorting.html">11.3.5 Generating Word-Usage Counts</a></li>
+      <li><a id="toc-Removing-Duplicates-from-Unsorted-Text" href="History-Sorting.html">11.3.6 Removing Duplicates from Unsorted Text</a></li>
+      <li><a id="toc-Extracting-Programs-from-Texinfo-Source-Files" href="Extract-Program.html">11.3.7 Extracting Programs from Texinfo Source Files</a></li>
+      <li><a id="toc-A-Simple-Stream-Editor" href="Simple-Sed.html">11.3.8 A Simple Stream Editor</a></li>
+      <li><a id="toc-An-Easy-Way-to-Use-Library-Functions" href="Igawk-Program.html">11.3.9 An Easy Way to Use Library Functions</a></li>
+      <li><a id="toc-Finding-Anagrams-from-a-Dictionary" href="Anagram-Program.html">11.3.10 Finding Anagrams from a Dictionary</a></li>
+      <li><a id="toc-And-Now-for-Something-Completely-Different" href="Signature-Program.html">11.3.11 And Now for Something Completely Different</a></li>
+    </ul></li>
+    <li><a id="toc-Summary-10" href="Programs-Summary.html">11.4 Summary</a></li>
+    <li><a id="toc-Exercises-3" href="Programs-Exercises.html">11.5 Exercises</a></li>
+  </ul></li>
+</ul></li>
+<li><a id="toc-Part-III_003a-Moving-Beyond-Standard-awk-with-gawk" href="Advanced-Features.html#Part-III_003a-Moving-Beyond-Standard-awk-with-gawk">Part III:<br>Moving Beyond Standard <code class="command">awk</code> with <code class="command">gawk</code></a>
+<ul class="toc-numbered-mark">
+  <li><a id="toc-Advanced-Features-of-gawk" href="Advanced-Features.html">12 Advanced Features of <code class="command">gawk</code></a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Allowing-Nondecimal-Input-Data" href="Nondecimal-Data.html">12.1 Allowing Nondecimal Input Data</a></li>
+    <li><a id="toc-Boolean-Typed-Values-1" href="Boolean-Typed-Values.html">12.2 Boolean Typed Values</a></li>
+    <li><a id="toc-Controlling-Array-Traversal-and-Array-Sorting" href="Array-Sorting.html">12.3 Controlling Array Traversal and Array Sorting</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Controlling-Array-Traversal-1" href="Controlling-Array-Traversal.html">12.3.1 Controlling Array Traversal</a></li>
+      <li><a id="toc-Sorting-Array-Values-and-Indices-with-gawk" href="Array-Sorting-Functions.html">12.3.2 Sorting Array Values and Indices with <code class="command">gawk</code></a></li>
+    </ul></li>
+    <li><a id="toc-Two_002dWay-Communications-with-Another-Process" href="Two_002dway-I_002fO.html">12.4 Two-Way Communications with Another Process</a></li>
+    <li><a id="toc-Using-gawk-for-Network-Programming" href="TCP_002fIP-Networking.html">12.5 Using <code class="command">gawk</code> for Network Programming</a></li>
+    <li><a id="toc-Profiling-Your-awk-Programs" href="Profiling.html">12.6 Profiling Your <code class="command">awk</code> Programs</a></li>
+    <li><a id="toc-Preserving-Data-Between-Runs" href="Persistent-Memory.html">12.7 Preserving Data Between Runs</a></li>
+    <li><a id="toc-Builtin-Features-versus-Extensions" href="Extension-Philosophy.html">12.8 Builtin Features versus Extensions</a></li>
+    <li><a id="toc-Summary-11" href="Advanced-Features-Summary.html">12.9 Summary</a></li>
+  </ul></li>
+  <li><a id="toc-Internationalization-with-gawk" href="Internationalization.html">13 Internationalization with <code class="command">gawk</code></a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Internationalization-and-Localization" href="I18N-and-L10N.html">13.1 Internationalization and Localization</a></li>
+    <li><a id="toc-GNU-gettext" href="Explaining-gettext.html">13.2 GNU <code class="command">gettext</code></a></li>
+    <li><a id="toc-Internationalizing-awk-Programs" href="Programmer-i18n.html">13.3 Internationalizing <code class="command">awk</code> Programs</a></li>
+    <li><a id="toc-Translating-awk-Programs" href="Translator-i18n.html">13.4 Translating <code class="command">awk</code> Programs</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Extracting-Marked-Strings" href="String-Extraction.html">13.4.1 Extracting Marked Strings</a></li>
+      <li><a id="toc-Rearranging-printf-Arguments" href="Printf-Ordering.html">13.4.2 Rearranging <code class="code">printf</code> Arguments</a></li>
+      <li><a id="toc-awk-Portability-Issues" href="I18N-Portability.html">13.4.3 <code class="command">awk</code> Portability Issues</a></li>
+    </ul></li>
+    <li><a id="toc-A-Simple-Internationalization-Example" href="I18N-Example.html">13.5 A Simple Internationalization Example</a></li>
+    <li><a id="toc-gawk-Can-Speak-Your-Language" href="Gawk-I18N.html">13.6 <code class="command">gawk</code> Can Speak Your Language</a></li>
+    <li><a id="toc-Summary-12" href="I18N-Summary.html">13.7 Summary</a></li>
+  </ul></li>
+  <li><a id="toc-Debugging-awk-Programs" href="Debugger.html">14 Debugging <code class="command">awk</code> Programs</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Introduction-to-the-gawk-Debugger" href="Debugging.html">14.1 Introduction to the <code class="command">gawk</code> Debugger</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Debugging-in-General" href="Debugging-Concepts.html">14.1.1 Debugging in General</a></li>
+      <li><a id="toc-Debugging-Concepts-1" href="Debugging-Terms.html">14.1.2 Debugging Concepts</a></li>
+      <li><a id="toc-awk-Debugging" href="Awk-Debugging.html">14.1.3 <code class="command">awk</code> Debugging</a></li>
+    </ul></li>
+    <li><a id="toc-Sample-gawk-Debugging-Session" href="Sample-Debugging-Session.html">14.2 Sample <code class="command">gawk</code> Debugging Session</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-How-to-Start-the-Debugger" href="Debugger-Invocation.html">14.2.1 How to Start the Debugger</a></li>
+      <li><a id="toc-Finding-the-Bug" href="Finding-The-Bug.html">14.2.2 Finding the Bug</a></li>
+    </ul></li>
+    <li><a id="toc-Main-Debugger-Commands" href="List-of-Debugger-Commands.html">14.3 Main Debugger Commands</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Control-of-Breakpoints" href="Breakpoint-Control.html">14.3.1 Control of Breakpoints</a></li>
+      <li><a id="toc-Control-of-Execution" href="Debugger-Execution-Control.html">14.3.2 Control of Execution</a></li>
+      <li><a id="toc-Viewing-and-Changing-Data" href="Viewing-And-Changing-Data.html">14.3.3 Viewing and Changing Data</a></li>
+      <li><a id="toc-Working-with-the-Stack" href="Execution-Stack.html">14.3.4 Working with the Stack</a></li>
+      <li><a id="toc-Obtaining-Information-About-the-Program-and-the-Debugger-State" href="Debugger-Info.html">14.3.5 Obtaining Information About the Program and the Debugger State</a></li>
+      <li><a id="toc-Miscellaneous-Commands" href="Miscellaneous-Debugger-Commands.html">14.3.6 Miscellaneous Commands</a></li>
+    </ul></li>
+    <li><a id="toc-Readline-Support-1" href="Readline-Support.html">14.4 Readline Support</a></li>
+    <li><a id="toc-Limitations-1" href="Limitations.html">14.5 Limitations</a></li>
+    <li><a id="toc-Summary-13" href="Debugging-Summary.html">14.6 Summary</a></li>
+  </ul></li>
+  <li><a id="toc-Namespaces-in-gawk" href="Namespaces.html">15 Namespaces in <code class="command">gawk</code></a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Standard-awk_0027s-Single-Namespace" href="Global-Namespace.html">15.1 Standard <code class="command">awk</code>&rsquo;s Single Namespace</a></li>
+    <li><a id="toc-Qualified-Names-1" href="Qualified-Names.html">15.2 Qualified Names</a></li>
+    <li><a id="toc-The-Default-Namespace" href="Default-Namespace.html">15.3 The Default Namespace</a></li>
+    <li><a id="toc-Changing-The-Namespace-1" href="Changing-The-Namespace.html">15.4 Changing The Namespace</a></li>
+    <li><a id="toc-Namespace-and-Component-Naming-Rules" href="Naming-Rules.html">15.5 Namespace and Component Naming Rules</a></li>
+    <li><a id="toc-Internal-Name-Management-1" href="Internal-Name-Management.html">15.6 Internal Name Management</a></li>
+    <li><a id="toc-Namespace-Example-1" href="Namespace-Example.html">15.7 Namespace Example</a></li>
+    <li><a id="toc-Namespaces-and-Other-gawk-Features" href="Namespace-And-Features.html">15.8 Namespaces and Other <code class="command">gawk</code> Features</a></li>
+    <li><a id="toc-Summary-14" href="Namespace-Summary.html">15.9 Summary</a></li>
+  </ul></li>
+  <li><a id="toc-Arithmetic-and-Arbitrary_002dPrecision-Arithmetic-with-gawk" href="Arbitrary-Precision-Arithmetic.html">16 Arithmetic and Arbitrary-Precision Arithmetic with <code class="command">gawk</code></a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-A-General-Description-of-Computer-Arithmetic" href="Computer-Arithmetic.html">16.1 A General Description of Computer Arithmetic</a></li>
+    <li><a id="toc-Other-Stuff-to-Know" href="Math-Definitions.html">16.2 Other Stuff to Know</a></li>
+    <li><a id="toc-Arbitrary_002dPrecision-Arithmetic-Features-in-gawk" href="MPFR-features.html">16.3 Arbitrary-Precision Arithmetic Features in <code class="command">gawk</code></a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Arbitrary-Precision-Arithmetic-is-On-Parole_0021" href="MPFR-On-Parole.html">16.3.1 Arbitrary Precision Arithmetic is On Parole!</a></li>
+      <li><a id="toc-Arbitrary-Precision-Introduction" href="MPFR-Intro.html">16.3.2 Arbitrary Precision Introduction</a></li>
+    </ul></li>
+    <li><a id="toc-Floating_002dPoint-Arithmetic_003a-Caveat-Emptor_0021" href="FP-Math-Caution.html">16.4 Floating-Point Arithmetic: Caveat Emptor!</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Floating_002dPoint-Arithmetic-Is-Not-Exact" href="Inexactness-of-computations.html">16.4.1 Floating-Point Arithmetic Is Not Exact</a>
+      <ul class="toc-numbered-mark">
+        <li><a id="toc-Many-Numbers-Cannot-Be-Represented-Exactly" href="Inexact-representation.html">16.4.1.1 Many Numbers Cannot Be Represented Exactly</a></li>
+        <li><a id="toc-Be-Careful-Comparing-Values" href="Comparing-FP-Values.html">16.4.1.2 Be Careful Comparing Values</a></li>
+        <li><a id="toc-Errors-Accumulate" href="Errors-accumulate.html">16.4.1.3 Errors Accumulate</a></li>
+        <li><a id="toc-Floating-Point-Values-They-Didn_0027t-Talk-About-In-School" href="Strange-values.html">16.4.1.4 Floating Point Values They Didn&rsquo;t Talk About In School</a></li>
+      </ul></li>
+      <li><a id="toc-Getting-the-Accuracy-You-Need" href="Getting-Accuracy.html">16.4.2 Getting the Accuracy You Need</a></li>
+      <li><a id="toc-Try-a-Few-Extra-Bits-of-Precision-and-Rounding" href="Try-To-Round.html">16.4.3 Try a Few Extra Bits of Precision and Rounding</a></li>
+      <li><a id="toc-Setting-the-Precision" href="Setting-precision.html">16.4.4 Setting the Precision</a></li>
+      <li><a id="toc-Setting-the-Rounding-Mode" href="Setting-the-rounding-mode.html">16.4.5 Setting the Rounding Mode</a></li>
+    </ul></li>
+    <li><a id="toc-Arbitrary_002dPrecision-Integer-Arithmetic-with-gawk" href="Arbitrary-Precision-Integers.html">16.5 Arbitrary-Precision Integer Arithmetic with <code class="command">gawk</code></a></li>
+    <li><a id="toc-How-To-Check-If-MPFR-Is-Available" href="Checking-for-MPFR.html">16.6 How To Check If MPFR Is Available</a></li>
+    <li><a id="toc-Standards-Versus-Existing-Practice" href="POSIX-Floating-Point-Problems.html">16.7 Standards Versus Existing Practice</a></li>
+    <li><a id="toc-Summary-15" href="Floating-point-summary.html">16.8 Summary</a></li>
+  </ul></li>
+  <li><a id="toc-Writing-Extensions-for-gawk" href="Dynamic-Extensions.html">17 Writing Extensions for <code class="command">gawk</code></a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Introduction" href="Extension-Intro.html">17.1 Introduction</a></li>
+    <li><a id="toc-Extension-Licensing" href="Plugin-License.html">17.2 Extension Licensing</a></li>
+    <li><a id="toc-How-It-Works-at-a-High-Level" href="Extension-Mechanism-Outline.html">17.3 How It Works at a High Level</a></li>
+    <li><a id="toc-API-Description" href="Extension-API-Description.html">17.4 API Description</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Introduction-1" href="Extension-API-Functions-Introduction.html">17.4.1 Introduction</a></li>
+      <li><a id="toc-General_002dPurpose-Data-Types" href="General-Data-Types.html">17.4.2 General-Purpose Data Types</a></li>
+      <li><a id="toc-Memory-Allocation-Functions-and-Convenience-Macros" href="Memory-Allocation-Functions.html">17.4.3 Memory Allocation Functions and Convenience Macros</a></li>
+      <li><a id="toc-Constructor-Functions-1" href="Constructor-Functions.html">17.4.4 Constructor Functions</a></li>
+      <li><a id="toc-Managing-MPFR-and-GMP-Values" href="API-Ownership-of-MPFR-and-GMP-Values.html">17.4.5 Managing MPFR and GMP Values</a></li>
+      <li><a id="toc-Registration-Functions-1" href="Registration-Functions.html">17.4.6 Registration Functions</a>
+      <ul class="toc-numbered-mark">
+        <li><a id="toc-Registering-An-Extension-Function" href="Extension-Functions.html">17.4.6.1 Registering An Extension Function</a></li>
+        <li><a id="toc-Registering-An-Exit-Callback-Function" href="Exit-Callback-Functions.html">17.4.6.2 Registering An Exit Callback Function</a></li>
+        <li><a id="toc-Registering-An-Extension-Version-String" href="Extension-Version-String.html">17.4.6.3 Registering An Extension Version String</a></li>
+        <li><a id="toc-Customized-Input-Parsers" href="Input-Parsers.html">17.4.6.4 Customized Input Parsers</a></li>
+        <li><a id="toc-Customized-Output-Wrappers" href="Output-Wrappers.html">17.4.6.5 Customized Output Wrappers</a></li>
+        <li><a id="toc-Customized-Two_002dway-Processors" href="Two_002dway-processors.html">17.4.6.6 Customized Two-way Processors</a></li>
+      </ul></li>
+      <li><a id="toc-Printing-Messages-1" href="Printing-Messages.html">17.4.7 Printing Messages</a></li>
+      <li><a id="toc-Updating-ERRNO-1" href="Updating-ERRNO.html">17.4.8 Updating <code class="code">ERRNO</code></a></li>
+      <li><a id="toc-Requesting-Values-1" href="Requesting-Values.html">17.4.9 Requesting Values</a></li>
+      <li><a id="toc-Accessing-and-Updating-Parameters" href="Accessing-Parameters.html">17.4.10 Accessing and Updating Parameters</a></li>
+      <li><a id="toc-Symbol-Table-Access-1" href="Symbol-Table-Access.html">17.4.11 Symbol Table Access</a>
+      <ul class="toc-numbered-mark">
+        <li><a id="toc-Variable-Access-and-Update-by-Name" href="Symbol-table-by-name.html">17.4.11.1 Variable Access and Update by Name</a></li>
+        <li><a id="toc-Variable-Access-and-Update-by-Cookie" href="Symbol-table-by-cookie.html">17.4.11.2 Variable Access and Update by Cookie</a></li>
+        <li><a id="toc-Creating-and-Using-Cached-Values" href="Cached-values.html">17.4.11.3 Creating and Using Cached Values</a></li>
+      </ul></li>
+      <li><a id="toc-Array-Manipulation-1" href="Array-Manipulation.html">17.4.12 Array Manipulation</a>
+      <ul class="toc-numbered-mark">
+        <li><a id="toc-Array-Data-Types-1" href="Array-Data-Types.html">17.4.12.1 Array Data Types</a></li>
+        <li><a id="toc-Array-Functions-1" href="Array-Functions.html">17.4.12.2 Array Functions</a></li>
+        <li><a id="toc-Working-With-All-The-Elements-of-an-Array" href="Flattening-Arrays.html">17.4.12.3 Working With All The Elements of an Array</a></li>
+        <li><a id="toc-How-To-Create-and-Populate-Arrays" href="Creating-Arrays.html">17.4.12.4 How To Create and Populate Arrays</a></li>
+      </ul></li>
+      <li><a id="toc-Accessing-and-Manipulating-Redirections" href="Redirection-API.html">17.4.13 Accessing and Manipulating Redirections</a></li>
+      <li><a id="toc-API-Variables" href="Extension-API-Variables.html">17.4.14 API Variables</a>
+      <ul class="toc-numbered-mark">
+        <li><a id="toc-API-Version-Constants-and-Variables" href="Extension-Versioning.html">17.4.14.1 API Version Constants and Variables</a></li>
+        <li><a id="toc-GMP-and-MPFR-Version-Information" href="Extension-GMP_002fMPFR-Versioning.html">17.4.14.2 GMP and MPFR Version Information</a></li>
+        <li><a id="toc-Informational-Variables" href="Extension-API-Informational-Variables.html">17.4.14.3 Informational Variables</a></li>
+      </ul></li>
+      <li><a id="toc-Boilerplate-Code" href="Extension-API-Boilerplate.html">17.4.15 Boilerplate Code</a></li>
+      <li><a id="toc-Changes-From-Version-1-of-the-API" href="Changes-from-API-V1.html">17.4.16 Changes From Version 1 of the API</a></li>
+    </ul></li>
+    <li><a id="toc-How-gawk-Finds-Extensions" href="Finding-Extensions.html">17.5 How <code class="command">gawk</code> Finds Extensions</a></li>
+    <li><a id="toc-Example_003a-Some-File-Functions" href="Extension-Example.html">17.6 Example: Some File Functions</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Using-chdir_0028_0029-and-stat_0028_0029" href="Internal-File-Description.html">17.6.1 Using <code class="code">chdir()</code> and <code class="code">stat()</code></a></li>
+      <li><a id="toc-C-Code-for-chdir_0028_0029-and-stat_0028_0029" href="Internal-File-Ops.html">17.6.2 C Code for <code class="code">chdir()</code> and <code class="code">stat()</code></a></li>
+      <li><a id="toc-Integrating-the-Extensions" href="Using-Internal-File-Ops.html">17.6.3 Integrating the Extensions</a></li>
+    </ul></li>
+    <li><a id="toc-The-Sample-Extensions-in-the-gawk-Distribution" href="Extension-Samples.html">17.7 The Sample Extensions in the <code class="command">gawk</code> Distribution</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-File_002dRelated-Functions" href="Extension-Sample-File-Functions.html">17.7.1 File-Related Functions</a></li>
+      <li><a id="toc-Interface-to-fnmatch_0028_0029" href="Extension-Sample-Fnmatch.html">17.7.2 Interface to <code class="code">fnmatch()</code></a></li>
+      <li><a id="toc-Interface-to-fork_0028_0029_002c-wait_0028_0029_002c-and-waitpid_0028_0029" href="Extension-Sample-Fork.html">17.7.3 Interface to <code class="code">fork()</code>, <code class="code">wait()</code>, and <code class="code">waitpid()</code></a></li>
+      <li><a id="toc-Enabling-In_002dPlace-File-Editing" href="Extension-Sample-Inplace.html">17.7.4 Enabling In-Place File Editing</a></li>
+      <li><a id="toc-Character-and-Numeric-values_003a-ord_0028_0029-and-chr_0028_0029" href="Extension-Sample-Ord.html">17.7.5 Character and Numeric values: <code class="code">ord()</code> and <code class="code">chr()</code></a></li>
+      <li><a id="toc-Reading-Directories" href="Extension-Sample-Readdir.html">17.7.6 Reading Directories</a></li>
+      <li><a id="toc-Reversing-Output" href="Extension-Sample-Revout.html">17.7.7 Reversing Output</a></li>
+      <li><a id="toc-Two_002dWay-I_002fO-Example" href="Extension-Sample-Rev2way.html">17.7.8 Two-Way I/O Example</a></li>
+      <li><a id="toc-Dumping-and-Restoring-an-Array" href="Extension-Sample-Read-write-array.html">17.7.9 Dumping and Restoring an Array</a></li>
+      <li><a id="toc-Reading-an-Entire-File" href="Extension-Sample-Readfile.html">17.7.10 Reading an Entire File</a></li>
+      <li><a id="toc-Extension-Time-Functions" href="Extension-Sample-Time.html">17.7.11 Extension Time Functions</a></li>
+      <li><a id="toc-API-Tests" href="Extension-Sample-API-Tests.html">17.7.12 API Tests</a></li>
+    </ul></li>
+    <li><a id="toc-The-gawkextlib-Project" href="gawkextlib.html">17.8 The <code class="code">gawkextlib</code> Project</a></li>
+    <li><a id="toc-Summary-16" href="Extension-summary.html">17.9 Summary</a></li>
+    <li><a id="toc-Exercises-4" href="Extension-Exercises.html">17.10 Exercises</a></li>
+  </ul></li>
+</ul></li>
+<li><a id="toc-Part-IV_003a-Appendices" href="Language-History.html#Part-IV_003a-Appendices">Part IV:<br>Appendices</a>
+<ul class="toc-numbered-mark">
+  <li><a id="toc-The-Evolution-of-the-awk-Language" href="Language-History.html">Appendix A The Evolution of the <code class="command">awk</code> Language</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Major-Changes-Between-V7-and-SVR3_002e1" href="V7_002fSVR3_002e1.html">A.1 Major Changes Between V7 and SVR3.1</a></li>
+    <li><a id="toc-Changes-Between-SVR3_002e1-and-SVR4" href="SVR4.html">A.2 Changes Between SVR3.1 and SVR4</a></li>
+    <li><a id="toc-Changes-Between-SVR4-and-POSIX-awk" href="POSIX.html">A.3 Changes Between SVR4 and POSIX <code class="command">awk</code></a></li>
+    <li><a id="toc-Extensions-in-Brian-Kernighan_0027s-awk" href="BTL.html">A.4 Extensions in Brian Kernighan&rsquo;s <code class="command">awk</code></a></li>
+    <li><a id="toc-Extensions-in-gawk-Not-in-POSIX-awk" href="POSIX_002fGNU.html">A.5 Extensions in <code class="command">gawk</code> Not in POSIX <code class="command">awk</code></a></li>
+    <li><a id="toc-History-of-gawk-Features" href="Feature-History.html">A.6 History of <code class="command">gawk</code> Features</a></li>
+    <li><a id="toc-Common-Extensions-Summary" href="Common-Extensions.html">A.7 Common Extensions Summary</a></li>
+    <li><a id="toc-Regexp-Ranges-and-Locales_003a-A-Long-Sad-Story" href="Ranges-and-Locales.html">A.8 Regexp Ranges and Locales: A Long Sad Story</a></li>
+    <li><a id="toc-Major-Contributors-to-gawk" href="Contributors.html">A.9 Major Contributors to <code class="command">gawk</code></a></li>
+    <li><a id="toc-Summary-17" href="History-summary.html">A.10 Summary</a></li>
+  </ul></li>
+  <li><a id="toc-Installing-gawk" href="Installation.html">Appendix B Installing <code class="command">gawk</code></a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-The-gawk-Distribution" href="Gawk-Distribution.html">B.1 The <code class="command">gawk</code> Distribution</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Getting-the-gawk-Distribution" href="Getting.html">B.1.1 Getting the <code class="command">gawk</code> Distribution</a></li>
+      <li><a id="toc-Extracting-the-Distribution" href="Extracting.html">B.1.2 Extracting the Distribution</a></li>
+      <li><a id="toc-Contents-of-the-gawk-Distribution" href="Distribution-contents.html">B.1.3 Contents of the <code class="command">gawk</code> Distribution</a></li>
+    </ul></li>
+    <li><a id="toc-Compiling-and-Installing-gawk-on-Unix_002dLike-Systems" href="Unix-Installation.html">B.2 Compiling and Installing <code class="command">gawk</code> on Unix-Like Systems</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Compiling-gawk-for-Unix_002dLike-Systems" href="Quick-Installation.html">B.2.1 Compiling <code class="command">gawk</code> for Unix-Like Systems</a>
+      <ul class="toc-numbered-mark">
+        <li><a id="toc-Building-With-MPFR" href="Compiling-with-MPFR.html">B.2.1.1 Building With MPFR</a></li>
+      </ul></li>
+      <li><a id="toc-Shell-Startup-Files-1" href="Shell-Startup-Files.html">B.2.2 Shell Startup Files</a></li>
+      <li><a id="toc-Additional-Configuration-Options-1" href="Additional-Configuration-Options.html">B.2.3 Additional Configuration Options</a></li>
+      <li><a id="toc-The-Configuration-Process" href="Configuration-Philosophy.html">B.2.4 The Configuration Process</a></li>
+      <li><a id="toc-Compiling-from-Git-1" href="Compiling-from-Git.html">B.2.5 Compiling from Git</a></li>
+      <li><a id="toc-Building-the-Documentation-1" href="Building-the-Documentation.html">B.2.6 Building the Documentation</a></li>
+    </ul></li>
+    <li><a id="toc-Installation-on-Other-Operating-Systems" href="Non_002dUnix-Installation.html">B.3 Installation on Other Operating Systems</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Installation-on-MS_002dWindows" href="PC-Installation.html">B.3.1 Installation on MS-Windows</a>
+      <ul class="toc-numbered-mark">
+        <li><a id="toc-Installing-a-Prepared-Distribution-for-MS_002dWindows-Systems" href="PC-Binary-Installation.html">B.3.1.1 Installing a Prepared Distribution for MS-Windows Systems</a></li>
+        <li><a id="toc-Compiling-gawk-for-PC-Operating-Systems" href="PC-Compiling.html">B.3.1.2 Compiling <code class="command">gawk</code> for PC Operating Systems</a></li>
+        <li><a id="toc-Using-gawk-on-PC-Operating-Systems" href="PC-Using.html">B.3.1.3 Using <code class="command">gawk</code> on PC Operating Systems</a></li>
+        <li><a id="toc-Using-gawk-In-The-Cygwin-Environment" href="Cygwin.html">B.3.1.4 Using <code class="command">gawk</code> In The Cygwin Environment</a></li>
+        <li><a id="toc-Using-gawk-In-The-MSYS-Environment" href="MSYS.html">B.3.1.5 Using <code class="command">gawk</code> In The MSYS Environment</a></li>
+      </ul></li>
+      <li><a id="toc-Compiling-and-Installing-gawk-on-OpenVMS" href="OpenVMS-Installation.html">B.3.2 Compiling and Installing <code class="command">gawk</code> on OpenVMS</a>
+      <ul class="toc-numbered-mark">
+        <li><a id="toc-Compiling-gawk-on-OpenVMS" href="OpenVMS-Compilation.html">B.3.2.1 Compiling <code class="command">gawk</code> on OpenVMS</a></li>
+        <li><a id="toc-Compiling-gawk-Dynamic-Extensions-on-OpenVMS" href="OpenVMS-Dynamic-Extensions.html">B.3.2.2 Compiling <code class="command">gawk</code> Dynamic Extensions on OpenVMS</a></li>
+        <li><a id="toc-Installing-gawk-on-OpenVMS" href="OpenVMS-Installation-Details.html">B.3.2.3 Installing <code class="command">gawk</code> on OpenVMS</a></li>
+        <li><a id="toc-Running-gawk-on-OpenVMS" href="OpenVMS-Running.html">B.3.2.4 Running <code class="command">gawk</code> on OpenVMS</a></li>
+        <li><a id="toc-The-OpenVMS-GNV-Project" href="OpenVMS-GNV.html">B.3.2.5 The OpenVMS GNV Project</a></li>
+      </ul></li>
+    </ul></li>
+    <li><a id="toc-Reporting-Problems-and-Bugs" href="Bugs.html">B.4 Reporting Problems and Bugs</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Defining-What-Is-and-What-Is-Not-A-Bug" href="Bug-definition.html">B.4.1 Defining What Is and What Is Not A Bug</a></li>
+      <li><a id="toc-Submitting-Bug-Reports" href="Bug-address.html">B.4.2 Submitting Bug Reports</a></li>
+      <li><a id="toc-Please-Don_0027t-Post-Bug-Reports-to-USENET" href="Usenet.html">B.4.3 Please Don&rsquo;t Post Bug Reports to USENET</a></li>
+      <li><a id="toc-What-To-Do-If-You-Think-There-Is-A-Performance-Issue" href="Performance-bugs.html">B.4.4 What To Do If You Think There Is A Performance Issue</a></li>
+      <li><a id="toc-Where-To-Send-Non_002dbug-Questions" href="Asking-for-help.html">B.4.5 Where To Send Non-bug Questions</a></li>
+      <li><a id="toc-Reporting-Problems-with-Non_002dUnix-Ports" href="Maintainers.html">B.4.6 Reporting Problems with Non-Unix Ports</a></li>
+    </ul></li>
+    <li><a id="toc-Other-Freely-Available-awk-Implementations" href="Other-Versions.html">B.5 Other Freely Available <code class="command">awk</code> Implementations</a></li>
+    <li><a id="toc-Summary-18" href="Installation-summary.html">B.6 Summary</a></li>
+  </ul></li>
+  <li><a id="toc-Implementation-Notes" href="Notes.html">Appendix C Implementation Notes</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Downward-Compatibility-and-Debugging" href="Compatibility-Mode.html">C.1 Downward Compatibility and Debugging</a></li>
+    <li><a id="toc-Making-Additions-to-gawk" href="Additions.html">C.2 Making Additions to <code class="command">gawk</code></a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Accessing-The-gawk-Git-Repository" href="Accessing-The-Source.html">C.2.1 Accessing The <code class="command">gawk</code> Git Repository</a></li>
+      <li><a id="toc-Adding-New-Features" href="Adding-Code.html">C.2.2 Adding New Features</a></li>
+      <li><a id="toc-Porting-gawk-to-a-New-Operating-System" href="New-Ports.html">C.2.3 Porting <code class="command">gawk</code> to a New Operating System</a></li>
+      <li><a id="toc-Why-Generated-Files-Are-Kept-In-Git" href="Derived-Files.html">C.2.4 Why Generated Files Are Kept In Git</a></li>
+    </ul></li>
+    <li><a id="toc-Probable-Future-Extensions" href="Future-Extensions.html">C.3 Probable Future Extensions</a></li>
+    <li><a id="toc-Some-Limitations-of-the-Implementation" href="Implementation-Limitations.html">C.4 Some Limitations of the Implementation</a></li>
+    <li><a id="toc-Extension-API-Design" href="Extension-Design.html">C.5 Extension API Design</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Problems-With-The-Old-Mechanism" href="Old-Extension-Problems.html">C.5.1 Problems With The Old Mechanism</a></li>
+      <li><a id="toc-Goals-For-A-New-Mechanism" href="Extension-New-Mechanism-Goals.html">C.5.2 Goals For A New Mechanism</a></li>
+      <li><a id="toc-Other-Design-Decisions" href="Extension-Other-Design-Decisions.html">C.5.3 Other Design Decisions</a></li>
+      <li><a id="toc-Room-For-Future-Growth" href="Extension-Future-Growth.html">C.5.4 Room For Future Growth</a></li>
+    </ul></li>
+    <li><a id="toc-Summary-19" href="Notes-summary.html">C.6 Summary</a></li>
+  </ul></li>
+  <li><a id="toc-Basic-Programming-Concepts" href="Basic-Concepts.html">Appendix D Basic Programming Concepts</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-What-a-Program-Does" href="Basic-High-Level.html">D.1 What a Program Does</a></li>
+    <li><a id="toc-Data-Values-in-a-Computer" href="Basic-Data-Typing.html">D.2 Data Values in a Computer</a></li>
+  </ul></li>
+  <li><a id="toc-Glossary-1" href="Glossary.html">Glossary</a></li>
+  <li><a id="toc-GNU-General-Public-License" href="Copying.html">GNU General Public License</a></li>
+  <li><a id="toc-GNU-Free-Documentation-License-1" href="GNU-Free-Documentation-License.html">GNU Free Documentation License</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-ADDENDUM_003a-How-to-use-this-License-for-your-documents" href="GNU-Free-Documentation-License.html#ADDENDUM_003a-How-to-use-this-License-for-your-documents">ADDENDUM: How to use this License for your documents</a></li>
+  </ul></li>
+  <li><a id="toc-Index-1" href="Index.html" rel="index">Index</a></li>
+</ul></li>
+
+</ul>
+</div>
+</div>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Foreword3.html" accesskey="n" rel="next">Foreword to the Third Edition</a>, Up: <a href="https://www.gnu.org/manual" accesskey="u" rel="up">(dir)</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Return Statement (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Return Statement (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Return Statement (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="User_002ddefined.html" rel="up" title="User-defined">
+<link href="Function-Calling.html" rel="prev" title="Function Calling">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+pre.display-preformatted {font-family: inherit}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Return-Statement">
+<div class="nav-panel">
+<p>
+Previous: <a href="Function-Calling.html" accesskey="p" rel="prev">Calling User-Defined Functions</a>, Up: <a href="User_002ddefined.html" accesskey="u" rel="up">User-Defined Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="The-return-Statement"><span>9.2.4 The <code class="code">return</code> Statement<a class="copiable-link" href="Return-Statement.html#The-return-Statement"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-return-statement_002c-user_002ddefined-functions"></a>
+
+<p>As seen in several earlier examples,
+the body of a user-defined function can contain a <code class="code">return</code> statement.
+This statement returns control to the calling part of the <code class="command">awk</code> program.  It
+can also be used to return a value for use in the rest of the <code class="command">awk</code>
+program.  It looks like this:
+</p>
+<div class="display">
+<pre class="display-preformatted"><code class="code">return</code> [<var class="var">expression</var>]
+</pre></div>
+
+<p>The <var class="var">expression</var> part is optional.
+Due most likely to an oversight, POSIX does not define what the return
+value is if you omit the <var class="var">expression</var>.  Technically speaking, this
+makes the returned value undefined, and therefore, unpredictable.
+In practice, though, all versions of <code class="command">awk</code> simply return the
+null string, which acts like zero if used in a numeric context.
+</p>
+<p>A <code class="code">return</code> statement without an <var class="var">expression</var> is assumed at the end of
+every function definition.  So, if control reaches the end of the function
+body, then technically the function returns an unpredictable value.
+In practice, it returns the empty string.  <code class="command">awk</code>
+does <em class="emph">not</em> warn you if you use the return value of such a function.
+</p>
+<p>Sometimes, you want to write a function for what it does, not for
+what it returns.  Such a function corresponds to a <code class="code">void</code> function
+in C, C++, or Java, or to a <code class="code">procedure</code> in Ada.  Thus, it may be appropriate to not
+return any value; simply bear in mind that you should not be using the
+return value of such a function.
+</p>
+<p>The following is an example of a user-defined function that returns a value
+for the largest number among the elements of an array:
+</p>
+<div class="example">
+<pre class="example-preformatted">function maxelt(vec,   i, ret)
+{
+     for (i in vec) {
+          if (ret == &quot;&quot; || vec[i] &gt; ret)
+               ret = vec[i]
+     }
+     return ret
+}
+</pre></div>
+
+<a class="index-entry-id" id="index-programming-conventions-function-parameters"></a>
+<p>You call <code class="code">maxelt()</code> with one argument, which is an array name.  The local
+variables <code class="code">i</code> and <code class="code">ret</code> are not intended to be arguments;
+there is nothing to stop you from passing more than one argument
+to <code class="code">maxelt()</code> but the results would be strange.  The extra space before
+<code class="code">i</code> in the function parameter list indicates that <code class="code">i</code> and
+<code class="code">ret</code> are local variables.
+You should follow this convention when defining functions.
+</p>
+<p>The following program uses the <code class="code">maxelt()</code> function.  It loads an
+array, calls <code class="code">maxelt()</code>, and then reports the maximum number in that
+array:
+</p>
+<div class="example">
+<pre class="example-preformatted">function maxelt(vec,   i, ret)
+{
+     for (i in vec) {
+          if (ret == &quot;&quot; || vec[i] &gt; ret)
+               ret = vec[i]
+     }
+     return ret
+}
+
+</pre><div class="group"><pre class="example-preformatted"># Load all fields of each record into nums.
+{
+     for(i = 1; i &lt;= NF; i++)
+          nums[NR, i] = $i
+}
+</pre></div><pre class="example-preformatted">
+
+END {
+     print maxelt(nums)
+}
+</pre></div>
+
+<p>Given the following input:
+</p>
+<div class="example">
+<pre class="example-preformatted"> 1 5 23 8 16
+44 3 5 2 8 26
+256 291 1396 2962 100
+-6 467 998 1101
+99385 11 0 225
+</pre></div>
+
+<p>the program reports (predictably) that 99,385 is the largest value
+in the array.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Function-Calling.html">Calling User-Defined Functions</a>, Up: <a href="User_002ddefined.html">User-Defined Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

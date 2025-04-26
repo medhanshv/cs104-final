@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Getting Started (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Getting Started (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Getting Started (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Invoking-Gawk.html" rel="next" title="Invoking Gawk">
+<link href="Preface.html" rel="prev" title="Preface">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="part-level-extent" id="Part-I_003a-The-awk-Language">
+<div class="nav-panel">
+<p>
+Next: <a href="Invoking-Gawk.html" accesskey="n" rel="next">Running <code class="command">awk</code> and <code class="command">gawk</code></a>, Previous: <a href="Preface.html" accesskey="p" rel="prev">Preface</a>, Up: <a href="index.html" accesskey="u" rel="up">General Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h1 class="part"><span>Part I:<br>The <code class="command">awk</code> Language<a class="copiable-link" href="Getting-Started.html#Part-I_003a-The-awk-Language"> &para;</a></span></h1>
+<hr>
+
+
+<ul class="mini-toc">
+<li><a href="Getting-Started.html#Getting-Started" accesskey="1">Getting Started with <code class="command">awk</code></a></li>
+<li><a href="Invoking-Gawk.html" accesskey="2">Running <code class="command">awk</code> and <code class="command">gawk</code></a></li>
+<li><a href="Regexp.html" accesskey="3">Regular Expressions</a></li>
+<li><a href="Reading-Files.html" accesskey="4">Reading Input Files</a></li>
+<li><a href="Printing.html" accesskey="5">Printing Output</a></li>
+<li><a href="Expressions.html" accesskey="6">Expressions</a></li>
+<li><a href="Patterns-and-Actions.html" accesskey="7">Patterns, Actions, and Variables</a></li>
+<li><a href="Arrays.html" accesskey="8">Arrays in <code class="command">awk</code></a></li>
+<li><a href="Functions.html" accesskey="9">Functions</a></li>
+</ul>
+<div class="chapter-level-extent" id="Getting-Started">
+<h2 class="chapter" id="Getting-Started-with-awk"><span>1 Getting Started with <code class="command">awk</code><a class="copiable-link" href="Getting-Started.html#Getting-Started-with-awk"> &para;</a></span></h2>
+<a class="index-entry-id" id="index-awk-function-of"></a>
+
+<p>The basic function of <code class="command">awk</code> is to search files for lines (or other
+units of text) that contain certain patterns.  When a line matches one
+of the patterns, <code class="command">awk</code> performs specified actions on that line.
+<code class="command">awk</code> continues to process input lines in this way until it reaches
+the end of the input files.
+</p>
+<a class="index-entry-id" id="index-awk-uses-for-1"></a>
+<a class="index-entry-id" id="index-programming-languages-data_002ddriven-vs_002e-procedural"></a>
+<a class="index-entry-id" id="index-awk-programs"></a>
+<p>Programs in <code class="command">awk</code> are different from programs in most other languages,
+because <code class="command">awk</code> programs are <em class="dfn">data driven</em> (i.e., you describe
+the data you want to work with and then what to do when you find it).
+Most other languages are <em class="dfn">procedural</em>; you have to describe, in great
+detail, every step the program should take.  When working with procedural
+languages, it is usually much
+harder to clearly describe the data your program will process.
+For this reason, <code class="command">awk</code> programs are often refreshingly easy to
+read and write.
+</p>
+<a class="index-entry-id" id="index-program_002c-definition-of"></a>
+<a class="index-entry-id" id="index-rule_002c-definition-of"></a>
+<p>When you run <code class="command">awk</code>, you specify an <code class="command">awk</code> <em class="dfn">program</em> that
+tells <code class="command">awk</code> what to do.  The program consists of a series of
+<em class="dfn">rules</em> (it may also contain <em class="dfn">function definitions</em>,
+an advanced feature that we will ignore for now;
+see <a class="pxref" href="User_002ddefined.html">User-Defined Functions</a>).  Each rule specifies one
+pattern to search for and one action to perform
+upon finding the pattern.
+</p>
+<p>Syntactically, a rule consists of a <em class="dfn">pattern</em> followed by an
+<em class="dfn">action</em>.  The action is enclosed in braces to separate it from the
+pattern.  Newlines usually separate rules.  Therefore, an <code class="command">awk</code>
+program looks like this:
+</p>
+<div class="example">
+<pre class="example-preformatted"><var class="var">pattern</var> { <var class="var">action</var> }
+<var class="var">pattern</var> { <var class="var">action</var> }
+...
+</pre></div>
+
+
+<ul class="mini-toc">
+<li><a href="Running-gawk.html" accesskey="1">How to Run <code class="command">awk</code> Programs</a></li>
+<li><a href="Sample-Data-Files.html" accesskey="2">Data files for the Examples</a></li>
+<li><a href="Very-Simple.html" accesskey="3">Some Simple Examples</a></li>
+<li><a href="Two-Rules.html" accesskey="4">An Example with Two Rules</a></li>
+<li><a href="More-Complex.html" accesskey="5">A More Complex Example</a></li>
+<li><a href="Statements_002fLines.html" accesskey="6"><code class="command">awk</code> Statements Versus Lines</a></li>
+<li><a href="Other-Features.html" accesskey="7">Other Features of <code class="command">awk</code></a></li>
+<li><a href="When.html" accesskey="8">When to Use <code class="command">awk</code></a></li>
+<li><a href="Intro-Summary.html" accesskey="9">Summary</a></li>
+</ul>
+</div>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Invoking-Gawk.html">Running <code class="command">awk</code> and <code class="command">gawk</code></a>, Previous: <a href="Preface.html">Preface</a>, Up: <a href="index.html">General Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

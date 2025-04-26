@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>GNU Regexp Operators (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="GNU Regexp Operators (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="GNU Regexp Operators (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Regexp.html" rel="up" title="Regexp">
+<link href="Case_002dsensitivity.html" rel="next" title="Case-sensitivity">
+<link href="Computed-Regexps.html" rel="prev" title="Computed Regexps">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GNU-Regexp-Operators">
+<div class="nav-panel">
+<p>
+Next: <a href="Case_002dsensitivity.html" accesskey="n" rel="next">Case Sensitivity in Matching</a>, Previous: <a href="Computed-Regexps.html" accesskey="p" rel="prev">Using Dynamic Regexps</a>, Up: <a href="Regexp.html" accesskey="u" rel="up">Regular Expressions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="gawk_002dSpecific-Regexp-Operators"><span>3.7 <code class="command">gawk</code>-Specific Regexp Operators<a class="copiable-link" href="GNU-Regexp-Operators.html#gawk_002dSpecific-Regexp-Operators"> &para;</a></span></h3>
+
+
+<a class="index-entry-id" id="index-regular-expressions-operators-gawk"></a>
+<a class="index-entry-id" id="index-gawk-regular-expressions-operators"></a>
+<a class="index-entry-id" id="index-operators-GNU_002dspecific"></a>
+<a class="index-entry-id" id="index-regular-expressions-operators-for-words"></a>
+<a class="index-entry-id" id="index-word_002c-regexp-definition-of"></a>
+<p>GNU software that deals with regular expressions provides a number of
+additional regexp operators.  These operators are described in this
+section and are specific to <code class="command">gawk</code>;
+they are not available in other <code class="command">awk</code> implementations.
+Most of the additional operators deal with word matching.
+For our purposes, a <em class="dfn">word</em> is a sequence of one or more letters, digits,
+or underscores (&lsquo;<samp class="samp">_</samp>&rsquo;):
+</p>
+<dl class="table">
+<dd><a class="index-entry-id" id="index-backslash-_0028_005c_0029-_005cs-operator-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-_005c-_0028backslash_0029-_005cs-operator-_0028gawk_0029"></a>
+</dd>
+<dt><code class="code">\s</code></dt>
+<dd><p>Matches any space character as defined by the current locale.
+Think of it as shorthand for
+&lsquo;<samp class="samp">[[:space:]]</samp>&rsquo;<!-- /@w -->.
+</p>
+<a class="index-entry-id" id="index-backslash-_0028_005c_0029-_005cS-operator-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-_005c-_0028backslash_0029-_005cS-operator-_0028gawk_0029"></a>
+</dd>
+<dt><code class="code">\S</code></dt>
+<dd><p>Matches any character that is not a space, as defined by the current locale.
+Think of it as shorthand for
+&lsquo;<samp class="samp">[^[:space:]]</samp>&rsquo;<!-- /@w -->.
+</p>
+<a class="index-entry-id" id="index-backslash-_0028_005c_0029-_005cw-operator-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-_005c-_0028backslash_0029-_005cw-operator-_0028gawk_0029"></a>
+</dd>
+<dt><code class="code">\w</code></dt>
+<dd><p>Matches any word-constituent character&mdash;that is, it matches any
+letter, digit, or underscore. Think of it as shorthand for
+&lsquo;<samp class="samp">[[:alnum:]_]</samp>&rsquo;<!-- /@w -->.
+</p>
+<a class="index-entry-id" id="index-backslash-_0028_005c_0029-_005cW-operator-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-_005c-_0028backslash_0029-_005cW-operator-_0028gawk_0029"></a>
+</dd>
+<dt><code class="code">\W</code></dt>
+<dd><p>Matches any character that is not word-constituent.
+Think of it as shorthand for
+&lsquo;<samp class="samp">[^[:alnum:]_]</samp>&rsquo;<!-- /@w -->.
+</p>
+<a class="index-entry-id" id="index-backslash-_0028_005c_0029-_005c_003c-operator-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-_005c-_0028backslash_0029-_005c_003c-operator-_0028gawk_0029"></a>
+</dd>
+<dt><code class="code">\&lt;</code></dt>
+<dd><p>Matches the empty string at the beginning of a word.
+For example, <code class="code">/\&lt;away/</code> matches &lsquo;<samp class="samp">away</samp>&rsquo; but not
+&lsquo;<samp class="samp">stowaway</samp>&rsquo;.
+</p>
+<a class="index-entry-id" id="index-backslash-_0028_005c_0029-_005c_003e-operator-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-_005c-_0028backslash_0029-_005c_003e-operator-_0028gawk_0029"></a>
+</dd>
+<dt><code class="code">\&gt;</code></dt>
+<dd><p>Matches the empty string at the end of a word.
+For example, <code class="code">/stow\&gt;/</code> matches &lsquo;<samp class="samp">stow</samp>&rsquo; but not &lsquo;<samp class="samp">stowaway</samp>&rsquo;.
+</p>
+<a class="index-entry-id" id="index-backslash-_0028_005c_0029-_005cy-operator-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-_005c-_0028backslash_0029-_005cy-operator-_0028gawk_0029"></a>
+</dd>
+<dt><a id="index-word-boundaries_002c-matching"></a><span><code class="code">\y</code><a class="copiable-link" href="GNU-Regexp-Operators.html#index-word-boundaries_002c-matching"> &para;</a></span></dt>
+<dd><p>Matches the empty string at either the beginning or the
+end of a word (i.e., the word boundar<strong class="strong">y</strong>).  For example, &lsquo;<samp class="samp">\yballs?\y</samp>&rsquo;
+matches either &lsquo;<samp class="samp">ball</samp>&rsquo; or &lsquo;<samp class="samp">balls</samp>&rsquo;, as a separate word.
+</p>
+<a class="index-entry-id" id="index-backslash-_0028_005c_0029-_005cB-operator-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-_005c-_0028backslash_0029-_005cB-operator-_0028gawk_0029"></a>
+</dd>
+<dt><code class="code">\B</code></dt>
+<dd><p>Matches the empty string that occurs between two
+word-constituent characters. For example,
+<code class="code">/\Brat\B/</code> matches &lsquo;<samp class="samp">crate</samp>&rsquo;, but it does not match &lsquo;<samp class="samp">dirty rat</samp>&rsquo;.
+&lsquo;<samp class="samp">\B</samp>&rsquo; is essentially the opposite of &lsquo;<samp class="samp">\y</samp>&rsquo;.
+Another way to think of this is that &lsquo;<samp class="samp">\B</samp>&rsquo; matches the empty string
+provided it&rsquo;s not at the edge of a word.
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-buffers-operators-for"></a>
+<a class="index-entry-id" id="index-regular-expressions-operators-for-buffers"></a>
+<a class="index-entry-id" id="index-operators-string_002dmatching-for-buffers"></a>
+<p>There are two other operators that work on buffers.  In Emacs, a
+<em class="dfn">buffer</em> is, naturally, an Emacs buffer.
+Other GNU programs, including <code class="command">gawk</code>,
+consider the entire string to match as the buffer.
+The operators are:
+</p>
+<dl class="table">
+<dt><code class="code">\`</code></dt>
+<dd><a class="index-entry-id" id="index-backslash-_0028_005c_0029-_005c_0060-operator-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-_005c-_0028backslash_0029-_005c_0060-operator-_0028gawk_0029"></a>
+<p>Matches the empty string at the
+beginning of a buffer (string)
+</p>
+<a class="index-entry-id" id="index-backslash-_0028_005c_0029-_005c_0027-operator-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-_005c-_0028backslash_0029-_005c_0027-operator-_0028gawk_0029"></a>
+</dd>
+<dt><code class="code">\'</code></dt>
+<dd><p>Matches the empty string at the
+end of a buffer (string)
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-_005e-_0028caret_0029-regexp-operator-1"></a>
+<a class="index-entry-id" id="index-caret-_0028_005e_0029-regexp-operator-1"></a>
+<a class="index-entry-id" id="index-_003f-_0028question-mark_0029-regexp-operator-1"></a>
+<a class="index-entry-id" id="index-question-mark-_0028_003f_0029-regexp-operator-1"></a>
+<p>Because &lsquo;<samp class="samp">^</samp>&rsquo; and &lsquo;<samp class="samp">$</samp>&rsquo; always work in terms of the beginning
+and end of strings, these operators don&rsquo;t add any new capabilities
+for <code class="command">awk</code>.  They are provided for compatibility with other
+GNU software.
+</p>
+<a class="index-entry-id" id="index-gawk-word_002dboundary-operator"></a>
+<a class="index-entry-id" id="index-word_002dboundary-operator-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-operators-word_002dboundary-_0028gawk_0029"></a>
+<p>In other GNU software, the word-boundary operator is &lsquo;<samp class="samp">\b</samp>&rsquo;. However,
+that conflicts with the <code class="command">awk</code> language&rsquo;s definition of &lsquo;<samp class="samp">\b</samp>&rsquo;
+as backspace, so <code class="command">gawk</code> uses a different letter.
+An alternative method would have been to require two backslashes in the
+GNU operators, but this was deemed too confusing. The current
+method of using &lsquo;<samp class="samp">\y</samp>&rsquo; for the GNU &lsquo;<samp class="samp">\b</samp>&rsquo; appears to be the
+lesser of two evils.
+</p>
+<a class="index-entry-id" id="index-sidebar-Backreferences-Are-Not-Supported"></a>
+<table class="cartouche" border="1"><tr><th>
+Backreferences Are Not Supported</th></tr><tr><td>
+<p>In POSIX Basic Regular Expressions (BREs), you can specify what are
+called <em class="dfn">backreferences</em> in regular expressions. For instance,
+in <code class="command">grep</code>, a regexp like &lsquo;<samp class="samp">\(..\)\1</samp>&rsquo; lets you match
+two instances of the same subexpression in a row, such as &lsquo;<samp class="samp">abab</samp>&rsquo; or &lsquo;<samp class="samp">2323</samp>&rsquo;.
+</p>
+<p>This construct is not supported in POSIX Extended Regular Expressions
+(EREs) such as are used in <code class="command">awk</code> and <code class="command">gawk</code>. Besides being less
+efficient for matching, the numeric escape (&lsquo;<samp class="samp">\1</samp>&rsquo; in the example) would conflict
+with the ability to have octal escape sequences in regular expressions
+(see <a class="pxref" href="Escape-Sequences.html">Escape Sequences</a>).
+</p>
+<p>This is true even though the underlying regexp matching engine(s) used
+by <code class="command">gawk</code> or other <code class="command">awk</code> implementations might support
+such a feature.
+</p>
+<p>We are told that BusyBox <code class="command">awk</code> (see <a class="pxref" href="Other-Versions.html">Other Freely Available <code class="command">awk</code> Implementations</a>) is an
+exception, and that it allows backreferences, but only in dynamic regexps;
+for example &lsquo;<samp class="samp">&quot;aa&quot; ~ &quot;(.)\1&quot;</samp>&rsquo;, whereas it treats the &lsquo;<samp class="samp">\1</samp>&rsquo; in
+&lsquo;<samp class="samp">&quot;aa&quot; ~ /(.)\1/</samp>&rsquo; as an octal escape sequence.
+</p></td></tr></table>
+
+<a class="index-entry-id" id="index-regular-expressions-gawk_002c-command_002dline-options"></a>
+<a class="index-entry-id" id="index-gawk-command_002dline-options_002c-regular-expressions-and"></a>
+<p>The various command-line options
+(see <a class="pxref" href="Options.html">Command-Line Options</a>)
+control how <code class="command">gawk</code> interprets characters in regexps:
+</p>
+<dl class="table">
+<dt>No options</dt>
+<dd><p>In the default case, <code class="command">gawk</code> provides all the facilities of
+POSIX regexps and the
+previously described
+GNU regexp operators.
+GNU regexp operators described
+in <a class="ref" href="Regexp-Operators.html">Regular Expression Operators</a>.
+</p>
+</dd>
+<dt><samp class="option">--posix</samp></dt>
+<dd><p>Match only POSIX regexps; the GNU operators are not special
+(e.g., &lsquo;<samp class="samp">\w</samp>&rsquo; matches a literal &lsquo;<samp class="samp">w</samp>&rsquo;).  Interval expressions
+are allowed.
+</p>
+</dd>
+<dt><a id="index-Brian-Kernighan_0027s-awk-2"></a><span><samp class="option">--traditional</samp><a class="copiable-link" href="GNU-Regexp-Operators.html#index-Brian-Kernighan_0027s-awk-2"> &para;</a></span></dt>
+<dd><p>Match traditional Unix <code class="command">awk</code> regexps. The GNU operators
+are not special.  Because BWK <code class="command">awk</code> supports them,
+the POSIX character classes (&lsquo;<samp class="samp">[[:alnum:]]</samp>&rsquo;, etc.) are available.
+So too, interval expressions are allowed.
+Characters described by octal and hexadecimal escape sequences are
+treated literally, even if they represent regexp metacharacters.
+</p>
+</dd>
+<dt><samp class="option">--re-interval</samp></dt>
+<dd><p>This option remains for backwards compatibility but no longer has any
+real effect.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Case_002dsensitivity.html">Case Sensitivity in Matching</a>, Previous: <a href="Computed-Regexps.html">Using Dynamic Regexps</a>, Up: <a href="Regexp.html">Regular Expressions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

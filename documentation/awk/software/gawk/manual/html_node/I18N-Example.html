@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>I18N Example (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="I18N Example (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="I18N Example (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Internationalization.html" rel="up" title="Internationalization">
+<link href="Gawk-I18N.html" rel="next" title="Gawk I18N">
+<link href="Translator-i18n.html" rel="prev" title="Translator i18n">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="I18N-Example">
+<div class="nav-panel">
+<p>
+Next: <a href="Gawk-I18N.html" accesskey="n" rel="next"><code class="command">gawk</code> Can Speak Your Language</a>, Previous: <a href="Translator-i18n.html" accesskey="p" rel="prev">Translating <code class="command">awk</code> Programs</a>, Up: <a href="Internationalization.html" accesskey="u" rel="up">Internationalization with <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="A-Simple-Internationalization-Example"><span>13.5 A Simple Internationalization Example<a class="copiable-link" href="I18N-Example.html#A-Simple-Internationalization-Example"> &para;</a></span></h3>
+
+<p>Now let&rsquo;s look at a step-by-step example of how to internationalize and
+localize a simple <code class="command">awk</code> program, using <samp class="file">guide.awk</samp> as our
+original source:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+    TEXTDOMAIN = &quot;guide&quot;
+    bindtextdomain(&quot;.&quot;)  # for testing
+    print _&quot;Don't Panic&quot;
+    print _&quot;The Answer Is&quot;, 42
+    print &quot;Pardon me, Zaphod who?&quot;
+}
+</pre></div>
+
+<p>Run &lsquo;<samp class="samp">gawk --gen-pot</samp>&rsquo; to create the <samp class="file">.pot</samp> file:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk --gen-pot -f guide.awk &gt; guide.pot</kbd>
+</pre></div>
+
+<p>This produces:
+</p>
+<div class="example">
+<pre class="example-preformatted">#: guide.awk:4
+msgid &quot;Don't Panic&quot;
+msgstr &quot;&quot;
+
+#: guide.awk:5
+msgid &quot;The Answer Is&quot;
+msgstr &quot;&quot;
+
+</pre></div>
+
+<p>This original portable object template file is saved and reused for each language
+into which the application is translated.  The <code class="code">msgid</code>
+is the original string and the <code class="code">msgstr</code> is the translation.
+</p>
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> Strings not marked with a leading underscore do not
+appear in the <samp class="file">guide.pot</samp> file.
+</p></blockquote>
+
+<p>Next, the messages must be translated.
+Here is a translation to a hypothetical dialect of English,
+called &ldquo;Mellow&rdquo;:<a class="footnote" id="DOCF96" href="I18N-Example.html#FOOT96"><sup>96</sup></a>
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">$ <kbd class="kbd">cp guide.pot guide-mellow.po</kbd>
+<var class="var">Add translations to</var> guide-mellow.po ...
+</pre></div></div>
+
+<p>Following are the translations:
+</p>
+<div class="example">
+<pre class="example-preformatted">#: guide.awk:4
+msgid &quot;Don't Panic&quot;
+msgstr &quot;Hey man, relax!&quot;
+
+#: guide.awk:5
+msgid &quot;The Answer Is&quot;
+msgstr &quot;Like, the scoop is&quot;
+
+</pre></div>
+
+<a class="index-entry-id" id="index-GNU_002fLinux-1"></a>
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> The following instructions apply to GNU/Linux with the GNU C Library. Be
+aware that the actual steps may change over time, that the following
+description may not be accurate for all GNU/Linux distributions, and
+that things may work entirely differently on other operating systems.
+</p></blockquote>
+
+<p>The next step is to make the directory to hold the binary message object
+file and then to create the <samp class="file">guide.mo</samp> file.
+The directory has the form <samp class="file"><var class="var">locale</var>/LC_MESSAGES</samp>, where
+<var class="var">locale</var> is a locale name known to the C <code class="command">gettext</code> routines.
+</p>
+<a class="index-entry-id" id="index-LANGUAGE-environment-variable-1"></a>
+<a class="index-entry-id" id="index-environment-variables-LANGUAGE-1"></a>
+<a class="index-entry-id" id="index-LC_005fALL-environment-variable-1"></a>
+<a class="index-entry-id" id="index-environment-variables-LC_005fALL-1"></a>
+<a class="index-entry-id" id="index-LANG-environment-variable"></a>
+<a class="index-entry-id" id="index-environment-variables-LANG"></a>
+<a class="index-entry-id" id="index-LC_005fMESSAGES-environment-variable"></a>
+<a class="index-entry-id" id="index-environment-variables-LC_005fMESSAGES"></a>
+<p>How do we know which locale to use?  It turns out that there are
+four different environment variables used by the C <code class="command">gettext</code> routines.
+In order, they are <code class="env">$LANGUAGE</code>, <code class="env">$LC_ALL</code>, <code class="env">$LANG</code>, and
+<code class="env">$LC_MESSAGES</code>.<a class="footnote" id="DOCF97" href="I18N-Example.html#FOOT97"><sup>97</sup></a>
+Thus, we check the value of <code class="env">$LANGUAGE</code>:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">echo $LANGUAGE</kbd>
+-| en_US.UTF-8
+</pre></div>
+
+<p>We next make the directories:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">mkdir en_US.UTF-8 en_US.UTF-8/LC_MESSAGES</kbd>
+</pre></div>
+
+<a class="index-entry-id" id="index-_002epo-files-converting-to-_002emo"></a>
+<a class="index-entry-id" id="index-files-_002epo-converting-to-_002emo"></a>
+<a class="index-entry-id" id="index-_002emo-files_002c-converting-from-_002epo"></a>
+<a class="index-entry-id" id="index-files-_002emo_002c-converting-from-_002epo"></a>
+<a class="index-entry-id" id="index-portable-object-files-converting-to-message-object-files"></a>
+<a class="index-entry-id" id="index-files-portable-object-converting-to-message-object-files"></a>
+<a class="index-entry-id" id="index-message-object-files-converting-from-portable-object-files"></a>
+<a class="index-entry-id" id="index-files-message-object-converting-from-portable-object-files"></a>
+<a class="index-entry-id" id="index-msgfmt-utility"></a>
+<p>The <code class="command">msgfmt</code> utility converts the human-readable
+<samp class="file">.po</samp> file into a machine-readable <samp class="file">.mo</samp> file.
+By default, <code class="command">msgfmt</code> creates a file named <samp class="file">messages</samp>.
+This file must be renamed and placed in the proper directory (using
+the <samp class="option">-o</samp> option) so that <code class="command">gawk</code> can find it:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">msgfmt guide-mellow.po -o en_US.UTF-8/LC_MESSAGES/guide.mo</kbd>
+</pre></div>
+
+<p>Finally, we run the program to test it:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk -f guide.awk</kbd>
+-| Hey man, relax!
+-| Like, the scoop is 42
+-| Pardon me, Zaphod who?
+</pre></div>
+
+<p>If the three replacement functions for <code class="code">dcgettext()</code>, <code class="code">dcngettext()</code>,
+and <code class="code">bindtextdomain()</code>
+(see <a class="pxref" href="I18N-Portability.html"><code class="command">awk</code> Portability Issues</a>)
+are in a file named <samp class="file">libintl.awk</samp>,
+then we can run <samp class="file">guide.awk</samp> unchanged as follows:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk --posix -f guide.awk -f libintl.awk</kbd>
+-| Don't Panic
+-| The Answer Is 42
+-| Pardon me, Zaphod who?
+</pre></div>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT96" href="I18N-Example.html#DOCF96">(96)</a></h5>
+<p>Perhaps it would be better if it were
+called &ldquo;Hippy.&rdquo; Ah, well.</p>
+<h5 class="footnote-body-heading"><a id="FOOT97" href="I18N-Example.html#DOCF97">(97)</a></h5>
+<p>Well, sort of. It seems that if <code class="env">$LC_ALL</code>
+is set to &lsquo;<samp class="samp">C</samp>&rsquo;, then no translations are done. Go figure.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Gawk-I18N.html"><code class="command">gawk</code> Can Speak Your Language</a>, Previous: <a href="Translator-i18n.html">Translating <code class="command">awk</code> Programs</a>, Up: <a href="Internationalization.html">Internationalization with <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>Top (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="Top (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="Top (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html#Top" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="https://www.gnu.org/software/gawk/manual/gawkinet/dir_html/index.html" rel="up" title="(dir)">
+<link href="Preface.html" rel="next" title="Preface">
+<link href="https://www.gnu.org/software/gawk/manual/gawkinet/dir_html/index.html" rel="prev" title="(dir)">
+<style type="text/css">
+<!--
+ul.toc-numbered-mark {list-style: none}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="top-level-extent" id="Top">
+<div class="nav-panel">
+<p>
+Next: <a href="Preface.html" accesskey="n" rel="next">Preface</a>, Previous: <a href="https://www.gnu.org/software/gawk/manual/gawkinet/dir_html/index.html" accesskey="p" rel="prev">(dir)</a>, Up: <a href="https://www.gnu.org/software/gawk/manual/gawkinet/dir_html/index.html" accesskey="u" rel="up">(dir)</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h1 class="top" id="General-Introduction">General Introduction</h1>
+
+<p>This file documents the networking features in GNU Awk (<code class="command">gawk</code>)
+version 4.0 and later.
+</p>
+<p>This is Edition 1.6 of <cite class="cite">TCP/IP Internetworking with <code class="command">gawk</code></cite>,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+</p><br>
+<br>
+<p>Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+</p><br>
+<br>
+<p>Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being &ldquo;GNU General Public License&rdquo;, the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+&ldquo;GNU Free Documentation License&rdquo;.
+</p>
+<ol class="enumerate" type="a" start="1">
+<li> &ldquo;A GNU Manual&rdquo;
+
+</li><li> &ldquo;You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.&rdquo;
+</li></ol>
+
+
+
+<div class="element-contents" id="SEC_Contents">
+<h2 class="contents-heading">Table of Contents</h2>
+
+<div class="contents">
+
+<ul class="toc-numbered-mark">
+  <li><a id="toc-Preface-1" href="Preface.html">Preface</a></li>
+  <li><a id="toc-Networking-Concepts" href="Introduction.html">1 Networking Concepts</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Reliable-Byte_002dstreams-_0028Phone-Calls_0029" href="Stream-Communications.html">1.1 Reliable Byte-streams (Phone Calls)</a></li>
+    <li><a id="toc-Best_002deffort-Datagrams-_0028Mailed-Letters_0029" href="Datagram-Communications.html">1.2 Best-effort Datagrams (Mailed Letters)</a></li>
+    <li><a id="toc-The-Internet-Protocols" href="The-TCP_002fIP-Protocols.html">1.3 The Internet Protocols</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-The-Basic-Internet-Protocols" href="Basic-Protocols.html">1.3.1 The Basic Internet Protocols</a></li>
+      <li><a id="toc-TCP-and-UDP-Ports" href="Ports.html">1.3.2 TCP and UDP Ports</a></li>
+    </ul></li>
+    <li><a id="toc-Making-TCP_002fIP-Connections-_0028And-Some-Terminology_0029" href="Making-Connections.html">1.4 Making TCP/IP Connections (And Some Terminology)</a></li>
+  </ul></li>
+  <li><a id="toc-Networking-With-gawk" href="Using-Networking.html">2 Networking With <code class="command">gawk</code></a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-gawk_0027s-Networking-Mechanisms" href="Gawk-Special-Files.html">2.1 <code class="command">gawk</code>&rsquo;s Networking Mechanisms</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-The-Fields-of-the-Special-File-Name" href="Special-File-Fields.html">2.1.1 The Fields of the Special File Name</a></li>
+      <li><a id="toc-Comparing-Protocols-1" href="Comparing-Protocols.html">2.1.2 Comparing Protocols</a>
+      <ul class="toc-numbered-mark">
+        <li><a id="toc-_002finet_002ftcp" href="File-_002finet_002ftcp.html">2.1.2.1 <samp class="file">/inet/tcp</samp></a></li>
+        <li><a id="toc-_002finet_002fudp" href="File-_002finet_002fudp.html">2.1.2.2 <samp class="file">/inet/udp</samp></a></li>
+      </ul></li>
+    </ul></li>
+    <li><a id="toc-Establishing-a-TCP-Connection" href="TCP-Connecting.html">2.2 Establishing a TCP Connection</a></li>
+    <li><a id="toc-Troubleshooting-Connection-Problems" href="Troubleshooting.html">2.3 Troubleshooting Connection Problems</a></li>
+    <li><a id="toc-Interacting-with-a-Network-Service" href="Interacting.html">2.4 Interacting with a Network Service</a></li>
+    <li><a id="toc-Setting-Up-a-Service" href="Setting-Up.html">2.5 Setting Up a Service</a></li>
+    <li><a id="toc-Reading-Email" href="Email.html">2.6 Reading Email</a></li>
+    <li><a id="toc-Reading-a-Web-Page" href="Web-page.html">2.7 Reading a Web Page</a></li>
+    <li><a id="toc-A-Primitive-Web-Service" href="Primitive-Service.html">2.8 A Primitive Web Service</a></li>
+    <li><a id="toc-A-Web-Service-with-Interaction" href="Interacting-Service.html">2.9 A Web Service with Interaction</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-A-Simple-CGI-Library" href="CGI-Lib.html">2.9.1 A Simple CGI Library</a></li>
+    </ul></li>
+    <li><a id="toc-A-Simple-Web-Server" href="Simple-Server.html">2.10 A Simple Web Server</a></li>
+    <li><a id="toc-Network-Programming-Caveats" href="Caveats.html">2.11 Network Programming Caveats</a></li>
+    <li><a id="toc-Where-To-Go-From-Here" href="Challenges.html">2.12 Where To Go From Here</a></li>
+  </ul></li>
+  <li><a id="toc-Some-Applications-and-Techniques-1" href="Some-Applications-and-Techniques.html">3 Some Applications and Techniques</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-PANIC_003a-An-Emergency-Web-Server" href="PANIC.html">3.1 PANIC: An Emergency Web Server</a></li>
+    <li><a id="toc-GETURL_003a-Retrieving-Web-Pages" href="GETURL.html">3.2 GETURL: Retrieving Web Pages</a></li>
+    <li><a id="toc-REMCONF_003a-Remote-Configuration-of-Embedded-Systems" href="REMCONF.html">3.3 REMCONF: Remote Configuration of Embedded Systems</a></li>
+    <li><a id="toc-URLCHK_003a-Look-for-Changed-Web-Pages" href="URLCHK.html">3.4 URLCHK: Look for Changed Web Pages</a></li>
+    <li><a id="toc-WEBGRAB_003a-Extract-Links-from-a-Page" href="WEBGRAB.html">3.5 WEBGRAB: Extract Links from a Page</a></li>
+    <li><a id="toc-STATIST_003a-Graphing-a-Statistical-Distribution" href="STATIST.html">3.6 STATIST: Graphing a Statistical Distribution</a></li>
+    <li><a id="toc-MAZE_003a-Walking-Through-a-Maze-In-Virtual-Reality" href="MAZE.html">3.7 MAZE: Walking Through a Maze In Virtual Reality</a></li>
+    <li><a id="toc-MOBAGWHO_003a-a-Simple-Mobile-Agent" href="MOBAGWHO.html">3.8 MOBAGWHO: a Simple Mobile Agent</a></li>
+    <li><a id="toc-STOXPRED_003a-Stock-Market-Prediction-As-A-Service" href="STOXPRED.html">3.9 STOXPRED: Stock Market Prediction As A Service</a></li>
+    <li><a id="toc-PROTBASE_003a-Searching-Through-A-Protein-Database" href="PROTBASE.html">3.10 PROTBASE: Searching Through A Protein Database</a></li>
+  </ul></li>
+  <li><a id="toc-Related-Links" href="Links.html">4 Related Links</a></li>
+  <li><a id="toc-GNU-Free-Documentation-License-1" href="GNU-Free-Documentation-License.html">GNU Free Documentation License</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-ADDENDUM_003a-How-to-use-this-License-for-your-documents" href="GNU-Free-Documentation-License.html#ADDENDUM_003a-How-to-use-this-License-for-your-documents">ADDENDUM: How to use this License for your documents</a></li>
+  </ul></li>
+  <li><a id="toc-Index-1" href="Index.html" rel="index">Index</a></li>
+</ul>
+</div>
+</div>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Preface.html" accesskey="n" rel="next">Preface</a>, Previous: <a href="https://www.gnu.org/software/gawk/manual/gawkinet/dir_html/index.html" accesskey="p" rel="prev">(dir)</a>, Up: <a href="https://www.gnu.org/software/gawk/manual/gawkinet/dir_html/index.html" accesskey="u" rel="up">(dir)</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

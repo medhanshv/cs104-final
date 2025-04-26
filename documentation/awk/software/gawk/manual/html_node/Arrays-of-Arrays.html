@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Arrays of Arrays (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Arrays of Arrays (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Arrays of Arrays (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Arrays.html" rel="up" title="Arrays">
+<link href="Arrays-Summary.html" rel="next" title="Arrays Summary">
+<link href="Multidimensional.html" rel="prev" title="Multidimensional">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Arrays-of-Arrays">
+<div class="nav-panel">
+<p>
+Next: <a href="Arrays-Summary.html" accesskey="n" rel="next">Summary</a>, Previous: <a href="Multidimensional.html" accesskey="p" rel="prev">Multidimensional Arrays</a>, Up: <a href="Arrays.html" accesskey="u" rel="up">Arrays in <code class="command">awk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Arrays-of-Arrays-1"><span>8.6 Arrays of Arrays<a class="copiable-link" href="Arrays-of-Arrays.html#Arrays-of-Arrays-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-arrays-arrays-of-arrays"></a>
+
+<p><code class="command">gawk</code> goes beyond standard <code class="command">awk</code>&rsquo;s multidimensional
+array access and provides true arrays of
+arrays. Elements of a subarray are referred to by their own indices
+enclosed in square brackets, just like the elements of the main array.
+For example, the following creates a two-element subarray at index <code class="code">1</code>
+of the main array <code class="code">a</code>:
+</p>
+<div class="example">
+<pre class="example-preformatted">a[1][1] = 1
+a[1][2] = 2
+</pre></div>
+
+<p>This simulates a true two-dimensional array. Each subarray element can
+contain another subarray as a value, which in turn can hold other arrays
+as well. In this way, you can create arrays of three or more dimensions.
+The indices can be any <code class="command">awk</code> expressions, including scalars
+separated by commas (i.e., a regular <code class="command">awk</code> simulated
+multidimensional subscript). So the following is valid in
+<code class="command">gawk</code>:
+</p>
+<div class="example">
+<pre class="example-preformatted">a[1][3][1, &quot;name&quot;] = &quot;barney&quot;
+</pre></div>
+
+<p>Each subarray and the main array can be of different length. In fact, the
+elements of an array or its subarray do not all have to have the same
+type. This means that the main array and any of its subarrays can be
+nonrectangular, or jagged in structure. You can assign a scalar value to
+the index <code class="code">4</code> of the main array <code class="code">a</code>, even though <code class="code">a[1]</code>
+is itself an array and not a scalar:
+</p>
+<div class="example">
+<pre class="example-preformatted">a[4] = &quot;An element in a jagged array&quot;
+</pre></div>
+
+<p>The terms <em class="dfn">dimension</em>, <em class="dfn">row</em>, and <em class="dfn">column</em> are
+meaningless when applied
+to such an array, but we will use &ldquo;dimension&rdquo; henceforth to imply the
+maximum number of indices needed to refer to an existing element. The
+type of any element that has already been assigned cannot be changed
+by assigning a value of a different type. You have to first delete the
+current element, which effectively makes <code class="command">gawk</code> forget about
+the element at that index:
+</p>
+<div class="example">
+<pre class="example-preformatted">delete a[4]
+a[4][5][6][7] = &quot;An element in a four-dimensional array&quot;
+</pre></div>
+
+<p>This removes the scalar value from index <code class="code">4</code> and then inserts a
+three-level nested subarray
+containing a scalar. You can also
+delete an entire subarray or subarray of subarrays:
+</p>
+<div class="example">
+<pre class="example-preformatted">delete a[4][5]
+a[4][5] = &quot;An element in subarray a[4]&quot;
+</pre></div>
+
+<p>But recall that you can not delete the main array <code class="code">a</code> and then use it
+as a scalar.
+</p>
+<p>The built-in functions that take array arguments can also be used
+with subarrays. For example, the following code fragment uses <code class="code">length()</code>
+(see <a class="pxref" href="String-Functions.html">String-Manipulation Functions</a>)
+to determine the number of elements in the main array <code class="code">a</code> and
+its subarrays:
+</p>
+<div class="example">
+<pre class="example-preformatted">print length(a), length(a[1]), length(a[1][3])
+</pre></div>
+
+<p>This results in the following output for our main array <code class="code">a</code>:
+</p>
+<div class="example">
+<pre class="example-preformatted">2, 3, 1
+</pre></div>
+
+<p>The &lsquo;<samp class="samp"><var class="var">subscript</var> in <var class="var">array</var></samp>&rsquo; expression
+(see <a class="pxref" href="Reference-to-Elements.html">Referring to an Array Element</a>) works similarly for both
+regular <code class="command">awk</code>-style
+arrays and arrays of arrays. For example, the tests &lsquo;<samp class="samp">1 in a</samp>&rsquo;,
+&lsquo;<samp class="samp">3 in a[1]</samp>&rsquo;, and &lsquo;<samp class="samp">(1, &quot;name&quot;) in a[1][3]</samp>&rsquo; all evaluate to
+one (true) for our array <code class="code">a</code>.
+</p>
+<p>The &lsquo;<samp class="samp">for (item in array)</samp>&rsquo; statement (see <a class="pxref" href="Scanning-an-Array.html">Scanning All Elements of an Array</a>)
+can be nested to scan all the
+elements of an array of arrays if it is rectangular in structure. In order
+to print the contents (scalar values) of a two-dimensional array of arrays
+(i.e., in which each first-level element is itself an
+array, not necessarily of the same length),
+you could use the following code:
+</p>
+<div class="example">
+<pre class="example-preformatted">for (i in array)
+    for (j in array[i])
+        print array[i][j]
+</pre></div>
+
+<p>The <code class="code">isarray()</code> function (see <a class="pxref" href="Type-Functions.html">Getting Type Information</a>)
+lets you test if an array element is itself an array:
+</p>
+<div class="example">
+<pre class="example-preformatted">for (i in array) {
+    if (isarray(array[i])) {
+        for (j in array[i]) {
+            print array[i][j]
+        }
+    }
+    else
+        print array[i]
+}
+</pre></div>
+
+<p>If the structure of a jagged array of arrays is known in advance,
+you can often devise workarounds using control statements. For example,
+the following code prints the elements of our main array <code class="code">a</code>:
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">for (i in a) {
+    for (j in a[i]) {
+        if (j == 3) {
+            for (k in a[i][j])
+                print a[i][j][k]
+</pre></div><div class="group"><pre class="example-preformatted">        } else
+            print a[i][j]
+    }
+}
+</pre></div></div>
+
+<p>See <a class="xref" href="Walking-Arrays.html">Traversing Arrays of Arrays</a> for a user-defined function that &ldquo;walks&rdquo; an
+arbitrarily dimensioned array of arrays.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Arrays-Summary.html">Summary</a>, Previous: <a href="Multidimensional.html">Multidimensional Arrays</a>, Up: <a href="Arrays.html">Arrays in <code class="command">awk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

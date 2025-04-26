@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Reference to Elements (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Reference to Elements (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Reference to Elements (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Array-Basics.html" rel="up" title="Array Basics">
+<link href="Assigning-Elements.html" rel="next" title="Assigning Elements">
+<link href="Array-Intro.html" rel="prev" title="Array Intro">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Reference-to-Elements">
+<div class="nav-panel">
+<p>
+Next: <a href="Assigning-Elements.html" accesskey="n" rel="next">Assigning Array Elements</a>, Previous: <a href="Array-Intro.html" accesskey="p" rel="prev">Introduction to Arrays</a>, Up: <a href="Array-Basics.html" accesskey="u" rel="up">The Basics of Arrays</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Referring-to-an-Array-Element"><span>8.1.2 Referring to an Array Element<a class="copiable-link" href="Reference-to-Elements.html#Referring-to-an-Array-Element"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-arrays-referencing-elements"></a>
+<a class="index-entry-id" id="index-array-members"></a>
+<a class="index-entry-id" id="index-elements-in-arrays"></a>
+
+<p>The principal way to use an array is to refer to one of its elements.
+An <em class="dfn">array reference</em> is an expression as follows:
+</p>
+<div class="example">
+<pre class="example-preformatted"><var class="var">array</var>[<var class="var">index-expression</var>]
+</pre></div>
+
+<p>Here, <var class="var">array</var> is the name of an array.  The expression <var class="var">index-expression</var> is
+the index of the desired element of the array.
+</p>
+<p>The value of the array reference is the current value of that array
+element.  For example, <code class="code">foo[4.3]</code> is an expression referencing the element
+of array <code class="code">foo</code> at index &lsquo;<samp class="samp">4.3</samp>&rsquo;.
+</p>
+<a class="index-entry-id" id="index-arrays-unassigned-elements"></a>
+<a class="index-entry-id" id="index-unassigned-array-elements"></a>
+<a class="index-entry-id" id="index-empty-array-elements"></a>
+<p>A reference to an array element that has no recorded value yields a value of
+<code class="code">&quot;&quot;</code>, the null string.  This includes elements
+that have not been assigned any value as well as elements that have been
+deleted (see <a class="pxref" href="Delete.html">The <code class="code">delete</code> Statement</a>).
+</p>
+<a class="index-entry-id" id="index-non_002dexistent-array-elements"></a>
+<a class="index-entry-id" id="index-arrays-elements-that-don_0027t-exist"></a>
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> A reference to an element that does not exist <em class="emph">automatically</em> creates
+that array element, with the null string as its value.  (In some cases,
+this is unfortunate, because it might waste memory inside <code class="command">awk</code>.)
+</p>
+<p>Novice <code class="command">awk</code> programmers often make the mistake of checking if
+an element exists by checking if the value is empty:
+</p>
+<div class="example">
+<pre class="example-preformatted"># Check if &quot;foo&quot; exists in a:         <i class="i">Incorrect!</i>
+if (a[&quot;foo&quot;] != &quot;&quot;) ...
+</pre></div>
+
+<p>This is incorrect for two reasons. First, it <em class="emph">creates</em> <code class="code">a[&quot;foo&quot;]</code>
+if it didn&rsquo;t exist before! Second, it is valid (if a bit unusual) to set
+an array element equal to the empty string.
+</p></blockquote>
+
+<a class="index-entry-id" id="index-in-operator-testing-if-array-element-exists"></a>
+<p>To determine whether an element exists in an array at a certain index, use
+the following expression:
+</p>
+<div class="example">
+<pre class="example-preformatted"><var class="var">indx</var> in <var class="var">array</var>
+</pre></div>
+
+<a class="index-entry-id" id="index-side-effects-array-indexing"></a>
+<p>This expression tests whether the particular index <var class="var">indx</var> exists,
+without the side effect of creating that element if it is not present.
+The expression has the value one (true) if <code class="code"><var class="var">array</var>[<var class="var">indx</var>]</code>
+exists and zero (false) if it does not exist.
+(We use <var class="var">indx</var> here, because &lsquo;<samp class="samp">index</samp>&rsquo; is the name of a built-in
+function.)
+For example, this statement tests whether the array <code class="code">frequencies</code>
+contains the index &lsquo;<samp class="samp">2</samp>&rsquo;:
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">if (2 in frequencies)
+    print &quot;Subscript 2 is present.&quot;
+</pre></div></div>
+
+<p>Note that this is <em class="emph">not</em> a test of whether the array
+<code class="code">frequencies</code> contains an element whose <em class="emph">value</em> is two.
+There is no way to do that except to scan all the elements.  Also, this
+<em class="emph">does not</em> create <code class="code">frequencies[2]</code>, while the following
+(incorrect) alternative does:
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">if (frequencies[2] != &quot;&quot;)
+    print &quot;Subscript 2 is present.&quot;
+</pre></div></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Assigning-Elements.html">Assigning Array Elements</a>, Previous: <a href="Array-Intro.html">Introduction to Arrays</a>, Up: <a href="Array-Basics.html">The Basics of Arrays</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

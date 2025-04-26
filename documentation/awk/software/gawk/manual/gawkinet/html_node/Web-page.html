@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>Web page (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="Web page (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="Web page (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Using-Networking.html" rel="up" title="Using Networking">
+<link href="Primitive-Service.html" rel="next" title="Primitive Service">
+<link href="Email.html" rel="prev" title="Email">
+<style type="text/css">
+<!--
+div.example {margin-left: 3.2em}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Web-page">
+<div class="nav-panel">
+<p>
+Next: <a href="Primitive-Service.html" accesskey="n" rel="next">A Primitive Web Service</a>, Previous: <a href="Email.html" accesskey="p" rel="prev">Reading Email</a>, Up: <a href="Using-Networking.html" accesskey="u" rel="up">Networking With <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Reading-a-Web-Page">2.7 Reading a Web Page</h3>
+<a class="index-entry-id" id="index-web-pages"></a>
+<a class="index-entry-id" id="index-HTTP-_0028Hypertext-Transfer-Protocol_0029-1"></a>
+<a class="index-entry-id" id="index-RFC-2068"></a>
+<a class="index-entry-id" id="index-RFC-2616"></a>
+
+<p>Retrieving a web page from a web server is as simple as
+retrieving email from an email server. We only have to use a
+similar, but not identical, protocol and a different port. The name of the
+protocol is HyperText Transfer Protocol (HTTP) and the port number is usually
+80.  As in the preceding section, ask your administrator about the
+name of your local web server or proxy web server and its port number
+for HTTP requests.
+</p>
+<p>The following program employs a rather crude approach toward retrieving a
+web page. It uses the prehistoric syntax of HTTP 0.9, which almost all
+web servers still support. The most noticeable thing about it is that the
+program directs the request to the local proxy server whose name you insert
+in the special file name (which in turn calls &lsquo;<samp class="samp">www.yahoo.com</samp>&rsquo;):
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+  RS = ORS = &quot;\r\n&quot;
+  HttpService = &quot;/inet/tcp/0/<var class="var">proxy</var>/80&quot;
+  print &quot;GET http://www.yahoo.com&quot;     |&amp; HttpService
+  while ((HttpService |&amp; getline) &gt; 0)
+     print $0
+  close(HttpService)
+}
+</pre></div>
+
+<a class="index-entry-id" id="index-RFC-1945"></a>
+<a class="index-entry-id" id="index-record-separators-1"></a>
+<a class="index-entry-id" id="index-RS-variable-1"></a>
+<a class="index-entry-id" id="index-ORS-variable-1"></a>
+<a class="index-entry-id" id="index-HTTP-_0028Hypertext-Transfer-Protocol_0029-2"></a>
+<a class="index-entry-id" id="index-HTML-_0028Hypertext-Markup-Language_0029"></a>
+<a class="index-entry-id" id="index-Hypertext-Markup-Language-_0028HTML_0029"></a>
+<p>Again, lines are separated by a redefined <code class="code">RS</code> and <code class="code">ORS</code>.
+The <code class="code">GET</code> request that we send to the server is the only kind of
+HTTP request that existed when the web was created in the early 1990s.
+HTTP calls this <code class="code">GET</code> request a &ldquo;method,&rdquo; which tells the
+service to transmit a web page (here the home page of the Yahoo! search
+engine). Version 1.0 added the request methods <code class="code">HEAD</code> and
+<code class="code">POST</code>. The current version of HTTP is 1.1,<a class="footnote" id="DOCF8" href="Web-page.html#FOOT8"><sup>8</sup></a><a class="footnote" id="DOCF9" href="Web-page.html#FOOT9"><sup>9</sup></a>
+and knows the additional request
+methods <code class="code">OPTIONS</code>, <code class="code">PUT</code>, <code class="code">DELETE</code>, and <code class="code">TRACE</code>.
+You can fill in any valid web address, and the program prints the
+HTML code of that page to your screen.
+</p>
+<p>Notice the similarity between the responses of the POP and HTTP
+services. First, you get a header that is terminated by an empty line, and
+then you get the body of the page in HTML.  The lines of the headers also
+have the same form as in POP. There is the name of a parameter,
+then a colon, and finally the value of that parameter.
+</p>
+<a class="index-entry-id" id="index-CGI-_0028Common-Gateway-Interface_0029"></a>
+<a class="index-entry-id" id="index-GIF-image-format"></a>
+<a class="index-entry-id" id="index-PNG-image-format"></a>
+<a class="index-entry-id" id="index-images"></a>
+<p>Images (<samp class="file">.png</samp> or <samp class="file">.gif</samp> files) can also be retrieved this way,
+but then you
+get binary data that should be redirected into a file. Another
+application is calling a CGI (Common Gateway Interface) script on some
+server. CGI scripts are used when the contents of a web page are not
+constant, but generated on demand at the moment you send a request
+for the page. For example, to get a detailed report about the current
+quotes of Motorola stock shares, call a CGI script at Yahoo! with
+the following:
+</p>
+<div class="example">
+<pre class="example-preformatted">get = &quot;GET http://quote.yahoo.com/q?s=MOT&amp;d=t&quot;
+print get |&amp; HttpService
+</pre></div>
+
+<p>You can also request weather reports this way.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT8" href="Web-page.html#DOCF8">(8)</a></h5>
+<p>Version 1.0 of
+HTTP was defined in RFC 1945.  HTTP 1.1 was initially specified in RFC
+2068. In June 1999, RFC 2068 was made obsolete by RFC 2616, an update
+without any substantial changes.</p>
+<h5 class="footnote-body-heading"><a id="FOOT9" href="Web-page.html#DOCF9">(9)</a></h5>
+<p><a class="uref" href="https://en.wikipedia.org/wiki/HTTP/2">Version 2.0 of HTTP</a>
+was defined in
+<a class="uref" href="https://tools.ietf.org/html/rfc7540">RFC7540</a>
+and was derived from Google&rsquo;s
+<a class="uref" href="https://en.wikipedia.org/wiki/SPDY">SPDY</a>
+protocol. It is said to be widely supported. As of 2020 the most popular
+web sites still identify themselves as supporting HTTP/1.1.
+<a class="uref" href="https://en.wikipedia.org/wiki/HTTP/3">Version 3.0 of HTTP</a>
+is still a draft and was derived from Google&rsquo;s
+<a class="uref" href="https://en.wikipedia.org/wiki/QUIC">QUIC</a> protocol.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Primitive-Service.html">A Primitive Web Service</a>, Previous: <a href="Email.html">Reading Email</a>, Up: <a href="Using-Networking.html">Networking With <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Execution Stack (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Execution Stack (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Execution Stack (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="List-of-Debugger-Commands.html" rel="up" title="List of Debugger Commands">
+<link href="Debugger-Info.html" rel="next" title="Debugger Info">
+<link href="Viewing-And-Changing-Data.html" rel="prev" title="Viewing And Changing Data">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Execution-Stack">
+<div class="nav-panel">
+<p>
+Next: <a href="Debugger-Info.html" accesskey="n" rel="next">Obtaining Information About the Program and the Debugger State</a>, Previous: <a href="Viewing-And-Changing-Data.html" accesskey="p" rel="prev">Viewing and Changing Data</a>, Up: <a href="List-of-Debugger-Commands.html" accesskey="u" rel="up">Main Debugger Commands</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Working-with-the-Stack"><span>14.3.4 Working with the Stack<a class="copiable-link" href="Execution-Stack.html#Working-with-the-Stack"> &para;</a></span></h4>
+
+<p>Whenever you run a program that contains any function calls,
+<code class="command">gawk</code> maintains a stack of all of the function calls leading up
+to where the program is right now.  You can see how you got to where you are,
+and also move around in the stack to see what the state of things was in the
+functions that called the one you are in.  The commands for doing this are:
+</p>
+<dl class="table">
+<dd><a class="index-entry-id" id="index-debugger-commands-bt-_0028backtrace_0029-1"></a>
+<a class="index-entry-id" id="index-debugger-commands-backtrace-1"></a>
+<a class="index-entry-id" id="index-debugger-commands-where-_0028backtrace_0029"></a>
+<a class="index-entry-id" id="index-backtrace-debugger-command"></a>
+<a class="index-entry-id" id="index-bt-debugger-command-_0028alias-for-backtrace_0029"></a>
+<a class="index-entry-id" id="index-where-debugger-command-_0028alias-for-backtrace_0029"></a>
+<a class="index-entry-id" id="index-call-stack-display-in-debugger"></a>
+</dd>
+<dt><a id="index-traceback_002c-display-in-debugger"></a><span><code class="code">backtrace</code> [<var class="var">count</var>]<a class="copiable-link" href="Execution-Stack.html#index-traceback_002c-display-in-debugger"> &para;</a></span></dt>
+<dt><code class="code">bt</code> [<var class="var">count</var>]</dt>
+<dt><code class="code">where</code> [<var class="var">count</var>]</dt>
+<dd><p>Print a backtrace of all function calls (stack frames), or innermost <var class="var">count</var>
+frames if <var class="var">count</var> &gt; 0. Print the outermost <var class="var">count</var> frames if
+<var class="var">count</var> &lt; 0.  The backtrace displays the name and arguments to each
+function, the source file name, and the line number.
+The alias <code class="code">where</code> for <code class="code">backtrace</code> is provided for longtime
+GDB users who may be used to that command.
+</p>
+<a class="index-entry-id" id="index-debugger-commands-down"></a>
+</dd>
+<dt><a id="index-down-debugger-command"></a><span><code class="code">down</code> [<var class="var">count</var>]<a class="copiable-link" href="Execution-Stack.html#index-down-debugger-command"> &para;</a></span></dt>
+<dd><p>Move <var class="var">count</var> (default 1) frames down the stack toward the innermost frame.
+Then select and print the frame.
+</p>
+<a class="index-entry-id" id="index-debugger-commands-f-_0028frame_0029"></a>
+<a class="index-entry-id" id="index-debugger-commands-frame"></a>
+</dd>
+<dt><a class="index-entry-id" id="index-f-debugger-command-_0028alias-for-frame_0029"></a>
+<a id="index-frame-debugger-command"></a><span><code class="code">frame</code> [<var class="var">n</var>]<a class="copiable-link" href="Execution-Stack.html#index-frame-debugger-command"> &para;</a></span></dt>
+<dt><code class="code">f</code> [<var class="var">n</var>]</dt>
+<dd><p>Select and print stack frame <var class="var">n</var>.  Frame 0 is the currently executing,
+or <em class="dfn">innermost</em>, frame (function call); frame 1 is the frame that
+called the innermost one. The highest-numbered frame is the one for the
+main program.  The printed information consists of the frame number,
+function and argument names, source file, and the source line.
+</p>
+<a class="index-entry-id" id="index-debugger-commands-up"></a>
+</dd>
+<dt><a id="index-up-debugger-command"></a><span><code class="code">up</code> [<var class="var">count</var>]<a class="copiable-link" href="Execution-Stack.html#index-up-debugger-command"> &para;</a></span></dt>
+<dd><p>Move <var class="var">count</var> (default 1) frames up the stack toward the outermost frame.
+Then select and print the frame.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Debugger-Info.html">Obtaining Information About the Program and the Debugger State</a>, Previous: <a href="Viewing-And-Changing-Data.html">Viewing and Changing Data</a>, Up: <a href="List-of-Debugger-Commands.html">Main Debugger Commands</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

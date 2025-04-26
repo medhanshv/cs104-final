@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Word Sorting (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Word Sorting (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Word Sorting (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Miscellaneous-Programs.html" rel="up" title="Miscellaneous Programs">
+<link href="History-Sorting.html" rel="next" title="History Sorting">
+<link href="Labels-Program.html" rel="prev" title="Labels Program">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Word-Sorting">
+<div class="nav-panel">
+<p>
+Next: <a href="History-Sorting.html" accesskey="n" rel="next">Removing Duplicates from Unsorted Text</a>, Previous: <a href="Labels-Program.html" accesskey="p" rel="prev">Printing Mailing Labels</a>, Up: <a href="Miscellaneous-Programs.html" accesskey="u" rel="up">A Grab Bag of <code class="command">awk</code> Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Generating-Word_002dUsage-Counts"><span>11.3.5 Generating Word-Usage Counts<a class="copiable-link" href="Word-Sorting.html#Generating-Word_002dUsage-Counts"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-words-usage-counts_002c-generating"></a>
+
+<p>When working with large amounts of text, it can be interesting to know
+how often different words appear.  For example, an author may overuse
+certain words, in which case he or she might wish to find synonyms to substitute
+for words that appear too often. This subsection develops a
+program for counting words and presenting the frequency information
+in a useful format.
+</p>
+<p>At first glance, a program like this would seem to do the job:
+</p>
+<div class="example">
+<pre class="example-preformatted"># wordfreq-first-try.awk --- print list of word frequencies
+
+{
+    for (i = 1; i &lt;= NF; i++)
+        freq[$i]++
+}
+
+</pre><div class="group"><pre class="example-preformatted">END {
+    for (word in freq)
+        printf &quot;%s\t%d\n&quot;, word, freq[word]
+}
+</pre></div></div>
+
+<p>The program relies on <code class="command">awk</code>&rsquo;s default field-splitting
+mechanism to break each line up into &ldquo;words&rdquo; and uses an
+associative array named <code class="code">freq</code>, indexed by each word, to count
+the number of times the word occurs. In the <code class="code">END</code> rule,
+it prints the counts.
+</p>
+<p>This program has several problems that prevent it from being
+useful on real text files:
+</p>
+<ul class="itemize mark-bullet">
+<li>The <code class="command">awk</code> language considers upper- and lowercase characters to be
+distinct.  Therefore, &ldquo;bartender&rdquo; and &ldquo;Bartender&rdquo; are not treated
+as the same word.  This is undesirable, because words are capitalized
+if they begin sentences in normal text, and a frequency analyzer should
+not be sensitive to capitalization.
+
+</li><li>Words are detected using the <code class="command">awk</code> convention that fields are
+separated just by whitespace.  Other characters in the input (except
+newlines) don&rsquo;t have any special meaning to <code class="command">awk</code>.  This means that
+punctuation characters count as part of words.
+
+</li><li>The output does not come out in any useful order.  You&rsquo;re more likely to be
+interested in which words occur most frequently or in having an alphabetized
+table of how frequently each word occurs.
+</li></ul>
+
+<a class="index-entry-id" id="index-sort-utility"></a>
+<p>The first problem can be solved by using <code class="code">tolower()</code> to remove case
+distinctions.  The second problem can be solved by using <code class="code">gsub()</code>
+to remove punctuation characters.  Finally, we solve the third problem
+by using the system <code class="command">sort</code> utility to process the output of the
+<code class="command">awk</code> script.  Here is the new version of the program:
+</p>
+<a class="index-entry-id" id="index-wordfreq_002eawk-program"></a>
+<div class="example">
+<pre class="example-preformatted"># wordfreq.awk --- print list of word frequencies
+
+{
+    $0 = tolower($0)    # remove case distinctions
+    # remove punctuation
+    gsub(/[^[:alnum:]_[:blank:]]/, &quot;&quot;, $0)
+    for (i = 1; i &lt;= NF; i++)
+        freq[$i]++
+}
+
+END {
+    for (word in freq)
+        printf &quot;%s\t%d\n&quot;, word, freq[word]
+}
+</pre></div>
+
+<p>The regexp <code class="code">/[^[:alnum:]_[:blank:]]/</code> might have been written
+<code class="code">/[[:punct:]]/</code>, but then underscores would also be removed,
+and we want to keep them.
+</p>
+<p>Assuming we have saved this program in a file named <samp class="file">wordfreq.awk</samp>,
+and that the data is in <samp class="file">file1</samp>, the following pipeline:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk -f wordfreq.awk file1 | sort -k 2nr
+</pre></div>
+
+<p>produces a table of the words appearing in <samp class="file">file1</samp> in order of
+decreasing frequency.
+</p>
+<p>The <code class="command">awk</code> program suitably massages the
+data and produces a word frequency table, which is not ordered.
+The <code class="command">awk</code> script&rsquo;s output is then sorted by the <code class="command">sort</code>
+utility and printed on the screen.
+</p>
+<p>The options given to <code class="command">sort</code>
+specify a sort that uses the second field of each input line (skipping
+one field), that the sort keys should be treated as numeric quantities
+(otherwise &lsquo;<samp class="samp">15</samp>&rsquo; would come before &lsquo;<samp class="samp">5</samp>&rsquo;), and that the sorting
+should be done in descending (reverse) order.
+</p>
+<p>The <code class="command">sort</code> could even be done from within the program, by changing
+the <code class="code">END</code> action to:
+</p>
+<div class="example">
+<pre class="example-preformatted">END {
+    sort = &quot;sort -k 2nr&quot;
+    for (word in freq)
+        printf &quot;%s\t%d\n&quot;, word, freq[word] | sort
+    close(sort)
+}
+</pre></div>
+
+<p>This way of sorting must be used on systems that do not
+have true pipes at the command-line (or batch-file) level.
+See the general operating system documentation for more information on how
+to use the <code class="command">sort</code> program.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="History-Sorting.html">Removing Duplicates from Unsorted Text</a>, Previous: <a href="Labels-Program.html">Printing Mailing Labels</a>, Up: <a href="Miscellaneous-Programs.html">A Grab Bag of <code class="command">awk</code> Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

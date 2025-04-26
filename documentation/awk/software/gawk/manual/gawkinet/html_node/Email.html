@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>Email (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="Email (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="Email (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Using-Networking.html" rel="up" title="Using Networking">
+<link href="Web-page.html" rel="next" title="Web page">
+<link href="Setting-Up.html" rel="prev" title="Setting Up">
+<style type="text/css">
+<!--
+div.example {margin-left: 3.2em}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Email">
+<div class="nav-panel">
+<p>
+Next: <a href="Web-page.html" accesskey="n" rel="next">Reading a Web Page</a>, Previous: <a href="Setting-Up.html" accesskey="p" rel="prev">Setting Up a Service</a>, Up: <a href="Using-Networking.html" accesskey="u" rel="up">Networking With <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Reading-Email">2.6 Reading Email</h3>
+<a class="index-entry-id" id="index-RFC-1939"></a>
+<a class="index-entry-id" id="index-RFC-821"></a>
+<a class="index-entry-id" id="index-gawk-5"></a>
+<a class="index-entry-id" id="index-networks-7"></a>
+<a class="index-entry-id" id="index-POP-_0028Post-Office-Protocol_0029"></a>
+<a class="index-entry-id" id="index-SMTP-_0028Simple-Mail-Transfer-Protocol_0029-1"></a>
+<a class="index-entry-id" id="index-Post-Office-Protocol-_0028POP_0029"></a>
+<a class="index-entry-id" id="index-Simple-Mail-Transfer-Protocol-_0028SMTP_0029-1"></a>
+<p>The distribution of email is usually done by dedicated email servers that
+communicate with your machine using special protocols.
+In this section we show how simple the basic steps are.<a class="footnote" id="DOCF7" href="Email.html#FOOT7"><sup>7</sup></a>
+</p>
+<p>To receive email, we use the Post Office Protocol (POP).  Sending can
+be done with the much older Simple Mail Transfer Protocol (SMTP).
+</p>
+<a class="index-entry-id" id="index-email"></a>
+<p>When you type in the following program, replace the <var class="var">emailhost</var> by the
+name of your local email server. Ask your administrator if the server has a
+POP service, and then use its name or number in the program below.
+Now the program is ready to connect to your email server, but it will not
+succeed in retrieving your mail because it does not yet know your login
+name or password. Replace them in the program and it
+shows you the first email the server has in store:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+  POPService  = &quot;/inet/tcp/0/<var class="var">emailhost</var>/pop3&quot;
+  RS = ORS = &quot;\r\n&quot;
+  print &quot;user <var class="var">name</var>&quot;             |&amp; POPService
+  POPService                    |&amp; getline
+  print &quot;pass <var class="var">password</var>&quot;         |&amp; POPService
+  POPService                    |&amp; getline
+  print &quot;retr 1&quot;                |&amp; POPService
+  POPService                    |&amp; getline
+  if ($1 != &quot;+OK&quot;) exit
+  print &quot;quit&quot;                  |&amp; POPService
+  RS = &quot;\r\n\\.\r\n&quot;
+  POPService |&amp; getline
+  print $0
+  close(POPService)
+}
+</pre></div>
+
+<a class="index-entry-id" id="index-RFC-1939-1"></a>
+<a class="index-entry-id" id="index-record-separators"></a>
+<a class="index-entry-id" id="index-RS-variable"></a>
+<a class="index-entry-id" id="index-ORS-variable"></a>
+<a class="index-entry-id" id="index-POP-_0028Post-Office-Protocol_0029-1"></a>
+<p>We redefine the record separators <code class="code">RS</code> and <code class="code">ORS</code> because the
+protocol (POP) requires CR-LF to separate lines. After identifying
+yourself to the email service, the command &lsquo;<samp class="samp">retr 1</samp>&rsquo; instructs the
+service to send the first of all your email messages in line. If the service
+replies with something other than &lsquo;<samp class="samp">+OK</samp>&rsquo;, the program exits; maybe there
+is no email. Otherwise, the program first announces that it intends to finish
+reading email, and then redefines <code class="code">RS</code> in order to read the entire
+email as multiline input in one record. From the POP RFC, we know that the body
+of the email always ends with a single line containing a single dot.
+The program looks for this using &lsquo;<samp class="samp">RS = &quot;\r\n\\.\r\n&quot;</samp>&rsquo;.
+When it finds this sequence in the mail message, it quits.
+You can invoke this program as often as you like; it does not delete the
+message it reads, but instead leaves it on the server.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT7" href="Email.html#DOCF7">(7)</a></h5>
+<p>No,
+things are <em class="emph">not</em> that simple any more. Things <em class="emph">were</em> that simple
+when email was young in the 20th century. These days, unencrypted plaintext
+authentication is usually disallowed on non-secure connections.
+Since encryption of network connections is not supported in <code class="command">gawk</code>,
+you should not use <code class="command">gawk</code> to write such scripts.
+We left this section as it is because it demonstrates how
+application level protocols work in principle (a command being issued
+by the client followed by a reply coming back). Unfortunately, modern
+application level protocols are much more flexible in the sequence of
+actions. For example, modern POP3 servers may introduce themselves
+with an unprompted initial line that arrives before the initial command.
+Dealing with such variance is not worth the effort in <code class="command">gawk</code>.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Web-page.html">Reading a Web Page</a>, Previous: <a href="Setting-Up.html">Setting Up a Service</a>, Up: <a href="Using-Networking.html">Networking With <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

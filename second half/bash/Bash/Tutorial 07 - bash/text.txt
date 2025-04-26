@@ -1,3 +1,6 @@
 Hello
 This is text.txt 
 I am reading this in a bash script.
+Appending to file
+This text will be appended to the file text.txt
+This will go on till I type END

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Printf Examples (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Printf Examples (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Printf Examples (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Printf.html" rel="up" title="Printf">
+<link href="Format-Modifiers.html" rel="prev" title="Format Modifiers">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Printf-Examples">
+<div class="nav-panel">
+<p>
+Previous: <a href="Format-Modifiers.html" accesskey="p" rel="prev">Modifiers for <code class="code">printf</code> Formats</a>, Up: <a href="Printf.html" accesskey="u" rel="up">Using <code class="code">printf</code> Statements for Fancier Printing</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Examples-Using-printf"><span>5.5.4 Examples Using <code class="code">printf</code><a class="copiable-link" href="Printf-Examples.html#Examples-Using-printf"> &para;</a></span></h4>
+
+<p>The following simple example shows
+how to use <code class="code">printf</code> to make an aligned table:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk '{ printf &quot;%-10s %s\n&quot;, $1, $2 }' mail-list
+</pre></div>
+
+<p>This command
+prints the names of the people (<code class="code">$1</code>) in the file
+<samp class="file">mail-list</samp> as a string of 10 characters that are left-justified.  It also
+prints the phone numbers (<code class="code">$2</code>) next on the line.  This
+produces an aligned two-column table of names and phone numbers,
+as shown here:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">awk '{ printf &quot;%-10s %s\n&quot;, $1, $2 }' mail-list</kbd>
+-| Amelia     555-5553
+-| Anthony    555-3412
+-| Becky      555-7685
+-| Bill       555-1675
+-| Broderick  555-0542
+-| Camilla    555-2912
+-| Fabius     555-1234
+-| Julie      555-6699
+-| Martin     555-6480
+-| Samuel     555-3430
+-| Jean-Paul  555-2127
+</pre></div>
+
+<p>In this case, the phone numbers had to be printed as strings because
+the numbers are separated by dashes.  Printing the phone numbers as
+numbers would have produced just the first three digits: &lsquo;<samp class="samp">555</samp>&rsquo;.
+This would have been pretty confusing.
+</p>
+<p>It wasn&rsquo;t necessary to specify a width for the phone numbers because
+they are last on their lines.  They don&rsquo;t need to have spaces
+after them.
+</p>
+<p>The table could be made to look even nicer by adding headings to the
+tops of the columns.  This is done using a <code class="code">BEGIN</code> rule
+(see <a class="pxref" href="BEGIN_002fEND.html">The <code class="code">BEGIN</code> and <code class="code">END</code> Special Patterns</a>)
+so that the headers are only printed once, at the beginning of
+the <code class="command">awk</code> program:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk 'BEGIN { print &quot;Name      Number&quot;
+             print &quot;----      ------&quot; }
+           { printf &quot;%-10s %s\n&quot;, $1, $2 }' mail-list
+</pre></div>
+
+<p>The preceding example mixes <code class="code">print</code> and <code class="code">printf</code> statements in
+the same program.  Using just <code class="code">printf</code> statements can produce the
+same results:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk 'BEGIN { printf &quot;%-10s %s\n&quot;, &quot;Name&quot;, &quot;Number&quot;
+             printf &quot;%-10s %s\n&quot;, &quot;----&quot;, &quot;------&quot; }
+           { printf &quot;%-10s %s\n&quot;, $1, $2 }' mail-list
+</pre></div>
+
+<p>Printing each column heading with the same format specification
+used for the column elements ensures that the headings
+are aligned just like the columns.
+</p>
+<p>The fact that the same format specification is used three times can be
+emphasized by storing it in a variable, like this:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk 'BEGIN { format = &quot;%-10s %s\n&quot;
+             printf format, &quot;Name&quot;, &quot;Number&quot;
+             printf format, &quot;----&quot;, &quot;------&quot; }
+           { printf format, $1, $2 }' mail-list
+</pre></div>
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Format-Modifiers.html">Modifiers for <code class="code">printf</code> Formats</a>, Up: <a href="Printf.html">Using <code class="code">printf</code> Statements for Fancier Printing</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

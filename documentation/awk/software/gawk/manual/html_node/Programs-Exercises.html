@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Programs Exercises (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Programs Exercises (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Programs Exercises (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Sample-Programs.html" rel="up" title="Sample Programs">
+<link href="Programs-Summary.html" rel="prev" title="Programs Summary">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Programs-Exercises">
+<div class="nav-panel">
+<p>
+Previous: <a href="Programs-Summary.html" accesskey="p" rel="prev">Summary</a>, Up: <a href="Sample-Programs.html" accesskey="u" rel="up">Practical <code class="command">awk</code> Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Exercises-3"><span>11.5 Exercises<a class="copiable-link" href="Programs-Exercises.html#Exercises-3"> &para;</a></span></h3>
+
+<ol class="enumerate">
+<li> Rewrite <samp class="file">cut.awk</samp> (see <a class="pxref" href="Cut-Program.html">Cutting Out Fields and Columns</a>)
+using <code class="code">split()</code> with <code class="code">&quot;&quot;</code> as the separator.
+
+</li><li> In <a class="ref" href="Egrep-Program.html">Searching for Regular Expressions in Files</a>, we mentioned that &lsquo;<samp class="samp">egrep -i</samp>&rsquo; could be
+simulated in versions of <code class="command">awk</code> without <code class="code">IGNORECASE</code> by
+using <code class="code">tolower()</code> on the line and the pattern. In a footnote there,
+we also mentioned that this solution has a bug: the translated line is
+output, and not the original one.  Fix this problem.
+
+</li><li> POSIX versions of <code class="command">grep</code> accept a <samp class="option">-F</samp> option which
+causes <code class="command">grep</code> to match fixed strings. Add support for
+this to <samp class="file">egrep.awk</samp>.
+
+</li><li> Similarly, POSIX versions of <code class="command">grep</code> allow you to
+provide multiple patterns to match, in either of two ways.
+You may provide a quoted string on the command line where
+the patterns are separated by newlines. Or you may use the
+<samp class="option">-f</samp> option to provide a file containing the patterns,
+one per line.
+Implement both of these features.
+
+</li><li> The POSIX version of <code class="command">id</code> takes options that control which
+information is printed.  Modify the <code class="command">awk</code> version
+(see <a class="pxref" href="Id-Program.html">Printing Out User Information</a>) to accept the same arguments and perform in the
+same way.
+
+</li><li> The <samp class="file">split.awk</samp> program (see <a class="pxref" href="Split-Program.html">Splitting a Large File into Pieces</a>) assumes
+that letters are contiguous in the character set,
+which isn&rsquo;t true for EBCDIC systems.
+Fix this problem.
+(Hint: Consider a different way to work through the alphabet,
+without relying on <code class="code">ord()</code> and <code class="code">chr()</code>.)
+
+</li><li> <a class="index-entry-id" id="index-Kernighan_002c-Brian-quotes-5"></a>
+In <samp class="file">uniq.awk</samp> (see <a class="pxref" href="Uniq-Program.html">Printing Nonduplicated Lines of Text</a>, the
+logic for choosing which lines to print represents a <em class="dfn">state
+machine</em>, which is &ldquo;a device which can be in one of a set number of stable
+conditions depending on its previous condition and on the present values
+of its inputs.&rdquo;<a class="footnote" id="DOCF84" href="Programs-Exercises.html#FOOT84"><sup>84</sup></a>
+Brian Kernighan suggests that
+&ldquo;an alternative approach to state machines is to just read
+the input into an array, then use indexing.  It&rsquo;s almost always
+easier code, and for most inputs where you would use this, just
+as fast.&rdquo;  Rewrite the logic to follow this
+suggestion.
+
+
+</li><li> Why can&rsquo;t the <samp class="file">wc.awk</samp> program (see <a class="pxref" href="Wc-Program.html">Counting Things</a>) just
+use the value of <code class="code">FNR</code> in <code class="code">endfile()</code>?
+Hint: Examine the code in <a class="ref" href="Filetrans-Function.html">Noting Data file Boundaries</a>.
+
+
+</li><li> Manipulation of individual characters in the <code class="command">translate</code> program
+(see <a class="pxref" href="Translate-Program.html">Transliterating Characters</a>) is painful using standard <code class="command">awk</code>
+functions.  Given that <code class="command">gawk</code> can split strings into individual
+characters using <code class="code">&quot;&quot;</code> as the separator, how might you use this
+feature to simplify the program?
+
+</li><li> The <samp class="file">extract.awk</samp> program (see <a class="pxref" href="Extract-Program.html">Extracting Programs from Texinfo Source Files</a>) was written
+before <code class="command">gawk</code> had the <code class="code">gensub()</code> function.  Use it
+to simplify the code.
+
+</li><li> Compare the performance of the <samp class="file">awksed.awk</samp> program
+(see <a class="pxref" href="Simple-Sed.html">A Simple Stream Editor</a>) with the more straightforward:
+
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+    pat = ARGV[1]
+    repl = ARGV[2]
+    ARGV[1] = ARGV[2] = &quot;&quot;
+}
+
+{ gsub(pat, repl); print }
+</pre></div>
+
+</li><li> What are the advantages and disadvantages of <samp class="file">awksed.awk</samp> versus
+the real <code class="command">sed</code> utility?
+
+
+</li><li> In <a class="ref" href="Igawk-Program.html">An Easy Way to Use Library Functions</a>, we mentioned that not trying to save the line
+read with <code class="code">getline</code> in the <code class="code">pathto()</code> function when testing
+for the file&rsquo;s accessibility for use with the main program simplifies
+things considerably.  What problem does this engender though?
+
+<a class="index-entry-id" id="index-search-paths"></a>
+<a class="index-entry-id" id="index-search-paths-for-source-files-1"></a>
+<a class="index-entry-id" id="index-source-files_002c-search-path-for"></a>
+<a class="index-entry-id" id="index-files-source_002c-search-path-for"></a>
+<a class="index-entry-id" id="index-directories-searching-for-source-files-1"></a>
+</li><li> As an additional example of the idea that it is not always necessary to
+add new features to a program, consider the idea of having two files in
+a directory in the search path:
+
+<dl class="table">
+<dt><samp class="file">default.awk</samp></dt>
+<dd><p>This file contains a set of default library functions, such
+as <code class="code">getopt()</code> and <code class="code">assert()</code>.
+</p>
+</dd>
+<dt><samp class="file">site.awk</samp></dt>
+<dd><p>This file contains library functions that are specific to a site or
+installation; i.e., locally developed functions.
+Having a separate file allows <samp class="file">default.awk</samp> to change with
+new <code class="command">gawk</code> releases, without requiring the system administrator to
+update it each time by adding the local functions.
+</p></dd>
+</dl>
+
+<p>One user
+suggested that <code class="command">gawk</code> be modified to automatically read these files
+upon startup.  Instead, it would be very simple to modify <code class="command">igawk</code>
+to do this. Since <code class="command">igawk</code> can process nested <code class="code">@include</code>
+directives, <samp class="file">default.awk</samp> could simply contain <code class="code">@include</code>
+directives for the desired library functions.
+Make this change.
+</p>
+</li><li> Modify <samp class="file">anagram.awk</samp> (see <a class="pxref" href="Anagram-Program.html">Finding Anagrams from a Dictionary</a>), to avoid
+the use of the external <code class="command">sort</code> utility.
+
+</li></ol>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT84" href="Programs-Exercises.html#DOCF84">(84)</a></h5>
+<p>This definition is from
+<a class="uref" href="https://www.lexico.com/en/definition/state_machine">https://www.lexico.com/en/definition/state_machine</a>.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Programs-Summary.html">Summary</a>, Up: <a href="Sample-Programs.html">Practical <code class="command">awk</code> Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

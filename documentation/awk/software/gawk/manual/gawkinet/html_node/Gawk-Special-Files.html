@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>Gawk Special Files (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="Gawk Special Files (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="Gawk Special Files (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Using-Networking.html" rel="up" title="Using Networking">
+<link href="TCP-Connecting.html" rel="next" title="TCP Connecting">
+<link href="Using-Networking.html" rel="prev" title="Using Networking">
+<style type="text/css">
+<!--
+div.example {margin-left: 3.2em}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Gawk-Special-Files">
+<div class="nav-panel">
+<p>
+Next: <a href="TCP-Connecting.html" accesskey="n" rel="next">Establishing a TCP Connection</a>, Previous: <a href="Using-Networking.html" accesskey="p" rel="prev">Networking With <code class="command">gawk</code></a>, Up: <a href="Using-Networking.html" accesskey="u" rel="up">Networking With <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="gawk_0027s-Networking-Mechanisms">2.1 <code class="command">gawk</code>&rsquo;s Networking Mechanisms</h3>
+
+<p>The &lsquo;<samp class="samp">|&amp;</samp>&rsquo; operator for use in
+communicating with a <em class="dfn">coprocess</em> is described in
+<a data-manual="gawk" href="../../html_node/Two_002dway-I_002fO.html#Two_002dway-I_002fO">Two-way Communications With Another Process</a> in <cite class="cite">GAWK: Effective AWK Programming</cite>.
+It shows how to do two-way I/O to a
+separate process, sending it data with <code class="code">print</code> or <code class="code">printf</code> and
+reading data with <code class="code">getline</code>.  If you haven&rsquo;t read it already, you should
+detour there to do so.
+</p>
+<p><code class="command">gawk</code> transparently extends the two-way I/O mechanism to simple networking through
+the use of special file names.  When a &ldquo;coprocess&rdquo; that matches
+the special files we are about to describe
+is started, <code class="command">gawk</code> creates the appropriate network
+connection, and then two-way I/O proceeds as usual.
+</p>
+<a class="index-entry-id" id="index-TCP_002fIP"></a>
+<p>At the C, C++, and Perl level, networking is accomplished
+via <em class="dfn">sockets</em>, an Application Programming Interface (API) originally
+developed at the University of California at Berkeley that is now used
+almost universally for TCP/IP networking.
+Socket level programming, while fairly straightforward, requires paying
+attention to a number of details, as well as using binary data.  It is not
+well-suited for use from a high-level language like <code class="command">awk</code>.
+The special files provided in <code class="command">gawk</code> hide the details from
+the programmer, making things much simpler and easier to use.
+</p>
+<a class="index-entry-id" id="index-filenames_002c-for-network-access"></a>
+<a class="index-entry-id" id="index-gawk-1"></a>
+<a class="index-entry-id" id="index-networks-1"></a>
+<p>The special file name for network access is made up of several fields, all
+of which are mandatory:
+</p>
+<div class="example">
+<pre class="example-preformatted">/<var class="var">net-type</var>/<var class="var">protocol</var>/<var class="var">localport</var>/<var class="var">hostname</var>/<var class="var">remoteport</var>
+</pre></div>
+
+<a class="index-entry-id" id="index-_002finet_002f-files-_0028gawk_0029"></a>
+<a class="index-entry-id" id="index-files"></a>
+<a class="index-entry-id" id="index-localport-field"></a>
+<a class="index-entry-id" id="index-remoteport-field"></a>
+<p>The <var class="var">net-type</var> field lets you specify IPv4 versus IPv6, or lets
+you allow the system to choose.
+</p>
+
+<ul class="mini-toc">
+<li><a href="Special-File-Fields.html" accesskey="1">The Fields of the Special File Name</a></li>
+<li><a href="Comparing-Protocols.html" accesskey="2">Comparing Protocols</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="TCP-Connecting.html">Establishing a TCP Connection</a>, Previous: <a href="Using-Networking.html">Networking With <code class="command">gawk</code></a>, Up: <a href="Using-Networking.html">Networking With <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

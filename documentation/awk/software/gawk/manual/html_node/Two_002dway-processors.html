@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Two-way processors (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Two-way processors (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Two-way processors (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Registration-Functions.html" rel="up" title="Registration Functions">
+<link href="Output-Wrappers.html" rel="prev" title="Output Wrappers">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Two_002dway-processors">
+<div class="nav-panel">
+<p>
+Previous: <a href="Output-Wrappers.html" accesskey="p" rel="prev">Customized Output Wrappers</a>, Up: <a href="Registration-Functions.html" accesskey="u" rel="up">Registration Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Customized-Two_002dway-Processors"><span>17.4.6.6 Customized Two-way Processors<a class="copiable-link" href="Two_002dway-processors.html#Customized-Two_002dway-Processors"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-customized-two_002dway-processor"></a>
+
+<p>A <em class="dfn">two-way processor</em> combines an input parser and an output wrapper for
+two-way I/O with the &lsquo;<samp class="samp">|&amp;</samp>&rsquo; operator (see <a class="pxref" href="Redirection.html">Redirecting Output of <code class="code">print</code> and <code class="code">printf</code></a>).  It makes identical
+use of the <code class="code">awk_input_parser_t</code> and <code class="code">awk_output_buf_t</code> structures
+as described earlier.
+</p>
+<p>A two-way processor is represented by the following structure:
+</p>
+<div class="example">
+<pre class="example-preformatted">typedef struct awk_two_way_processor {
+    const char *name;   /* name of the two-way processor */
+    awk_bool_t (*can_take_two_way)(const char *name);
+    awk_bool_t (*take_control_of)(const char *name,
+                                  awk_input_buf_t *inbuf,
+                                  awk_output_buf_t *outbuf);
+    awk_const struct awk_two_way_processor *awk_const next;  /* for gawk */
+} awk_two_way_processor_t;
+</pre></div>
+
+<p>The fields are as follows:
+</p>
+<dl class="table">
+<dt><code class="code">const char *name;</code></dt>
+<dd><p>The name of the two-way processor.
+</p>
+</dd>
+<dt><code class="code">awk_bool_t (*can_take_two_way)(const char *name);</code></dt>
+<dd><p>The function pointed to by this field should return true if it wants to take over two-way I/O for this file name.
+It should not change any state (variable
+values, etc.) within <code class="command">gawk</code>.
+</p>
+</dd>
+<dt><code class="code">awk_bool_t (*take_control_of)(const char *name,</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;awk_input_buf_t *inbuf,</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;awk_output_buf_t *outbuf);</code></dt>
+<dd><p>The function pointed to by this field should fill in the <code class="code">awk_input_buf_t</code> and
+<code class="code">awk_output_buf_t</code> structures pointed to by <code class="code">inbuf</code> and
+<code class="code">outbuf</code>, respectively.  These structures were described earlier.
+</p>
+</dd>
+<dt><code class="code">awk_const struct two_way_processor *awk_const next;</code></dt>
+<dd><p>This is for use by <code class="command">gawk</code>;
+therefore it is marked <code class="code">awk_const</code> so that the extension cannot
+modify it.
+</p></dd>
+</dl>
+
+<p>As with the input parser and output processor, you provide
+&ldquo;yes I can take this&rdquo; and &ldquo;take over for this&rdquo; functions,
+<code class="code"><var class="var">XXX</var>_can_take_two_way()</code> and <code class="code"><var class="var">XXX</var>_take_control_of()</code>.
+</p>
+<p>You register your two-way processor with the following function:
+</p>
+<dl class="table">
+<dt><code class="code">void register_two_way_processor(awk_two_way_processor_t *two_way_processor);</code></dt>
+<dd><p>Register the two-way processor pointed to by <code class="code">two_way_processor</code> with
+<code class="command">gawk</code>.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Output-Wrappers.html">Customized Output Wrappers</a>, Up: <a href="Registration-Functions.html">Registration Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

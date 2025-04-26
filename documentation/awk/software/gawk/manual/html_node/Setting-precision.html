@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Setting precision (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Setting precision (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Setting precision (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="FP-Math-Caution.html" rel="up" title="FP Math Caution">
+<link href="Setting-the-rounding-mode.html" rel="next" title="Setting the rounding mode">
+<link href="Try-To-Round.html" rel="prev" title="Try To Round">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Setting-precision">
+<div class="nav-panel">
+<p>
+Next: <a href="Setting-the-rounding-mode.html" accesskey="n" rel="next">Setting the Rounding Mode</a>, Previous: <a href="Try-To-Round.html" accesskey="p" rel="prev">Try a Few Extra Bits of Precision and Rounding</a>, Up: <a href="FP-Math-Caution.html" accesskey="u" rel="up">Floating-Point Arithmetic: Caveat Emptor!</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Setting-the-Precision"><span>16.4.4 Setting the Precision<a class="copiable-link" href="Setting-precision.html#Setting-the-Precision"> &para;</a></span></h4>
+
+<p><code class="command">gawk</code> uses a global working precision; it does not keep track of
+the precision or accuracy of individual numbers. Performing an arithmetic
+operation or calling a built-in function rounds the result to the current
+working precision. The default working precision is 53 bits, which you can
+modify using the predefined variable <code class="code">PREC</code>. You can also set the
+value to one of the predefined case-insensitive strings
+shown in <a class="ref" href="Setting-precision.html#table_002dpredefined_002dprecision_002dstrings">Table 16.4</a>,
+to emulate an IEEE 754 binary format.
+</p>
+<div class="float" id="table_002dpredefined_002dprecision_002dstrings">
+<table class="multitable">
+<thead><tr><th><code class="code">PREC</code></th><th>IEEE 754 binary format</th></tr></thead>
+<tbody><tr><td><code class="code">&quot;half&quot;</code></td><td>16-bit half-precision</td></tr>
+<tr><td><code class="code">&quot;single&quot;</code></td><td>Basic 32-bit single precision</td></tr>
+<tr><td><code class="code">&quot;double&quot;</code></td><td>Basic 64-bit double precision</td></tr>
+<tr><td><code class="code">&quot;quad&quot;</code></td><td>Basic 128-bit quadruple precision</td></tr>
+<tr><td><code class="code">&quot;oct&quot;</code></td><td>256-bit octuple precision</td></tr>
+</tbody>
+</table>
+<div class="caption"><p><strong class="strong">Table 16.4: </strong>Predefined precision strings for <code class="code">PREC</code></p></div></div>
+<p>The following example illustrates the effects of changing precision
+on arithmetic operations:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk -M -v PREC=100 'BEGIN { x = 1.0e-400; print x + 0</kbd>
+&gt;   <kbd class="kbd">PREC = &quot;double&quot;; print x + 0 }'</kbd>
+-| 1e-400
+-| 0
+</pre></div>
+
+<blockquote class="quotation">
+<p><b class="b">CAUTION:</b> Be wary of floating-point constants! When reading a floating-point
+constant from program source code, <code class="command">gawk</code> uses the default
+precision (that of a C <code class="code">double</code>), unless overridden by an assignment
+to the special variable <code class="code">PREC</code> on the command line, to store it
+internally as an MPFR number.  Changing the precision using <code class="code">PREC</code>
+in the program text does <em class="emph">not</em> change the precision of a constant.
+</p>
+<p>If you need to represent a floating-point constant at a higher precision
+than the default and cannot use a command-line assignment to <code class="code">PREC</code>,
+you should either specify the constant as a string, or as a rational
+number, whenever possible. The following example illustrates the
+differences among various ways to print a floating-point constant:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk -M 'BEGIN { PREC = 113; printf(&quot;%0.25f\n&quot;, 0.1) }'</kbd>
+-| 0.1000000000000000055511151
+$ <kbd class="kbd">gawk -M -v PREC=113 'BEGIN { printf(&quot;%0.25f\n&quot;, 0.1) }'</kbd>
+-| 0.1000000000000000000000000
+$ <kbd class="kbd">gawk -M 'BEGIN { PREC = 113; printf(&quot;%0.25f\n&quot;, &quot;0.1&quot;) }'</kbd>
+-| 0.1000000000000000000000000
+$ <kbd class="kbd">gawk -M 'BEGIN { PREC = 113; printf(&quot;%0.25f\n&quot;, 1/10) }'</kbd>
+-| 0.1000000000000000000000000
+</pre></div>
+</blockquote>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Setting-the-rounding-mode.html">Setting the Rounding Mode</a>, Previous: <a href="Try-To-Round.html">Try a Few Extra Bits of Precision and Rounding</a>, Up: <a href="FP-Math-Caution.html">Floating-Point Arithmetic: Caveat Emptor!</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Pass By Value/Reference (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Pass By Value/Reference (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Pass By Value/Reference (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Function-Calling.html" rel="up" title="Function Calling">
+<link href="Function-Caveats.html" rel="next" title="Function Caveats">
+<link href="Variable-Scope.html" rel="prev" title="Variable Scope">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Pass-By-Value_002fReference">
+<div class="nav-panel">
+<p>
+Next: <a href="Function-Caveats.html" accesskey="n" rel="next">Other Points About Calling Functions</a>, Previous: <a href="Variable-Scope.html" accesskey="p" rel="prev">Controlling Variable Scope</a>, Up: <a href="Function-Calling.html" accesskey="u" rel="up">Calling User-Defined Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Passing-Function-Arguments-by-Value-Or-by-Reference"><span>9.2.3.3 Passing Function Arguments by Value Or by Reference<a class="copiable-link" href="Pass-By-Value_002fReference.html#Passing-Function-Arguments-by-Value-Or-by-Reference"> &para;</a></span></h4>
+
+<p>In <code class="command">awk</code>, when you declare a function, there is no way to
+declare explicitly whether the arguments are passed <em class="dfn">by value</em> or
+<em class="dfn">by reference</em>.
+</p>
+<p>Instead, the passing convention is determined at runtime when
+the function is called, according to the following rule:
+if the argument is an array variable, then it is passed by reference.
+Otherwise, the argument is passed by value.
+</p>
+<a class="index-entry-id" id="index-call-by-value"></a>
+<p>Passing an argument by value means that when a function is called, it
+is given a <em class="emph">copy</em> of the value of this argument.
+The caller may use a variable as the expression for the argument, but
+the called function does not know this&mdash;it only knows what value the
+argument had.  For example, if you write the following code:
+</p>
+<div class="example">
+<pre class="example-preformatted">foo = &quot;bar&quot;
+z = myfunc(foo)
+</pre></div>
+
+<p>then you should not think of the argument to <code class="code">myfunc()</code> as being
+&ldquo;the variable <code class="code">foo</code>.&rdquo;  Instead, think of the argument as the
+string value <code class="code">&quot;bar&quot;</code>.
+If the function <code class="code">myfunc()</code> alters the values of its local variables,
+this has no effect on any other variables.  Thus, if <code class="code">myfunc()</code>
+does this:
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">function myfunc(str)
+{
+   print str
+   str = &quot;zzz&quot;
+   print str
+}
+</pre></div></div>
+
+<p>to change its first argument variable <code class="code">str</code>, it does <em class="emph">not</em>
+change the value of <code class="code">foo</code> in the caller.  The role of <code class="code">foo</code> in
+calling <code class="code">myfunc()</code> ended when its value (<code class="code">&quot;bar&quot;</code>) was computed.
+If <code class="code">str</code> also exists outside of <code class="code">myfunc()</code>, the function body
+cannot alter this outer value, because it is shadowed during the
+execution of <code class="code">myfunc()</code> and cannot be seen or changed from there.
+</p>
+<a class="index-entry-id" id="index-call-by-reference"></a>
+<a class="index-entry-id" id="index-arrays-as-parameters-to-functions"></a>
+<a class="index-entry-id" id="index-functions-arrays-as-parameters-to"></a>
+<p>However, when arrays are the parameters to functions, they are <em class="emph">not</em>
+copied.  Instead, the array itself is made available for direct manipulation
+by the function.  This is usually termed <em class="dfn">call by reference</em>.
+Changes made to an array parameter inside the body of a function <em class="emph">are</em>
+visible outside that function.
+</p>
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> Changing an array parameter inside a function
+can be very dangerous if you do not watch what you are doing.
+For example:
+</p>
+<div class="example">
+<pre class="example-preformatted">function changeit(array, ind, nvalue)
+{
+     array[ind] = nvalue
+}
+
+BEGIN {
+    a[1] = 1; a[2] = 2; a[3] = 3
+    changeit(a, 2, &quot;two&quot;)
+    printf &quot;a[1] = %s, a[2] = %s, a[3] = %s\n&quot;,
+            a[1], a[2], a[3]
+}
+</pre></div>
+
+<p>prints &lsquo;<samp class="samp">a[1] = 1, a[2] = two, a[3] = 3</samp>&rsquo;, because
+<code class="code">changeit()</code> stores <code class="code">&quot;two&quot;</code> in the second element of <code class="code">a</code>.
+</p></blockquote>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Function-Caveats.html">Other Points About Calling Functions</a>, Previous: <a href="Variable-Scope.html">Controlling Variable Scope</a>, Up: <a href="Function-Calling.html">Calling User-Defined Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

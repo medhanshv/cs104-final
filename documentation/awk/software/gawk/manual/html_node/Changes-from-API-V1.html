@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Changes from API V1 (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Changes from API V1 (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Changes from API V1 (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Extension-API-Description.html" rel="up" title="Extension API Description">
+<link href="Extension-API-Boilerplate.html" rel="prev" title="Extension API Boilerplate">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Changes-from-API-V1">
+<div class="nav-panel">
+<p>
+Previous: <a href="Extension-API-Boilerplate.html" accesskey="p" rel="prev">Boilerplate Code</a>, Up: <a href="Extension-API-Description.html" accesskey="u" rel="up">API Description</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Changes-From-Version-1-of-the-API"><span>17.4.16 Changes From Version 1 of the API<a class="copiable-link" href="Changes-from-API-V1.html#Changes-From-Version-1-of-the-API"> &para;</a></span></h4>
+
+<p>The current API is <em class="emph">not</em> binary compatible with version 1 of the API.
+You will have to recompile your extensions in order to use them with
+the current version of <code class="command">gawk</code>.
+</p>
+<p>Fortunately, at the possible expense of some compile-time warnings, the API remains
+source-code&ndash;compatible with the previous API. The major differences are
+the additional members in the <code class="code">awk_ext_func_t</code> structure, and the
+addition of the third argument to the C implementation function
+(see <a class="pxref" href="Extension-Functions.html">Registering An Extension Function</a>).
+</p>
+<p>Here is a list of individual features that changed from version 1 to
+version 2 of the API:
+</p>
+<ul class="itemize mark-bullet">
+<li>Numeric values can now have MPFR/MPZ variants
+(see <a class="pxref" href="General-Data-Types.html">General-Purpose Data Types</a>).
+
+</li><li>There are new string types: <code class="code">AWK_REGEX</code> and <code class="code">AWK_STRNUM</code>
+(see <a class="pxref" href="General-Data-Types.html">General-Purpose Data Types</a>).
+
+</li><li>The <code class="code">ezalloc()</code> macro is new
+(see <a class="pxref" href="Memory-Allocation-Functions.html">Memory Allocation Functions and Convenience Macros</a>).
+
+</li><li>The <code class="code">awk_ext_func_t</code> structure changed. Instead of
+<code class="code">num_expected_args</code>, it now has <code class="code">max_expected</code> and
+<code class="code">min_required</code>
+(see <a class="pxref" href="Extension-Functions.html">Registering An Extension Function</a>).
+
+</li><li>For <code class="code">get_record()</code>, an input parser can now specify field widths
+(see <a class="pxref" href="Input-Parsers.html">Customized Input Parsers</a>).
+
+</li><li>Extensions can now produce nonfatal error messages
+(see <a class="pxref" href="Printing-Messages.html">Printing Messages</a>).
+
+</li><li>When flattening an array, you can now specify the index and value types
+(see <a class="pxref" href="Array-Functions.html">Array Functions</a>).
+
+</li><li>The <code class="code">get_file()</code> API is new
+(see <a class="pxref" href="Redirection-API.html">Accessing and Manipulating Redirections</a>).
+</li></ul>
+
+</div>
+
+
+
+</body>
+</html>

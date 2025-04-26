@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>MOBAGWHO (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="MOBAGWHO (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="MOBAGWHO (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Some-Applications-and-Techniques.html" rel="up" title="Some Applications and Techniques">
+<link href="STOXPRED.html" rel="next" title="STOXPRED">
+<link href="MAZE.html" rel="prev" title="MAZE">
+<style type="text/css">
+<!--
+div.center {text-align:center}
+div.example {margin-left: 3.2em}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="MOBAGWHO">
+<div class="nav-panel">
+<p>
+Next: <a href="STOXPRED.html" accesskey="n" rel="next">STOXPRED: Stock Market Prediction As A Service</a>, Previous: <a href="MAZE.html" accesskey="p" rel="prev">MAZE: Walking Through a Maze In Virtual Reality</a>, Up: <a href="Some-Applications-and-Techniques.html" accesskey="u" rel="up">Some Applications and Techniques</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="MOBAGWHO_003a-a-Simple-Mobile-Agent">3.8 MOBAGWHO: a Simple Mobile Agent</h3>
+<a class="index-entry-id" id="index-MOBAGWHO-program"></a>
+<a class="index-entry-id" id="index-agent-1"></a>
+<blockquote class="quotation">
+<a class="index-entry-id" id="index-Hoare_002c-C_002eA_002eR_002e"></a>
+<p><i class="i">There are two ways of constructing a software design: One way is to
+make it so simple that there are obviously no deficiencies, and the
+other way is to make it so complicated that there are no obvious
+deficiencies.</i>
+</p></blockquote>
+<div class="center">&mdash; <em class="emph">C.A.R. Hoare</em>
+</div>
+<p>A <em class="dfn">mobile agent</em> is a program that can be dispatched from a computer and
+transported to a remote server for execution. This is called <em class="dfn">migration</em>,
+which means that a process on another system is started that is independent
+from its originator. Ideally, it wanders through
+a network while working for its creator or owner. In places like
+the UMBC Agent Web,
+people are quite confident that (mobile) agents are a software engineering
+paradigm that enables us to significantly increase the efficiency
+of our work. Mobile agents could become the mediators between users and
+the networking world. For an unbiased view at this technology,
+see the remarkable paper <cite class="cite">Mobile Agents: Are they a good
+idea?</cite>.<a class="footnote" id="DOCF14" href="MOBAGWHO.html#FOOT14"><sup>14</sup></a>
+</p>
+<p>When trying to migrate a process from one system to another,
+a server process is needed on the receiving side. Depending on the kind
+of server process, several ways of implementation come to mind.
+How the process is implemented depends upon the kind of server process:
+</p>
+<ul class="itemize mark-bullet">
+<li>HTTP can be used as the protocol for delivery of the migrating
+process. In this case, we use a common web
+server as the receiving server process. A universal CGI script
+mediates between migrating process and web server.
+Each server willing to accept migrating agents makes this universal
+service available. HTTP supplies the <code class="code">POST</code> method to transfer
+some data to a file on the web server. When a CGI script is called
+remotely with the <code class="code">POST</code> method instead of the usual <code class="code">GET</code> method,
+data is transmitted from the client process to the standard input
+of the server&rsquo;s CGI script. So, to implement a mobile agent,
+we must not only write the agent program to start on the client
+side, but also the CGI script to receive the agent on the server side.
+
+</li><li><a class="index-entry-id" id="index-CGI-_0028Common-Gateway-Interface_0029-2"></a>
+<a class="index-entry-id" id="index-apache-1"></a>
+The <code class="code">PUT</code> method can also be used for migration. HTTP does not
+require a CGI script for migration via <code class="code">PUT</code>. However, with common web
+servers there is no advantage to this solution, because web servers such as
+Apache
+require explicit activation of a special <code class="code">PUT</code> script.
+
+</li><li><cite class="cite">Agent Tcl</cite> pursues a different course; it relies on a dedicated server
+process with a dedicated protocol specialized for receiving mobile agents.
+</li></ul>
+
+<p>Our agent example abuses a common web server as a migration tool. So, it needs a
+universal CGI script on the receiving side (the web server). The receiving script is
+activated with a <code class="code">POST</code> request when placed into a location like
+<samp class="file">/httpd/cgi-bin/PostAgent.sh</samp>.
+</p>
+<div class="example">
+<pre class="example-preformatted">#!/bin/sh
+MobAg=/tmp/MobileAgent.$$
+# direct script to mobile agent file
+cat &gt; $MobAg
+# execute agent concurrently
+gawk -f $MobAg $MobAg &gt; /dev/null &amp;
+# HTTP header, terminator and body
+gawk 'BEGIN { print &quot;\r\nAgent started&quot; }'
+rm $MobAg      # delete script file of agent
+</pre></div>
+
+<p>By making its process id (<code class="code">$$</code>) part of the unique file name, the
+script avoids conflicts between concurrent instances of the script.
+First, all lines
+from standard input (the mobile agent&rsquo;s source code) are copied into
+this unique file. Then, the agent is started as a concurrent process
+and a short message reporting this fact is sent to the submitting client.
+Finally, the script file of the mobile agent is removed because it is
+no longer needed. Although it is a short script, there are several noteworthy
+points:
+</p>
+<dl class="table">
+<dt>Security</dt>
+<dd><p><em class="emph">There is none</em>. In fact, the CGI script should never
+be made available on a server that is part of the Internet because everyone
+would be allowed to execute arbitrary commands with it. This behavior is
+acceptable only when performing rapid prototyping.
+</p>
+</dd>
+<dt>Self-Reference</dt>
+<dd><p>Each migrating instance of an agent is started
+in a way that enables it to read its own source code from standard input
+and use the code for subsequent
+migrations. This is necessary because it needs to treat the agent&rsquo;s code
+as data to transmit. <code class="command">gawk</code> is not the ideal language for such
+a job. Lisp and Tcl are more suitable because they do not make a distinction
+between program code and data.
+</p>
+</dd>
+<dt>Independence</dt>
+<dd><p>After migration, the agent is not linked to its
+former home in any way. By reporting &lsquo;<samp class="samp">Agent started</samp>&rsquo;, it waves
+&ldquo;Goodbye&rdquo; to its origin. The originator may choose to terminate or not.
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-Lisp"></a>
+<p>The originating agent itself is started just like any other command-line
+script, and reports the results on standard output.  By letting the name
+of the original host migrate with the agent, the agent that migrates
+to a host far away from its origin can report the result back home.
+Having arrived at the end of the journey, the agent establishes
+a connection and reports the results.  This is the reason for
+determining the name of the host with &lsquo;<samp class="samp">uname -n</samp>&rsquo; and storing it
+in <code class="code">MyOrigin</code> for later use.  We may also set variables with the
+<samp class="option">-v</samp> option from the command line. This interactivity is only
+of importance in the context of starting a mobile agent; therefore this
+<code class="code">BEGIN</code> pattern and its action do not take part in migration:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">BEGIN {
+  if (ARGC != 2) {
+    print &quot;MOBAG - a simple mobile agent&quot;
+    print &quot;CALL:\n    gawk -f mobag.awk mobag.awk&quot;
+    print &quot;IN:\n    the name of this script as a command-line parameter&quot;
+    print &quot;PARAM:\n    -v MyOrigin=myhost.com&quot;
+    print &quot;OUT:\n    the result on stdout&quot;
+    print &quot;JK 29.03.1998 01.04.1998&quot;
+    exit
+  }
+  if (MyOrigin == &quot;&quot;) {
+     &quot;uname -n&quot; | getline MyOrigin
+     close(&quot;uname -n&quot;)
+  }
+}
+</pre></div>
+
+<p>Since <code class="command">gawk</code> cannot manipulate and transmit parts of the program
+directly, the source code is read and stored in strings.
+Therefore, the program scans itself for
+the beginning and the ending of functions.
+Each line in between is appended to the code string until the end of
+the function has been reached. A special case is this part of the program
+itself. It is not a function.
+Placing a similar framework around it causes it to be treated
+like a function. Notice that this mechanism works for all the
+functions of the source code, but it cannot guarantee that the order
+of the functions is preserved during migration:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">#ReadMySelf
+/^function /                     { FUNC = $2 }
+/^END/ || /^#ReadMySelf/         { FUNC = $1 }
+FUNC != &quot;&quot;                       { MOBFUN[FUNC] = MOBFUN[FUNC] RS $0 }
+(FUNC != &quot;&quot;) &amp;&amp; (/^}/ || /^#EndOfMySelf/) \
+                                 { FUNC = &quot;&quot; }
+#EndOfMySelf
+</pre></div>
+
+<p>The web server code in
+<a class="ref" href="Interacting-Service.html">A Web Service with Interaction</a>,
+was first developed as a site-independent core. Likewise, the
+<code class="command">gawk</code>-based mobile agent
+starts with an agent-independent core, to which can be appended
+application-dependent functions.  What follows is the only
+application-independent function needed for the mobile agent:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">function migrate(Destination, MobCode, Label) {
+  MOBVAR[&quot;Label&quot;] = Label
+  MOBVAR[&quot;Destination&quot;] = Destination
+  RS = ORS = &quot;\r\n&quot;
+  HttpService = &quot;/inet/tcp/0/&quot; Destination
+  for (i in MOBFUN)
+     MobCode = (MobCode &quot;\n&quot; MOBFUN[i])
+  MobCode = MobCode  &quot;\n\nBEGIN {&quot;
+  for (i in MOBVAR)
+     MobCode = (MobCode &quot;\n  MOBVAR[\&quot;&quot; i &quot;\&quot;] = \&quot;&quot; MOBVAR[i] &quot;\&quot;&quot;)
+  MobCode = MobCode &quot;\n}\n&quot;
+  print &quot;POST /cgi-bin/PostAgent.sh HTTP/1.0&quot;  |&amp; HttpService
+  print &quot;Content-length:&quot;, length(MobCode) ORS |&amp; HttpService
+  printf &quot;%s&quot;, MobCode                         |&amp; HttpService
+  while ((HttpService |&amp; getline) &gt; 0)
+     print $0
+  close(HttpService)
+}
+</pre></div>
+
+<p>The <code class="code">migrate()</code> function prepares the
+aforementioned strings containing the program code and transmits them to a
+server. A consequence of this modular approach is that the <code class="code">migrate()</code>
+function takes some parameters that aren&rsquo;t needed in this application,
+but that will be in future ones. Its mandatory parameter <code class="code">Destination</code> holds the
+name (or IP address) of the server that the agent wants as a host for its
+code. The optional parameter <code class="code">MobCode</code> may contain some <code class="command">gawk</code>
+code that is inserted during migration in front of all other code.
+The optional parameter <code class="code">Label</code> may contain
+a string that tells the agent what to do in program execution after
+arrival at its new home site. One of the serious obstacles in implementing
+a framework for mobile agents is that it does not suffice to migrate the
+code. It is also necessary to migrate the state of execution of the agent. In
+contrast to <cite class="cite">Agent Tcl</cite>, this program does not try to migrate the complete set
+of variables. The following conventions apply:
+</p>
+<ul class="itemize mark-bullet">
+<li>Each variable in an agent program is local to the current host and does
+<em class="emph">not</em> migrate.
+
+</li><li>The array <code class="code">MOBFUN</code> shown above is an exception. It is handled
+by the function <code class="code">migrate()</code> and does migrate with the application.
+
+</li><li>The other exception is the array <code class="code">MOBVAR</code>. Each variable that
+takes part in migration has to be an element of this array.
+<code class="code">migrate()</code> also takes care of this.
+</li></ul>
+
+<p>Now it&rsquo;s clear what happens to the <code class="code">Label</code> parameter of the
+function <code class="code">migrate()</code>. It is copied into <code class="code">MOBVAR[&quot;Label&quot;]</code> and
+travels alongside the other data. Since traveling takes place via HTTP,
+records must be separated with <code class="code">&quot;\r\n&quot;</code> in <code class="code">RS</code> and
+<code class="code">ORS</code> as usual. The code assembly for migration takes place in
+three steps:
+</p>
+<ul class="itemize mark-bullet">
+<li>Iterate over <code class="code">MOBFUN</code> to collect all functions verbatim.
+
+</li><li>Prepare a <code class="code">BEGIN</code> pattern and put assignments to mobile
+variables into the action part.
+
+</li><li>Transmission itself resembles GETURL: the header with the request
+and the <code class="code">Content-length</code> is followed by the body. In case there is
+any reply over the network, it is read completely and echoed to
+standard output to avoid irritating the server.
+</li></ul>
+
+<p>The application-independent framework is now almost complete. What follows
+is the <code class="code">END</code> pattern which executes when the mobile agent has
+finished reading its own code. First, it checks whether it is already
+running on a remote host or not. In case initialization has not yet taken
+place, it starts <code class="code">MyInit()</code>. Otherwise (later, on a remote host), it
+starts <code class="code">MyJob()</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">END {
+  if (ARGC != 2) exit    # stop when called with wrong parameters
+  if (MyOrigin != &quot;&quot;)    # is this the originating host?
+    MyInit()             # if so, initialize the application
+  else                   # we are on a host with migrated data
+    MyJob()              # so we do our job
+}
+</pre></div>
+
+<p>All that&rsquo;s left to extend the framework into a complete application
+is to write two application-specific functions: <code class="code">MyInit()</code> and
+<code class="code">MyJob()</code>. Keep in mind that the former is executed once on the
+originating host, while the latter is executed after each migration:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">function MyInit() {
+  MOBVAR[&quot;MyOrigin&quot;] = MyOrigin
+  MOBVAR[&quot;Machines&quot;] = &quot;localhost/80 max/80 moritz/80 castor/80&quot;
+  split(MOBVAR[&quot;Machines&quot;], Machines)           # which host is the first?
+  migrate(Machines[1], &quot;&quot;, &quot;&quot;)                  # go to the first host
+  while ((&quot;/inet/tcp/8080/0/0&quot; |&amp; getline) &gt; 0) # wait for result
+    print $0                                    # print result
+  close(&quot;/inet/tcp/8080/0/0&quot;)
+}
+</pre></div>
+
+<p>As mentioned earlier, this agent takes the name of its origin
+(<code class="code">MyOrigin</code>) with it. Then, it takes the name of its first
+destination and goes there for further work. Notice that this name has
+the port number of the web server appended to the name of the server,
+because the function <code class="code">migrate()</code> needs it this way to create
+the <code class="code">HttpService</code> variable. Finally, it waits for the result to arrive.
+The <code class="code">MyJob()</code> function runs on the remote host:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">function MyJob() {
+  # forget this host
+  sub(MOBVAR[&quot;Destination&quot;], &quot;&quot;, MOBVAR[&quot;Machines&quot;])
+  MOBVAR[&quot;Result&quot;]=MOBVAR[&quot;Result&quot;] SUBSEP SUBSEP MOBVAR[&quot;Destination&quot;] &quot;:&quot;
+  while ((&quot;who&quot; | getline) &gt; 0)               # who is logged in?
+    MOBVAR[&quot;Result&quot;] = MOBVAR[&quot;Result&quot;] SUBSEP $0
+  close(&quot;who&quot;)
+  if (index(MOBVAR[&quot;Machines&quot;], &quot;/&quot;) &gt; 0) {   # any more machines to visit?
+    split(MOBVAR[&quot;Machines&quot;], Machines)       # which host is next?
+    migrate(Machines[1], &quot;&quot;, &quot;&quot;)              # go there
+  } else {                                    # no more machines
+    gsub(SUBSEP, &quot;\n&quot;, MOBVAR[&quot;Result&quot;])      # send result to origin
+    print MOBVAR[&quot;Result&quot;] |&amp; &quot;/inet/tcp/0/&quot; MOBVAR[&quot;MyOrigin&quot;] &quot;/8080&quot;
+    close(&quot;/inet/tcp/0/&quot; MOBVAR[&quot;MyOrigin&quot;] &quot;/8080&quot;)
+  }
+}
+</pre></div>
+
+<p>After migrating, the first thing to do in <code class="code">MyJob()</code> is to delete
+the name of the current host from the list of hosts to visit. Now, it
+is time to start the real work by appending the host&rsquo;s name to the
+result string, and reading line by line who is logged in on this host.
+A very annoying circumstance is the fact that the elements of
+<code class="code">MOBVAR</code> cannot hold the newline character (<code class="code">&quot;\n&quot;</code>). If they
+did, migration of this string would not work because the string wouldn&rsquo;t
+obey the syntax rule for a string in <code class="command">gawk</code>.
+<code class="code">SUBSEP</code> is used as a temporary replacement.
+</p>
+<p>If the list of hosts to visit holds
+at least one more entry, the agent migrates to that place to go on
+working there. Otherwise, we replace the <code class="code">SUBSEP</code>s
+with a newline character in the resulting string, and report it to
+the originating host, whose name is stored in <code class="code">MOBVAR[&quot;MyOrigin&quot;]</code>.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT14" href="MOBAGWHO.html#DOCF14">(14)</a></h5>
+<p><a class="uref" href="https://link.springer.com/chapter/10.1007/3-540-62852-5_4">https://link.springer.com/chapter/10.1007/3-540-62852-5_4</a></p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="STOXPRED.html">STOXPRED: Stock Market Prediction As A Service</a>, Previous: <a href="MAZE.html">MAZE: Walking Through a Maze In Virtual Reality</a>, Up: <a href="Some-Applications-and-Techniques.html">Some Applications and Techniques</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

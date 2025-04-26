@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>I18N Portability (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="I18N Portability (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="I18N Portability (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Translator-i18n.html" rel="up" title="Translator i18n">
+<link href="Printf-Ordering.html" rel="prev" title="Printf Ordering">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="I18N-Portability">
+<div class="nav-panel">
+<p>
+Previous: <a href="Printf-Ordering.html" accesskey="p" rel="prev">Rearranging <code class="code">printf</code> Arguments</a>, Up: <a href="Translator-i18n.html" accesskey="u" rel="up">Translating <code class="command">awk</code> Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="awk-Portability-Issues"><span>13.4.3 <code class="command">awk</code> Portability Issues<a class="copiable-link" href="I18N-Portability.html#awk-Portability-Issues"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-portability-internationalization-and"></a>
+<a class="index-entry-id" id="index-internationalization-localization-portability-and"></a>
+<p><code class="command">gawk</code>&rsquo;s internationalization features were purposely chosen to
+have as little impact as possible on the portability of <code class="command">awk</code>
+programs that use them to other versions of <code class="command">awk</code>.
+Consider this program:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+    TEXTDOMAIN = &quot;guide&quot;
+    if (Test_Guide)   # set with -v
+        bindtextdomain(&quot;/test/guide/messages&quot;)
+    print _&quot;don't panic!&quot;
+}
+</pre></div>
+
+<p>As written, it won&rsquo;t work on other versions of <code class="command">awk</code>.
+However, it is actually almost portable, requiring very little
+change:
+</p>
+<ul class="itemize mark-bullet">
+<li><a class="index-entry-id" id="index-TEXTDOMAIN-variable-portability-and"></a>
+</li><li>Assignments to <code class="code">TEXTDOMAIN</code> won&rsquo;t have any effect,
+because <code class="code">TEXTDOMAIN</code> is not special in other <code class="command">awk</code> implementations.
+
+</li><li>Non-GNU versions of <code class="command">awk</code> treat marked strings
+as the concatenation of a variable named <code class="code">_</code> with the string
+following it.<a class="footnote" id="DOCF95" href="I18N-Portability.html#FOOT95"><sup>95</sup></a> Typically, the variable <code class="code">_</code> has
+the null string (<code class="code">&quot;&quot;</code>) as its value, leaving the original string constant as
+the result.
+
+</li><li>By defining &ldquo;dummy&rdquo; functions to replace <code class="code">dcgettext()</code>, <code class="code">dcngettext()</code>,
+and <code class="code">bindtextdomain()</code>, the <code class="command">awk</code> program can be made to run, but
+all the messages are output in the original language.
+For example:
+
+<a class="index-entry-id" id="index-bindtextdomain_0028_0029-function-_0028gawk_0029-portability-and"></a>
+<a class="index-entry-id" id="index-dcgettext_0028_0029-function-_0028gawk_0029-portability-and"></a>
+<a class="index-entry-id" id="index-dcngettext_0028_0029-function-_0028gawk_0029-portability-and"></a>
+<div class="example">
+<pre class="example-preformatted">function bindtextdomain(dir, domain)
+{
+    return dir
+}
+
+function dcgettext(string, domain, category)
+{
+    return string
+}
+
+function dcngettext(string1, string2, number, domain, category)
+{
+    return (number == 1 ? string1 : string2)
+}
+</pre></div>
+
+</li><li>The use of positional specifications in <code class="code">printf</code> or
+<code class="code">sprintf()</code> is <em class="emph">not</em> portable.
+To support <code class="code">gettext()</code> at the C level, many systems&rsquo; C versions of
+<code class="code">sprintf()</code> do support positional specifiers.  But it works only if
+enough arguments are supplied in the function call.  Many versions of
+<code class="command">awk</code> pass <code class="code">printf</code> formats and arguments unchanged to the
+underlying C library version of <code class="code">sprintf()</code>, but only one format and
+argument at a time.  What happens if a positional specification is
+used is anybody&rsquo;s guess.
+However, because the positional specifications are primarily for use in
+<em class="emph">translated</em> format strings, and because non-GNU <code class="command">awk</code>s never
+retrieve the translated string, this should not be a problem in practice.
+</li></ul>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT95" href="I18N-Portability.html#DOCF95">(95)</a></h5>
+<p>This is good fodder for an &ldquo;Obfuscated
+<code class="command">awk</code>&rdquo; contest.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Printf-Ordering.html">Rearranging <code class="code">printf</code> Arguments</a>, Up: <a href="Translator-i18n.html">Translating <code class="command">awk</code> Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

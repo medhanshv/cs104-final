@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Using BEGIN/END (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Using BEGIN/END (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Using BEGIN/END (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="BEGIN_002fEND.html" rel="up" title="BEGIN/END">
+<link href="I_002fO-And-BEGIN_002fEND.html" rel="next" title="I/O And BEGIN/END">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Using-BEGIN_002fEND">
+<div class="nav-panel">
+<p>
+Next: <a href="I_002fO-And-BEGIN_002fEND.html" accesskey="n" rel="next">Input/Output from <code class="code">BEGIN</code> and <code class="code">END</code> Rules</a>, Up: <a href="BEGIN_002fEND.html" accesskey="u" rel="up">The <code class="code">BEGIN</code> and <code class="code">END</code> Special Patterns</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Startup-and-Cleanup-Actions"><span>7.1.4.1 Startup and Cleanup Actions<a class="copiable-link" href="Using-BEGIN_002fEND.html#Startup-and-Cleanup-Actions"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-BEGIN-pattern-2"></a>
+<a class="index-entry-id" id="index-END-pattern-1"></a>
+<p>A <code class="code">BEGIN</code> rule is executed once only, before the first input record
+is read. Likewise, an <code class="code">END</code> rule is executed once only, after all the
+input is read.  For example:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">awk '</kbd>
+&gt; <kbd class="kbd">BEGIN { print &quot;Analysis of \&quot;li\&quot;&quot; }</kbd>
+&gt; <kbd class="kbd">/li/  { ++n }</kbd>
+&gt; <kbd class="kbd">END   { print &quot;\&quot;li\&quot; appears in&quot;, n, &quot;records.&quot; }' mail-list</kbd>
+-| Analysis of &quot;li&quot;
+-| &quot;li&quot; appears in 4 records.
+</pre></div>
+
+<a class="index-entry-id" id="index-BEGIN-pattern-operators-and"></a>
+<a class="index-entry-id" id="index-END-pattern-operators-and"></a>
+<p>This program finds the number of records in the input file <samp class="file">mail-list</samp>
+that contain the string &lsquo;<samp class="samp">li</samp>&rsquo;.  The <code class="code">BEGIN</code> rule prints a title
+for the report.  There is no need to use the <code class="code">BEGIN</code> rule to
+initialize the counter <code class="code">n</code> to zero, as <code class="command">awk</code> does this
+automatically (see <a class="pxref" href="Variables.html">Variables</a>).
+The second rule increments the variable <code class="code">n</code> every time a
+record containing the pattern &lsquo;<samp class="samp">li</samp>&rsquo; is read.  The <code class="code">END</code> rule
+prints the value of <code class="code">n</code> at the end of the run.
+</p>
+<p>The special patterns <code class="code">BEGIN</code> and <code class="code">END</code> cannot be used in ranges
+or with Boolean operators (indeed, they cannot be used with any operators).
+An <code class="command">awk</code> program may have multiple <code class="code">BEGIN</code> and/or <code class="code">END</code>
+rules.  They are executed in the order in which they appear: all the <code class="code">BEGIN</code>
+rules at startup and all the <code class="code">END</code> rules at termination.
+</p>
+<p><code class="code">BEGIN</code> and <code class="code">END</code> rules may be intermixed with other rules.
+This feature was added in the 1987 version of <code class="command">awk</code> and is included
+in the POSIX standard.
+The original (1978) version of <code class="command">awk</code>
+required the <code class="code">BEGIN</code> rule to be placed at the beginning of the
+program, the <code class="code">END</code> rule to be placed at the end, and only allowed one of
+each.
+This is no longer required, but it is a good idea to follow this template
+in terms of program organization and readability.
+</p>
+<p>Multiple <code class="code">BEGIN</code> and <code class="code">END</code> rules are useful for writing
+library functions, because each library file can have its own <code class="code">BEGIN</code> and/or
+<code class="code">END</code> rule to do its own initialization and/or cleanup.
+The order in which library functions are named on the command line
+controls the order in which their <code class="code">BEGIN</code> and <code class="code">END</code> rules are
+executed.  Therefore, you have to be careful when writing such rules in
+library files so that the order in which they are executed doesn&rsquo;t matter.
+See <a class="xref" href="Options.html">Command-Line Options</a> for more information on
+using library functions.
+See <a class="xref" href="Library-Functions.html">A Library of <code class="command">awk</code> Functions</a>,
+for a number of useful library functions.
+</p>
+<p>If an <code class="command">awk</code> program has only <code class="code">BEGIN</code> rules and no
+other rules, then the program exits after the <code class="code">BEGIN</code> rules are
+run.<a class="footnote" id="DOCF41" href="Using-BEGIN_002fEND.html#FOOT41"><sup>41</sup></a>  However, if an
+<code class="code">END</code> rule exists, then the input is read, even if there are
+no other rules in the program.  This is necessary in case the <code class="code">END</code>
+rule checks the <code class="code">FNR</code> and <code class="code">NR</code> variables, or the fields.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT41" href="Using-BEGIN_002fEND.html#DOCF41">(41)</a></h5>
+<p>The original version of <code class="command">awk</code> kept
+reading and ignoring input until the end of the file was seen.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="I_002fO-And-BEGIN_002fEND.html">Input/Output from <code class="code">BEGIN</code> and <code class="code">END</code> Rules</a>, Up: <a href="BEGIN_002fEND.html">The <code class="code">BEGIN</code> and <code class="code">END</code> Special Patterns</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

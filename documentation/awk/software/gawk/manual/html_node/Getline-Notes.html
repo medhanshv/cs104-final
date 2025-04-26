@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Getline Notes (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Getline Notes (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Getline Notes (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Getline.html" rel="up" title="Getline">
+<link href="Getline-Summary.html" rel="next" title="Getline Summary">
+<link href="Getline_002fVariable_002fCoprocess.html" rel="prev" title="Getline/Variable/Coprocess">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Getline-Notes">
+<div class="nav-panel">
+<p>
+Next: <a href="Getline-Summary.html" accesskey="n" rel="next">Summary of <code class="code">getline</code> Variants</a>, Previous: <a href="Getline_002fVariable_002fCoprocess.html" accesskey="p" rel="prev">Using <code class="code">getline</code> into a Variable from a Coprocess</a>, Up: <a href="Getline.html" accesskey="u" rel="up">Explicit Input with <code class="code">getline</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Points-to-Remember-About-getline"><span>4.10.9 Points to Remember About <code class="code">getline</code><a class="copiable-link" href="Getline-Notes.html#Points-to-Remember-About-getline"> &para;</a></span></h4>
+<p>Here are some miscellaneous points about <code class="code">getline</code> that
+you should bear in mind:
+</p>
+<ul class="itemize mark-bullet">
+<li>When <code class="code">getline</code> changes the value of <code class="code">$0</code> and <code class="code">NF</code>,
+<code class="command">awk</code> does <em class="emph">not</em> automatically jump to the start of the
+program and start testing the new record against every pattern.
+However, the new record is tested against any subsequent rules.
+
+<a class="index-entry-id" id="index-differences-in-awk-and-gawk-implementation-limitations"></a>
+<a class="index-entry-id" id="index-implementation-issues_002c-gawk-limits"></a>
+<a class="index-entry-id" id="index-awk-implementations-limits"></a>
+<a class="index-entry-id" id="index-gawk-implementation-issues-limits"></a>
+</li><li>Some very old <code class="command">awk</code> implementations limit the number of pipelines that an <code class="command">awk</code>
+program may have open to just one.  In <code class="command">gawk</code>, there is no such limit.
+You can open as many pipelines (and coprocesses) as the underlying operating
+system permits.
+
+<a class="index-entry-id" id="index-side-effects-FILENAME-variable"></a>
+<a class="index-entry-id" id="index-FILENAME-variable-getline_002c-setting-with"></a>
+<a class="index-entry-id" id="index-dark-corner-FILENAME-variable"></a>
+<a class="index-entry-id" id="index-getline-function-FILENAME-variable-and"></a>
+<a class="index-entry-id" id="index-BEGIN-pattern-getline-and"></a>
+</li><li>An interesting side effect occurs if you use <code class="code">getline</code> without a
+redirection inside a <code class="code">BEGIN</code> rule. Because an unredirected <code class="code">getline</code>
+reads from the command-line data files, the first <code class="code">getline</code> function
+causes <code class="command">awk</code> to set the value of <code class="code">FILENAME</code>. Normally,
+<code class="code">FILENAME</code> does not have a value inside <code class="code">BEGIN</code> rules, because you
+have not yet started to process the command-line data files.
+(d.c.)
+(See <a class="ref" href="BEGIN_002fEND.html">The <code class="code">BEGIN</code> and <code class="code">END</code> Special Patterns</a>;
+also see <a class="pxref" href="Auto_002dset.html">Built-in Variables That Convey Information</a>.)
+
+</li><li>Using <code class="code">FILENAME</code> with <code class="code">getline</code>
+(&lsquo;<samp class="samp">getline &lt; FILENAME</samp>&rsquo;)
+is likely to be a source of
+confusion.  <code class="command">awk</code> opens a separate input stream from the
+current input file.  However, by not using a variable, <code class="code">$0</code>
+and <code class="code">NF</code> are still updated.  If you&rsquo;re doing this, it&rsquo;s
+probably by accident, and you should reconsider what it is you&rsquo;re
+trying to accomplish.
+
+</li><li><a class="ref" href="Getline-Summary.html">Summary of <code class="code">getline</code> Variants</a>,
+presents a table summarizing the
+<code class="code">getline</code> variants and which variables they can affect.
+It is worth noting that those variants that do not use redirection
+can cause <code class="code">FILENAME</code> to be updated if they cause
+<code class="command">awk</code> to start reading a new input file.
+
+</li><li><code class="code">getline</code> is not a statement (unlike <code class="code">print</code>), it&rsquo;s an
+expression. It has a result value, and can be used as part as a
+larger expression, in control statements, and so on.
+Here are examples of the &ldquo;read until EOF/error&rdquo; idiom:
+
+<div class="example">
+<pre class="example-preformatted">while (&quot;sort FILE&quot; | getline line &gt; 0)
+    print line
+while (getline line &lt; &quot;file.txt&quot; &gt; 0)
+    print line
+</pre></div>
+
+<p>If you need to test the error code for being less than zero,
+you need to enclose <code class="code">getline</code> in parentheses, to avoid
+it being interpreted as input redirection:
+</p>
+<div class="example">
+<pre class="example-preformatted">if ((getline VAR) &lt; 0)
+    print &quot;Read error&quot;;
+</pre></div>
+
+<p>It is, in fact, best to parenthesize calls to <code class="code">getline</code>
+in all control expressions, as some versions of <code class="command">awk</code>
+require this. Thus, the previous examples are best written
+this way:
+</p>
+<div class="example">
+<pre class="example-preformatted">while ((&quot;sort FILE&quot; | getline line) &gt; 0)
+    print line
+while ((getline line &lt; &quot;file.txt&quot;) &gt; 0)
+    print line
+</pre></div>
+
+</li><li><a class="index-entry-id" id="index-Moore_002c-Duncan"></a>
+If the variable being assigned is an expression with side effects,
+different versions of <code class="command">awk</code> behave differently upon encountering
+end-of-file.  Some versions don&rsquo;t evaluate the expression; many versions
+(including <code class="command">gawk</code>) do.  Here is an example, courtesy of Duncan Moore:
+
+
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+    system(&quot;echo 1 &gt; f&quot;)
+    while ((getline a[++c] &lt; &quot;f&quot;) &gt; 0) { }
+    print c
+}
+</pre></div>
+
+<p>Here, the side effect is the &lsquo;<samp class="samp">++c</samp>&rsquo;.  Is <code class="code">c</code> incremented if
+end-of-file is encountered before the element in <code class="code">a</code> is assigned?
+</p>
+<p>Despite the lack of parentheses when calling <code class="code">getline</code>,
+<code class="command">gawk</code> evaluates
+the expression &lsquo;<samp class="samp">a[++c]</samp>&rsquo; before attempting to read from <samp class="file">f</samp>.
+However, some versions of <code class="command">awk</code> only evaluate the expression once they
+know that there is a string value to be assigned.
+</p></li></ul>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Getline-Summary.html">Summary of <code class="code">getline</code> Variants</a>, Previous: <a href="Getline_002fVariable_002fCoprocess.html">Using <code class="code">getline</code> into a Variable from a Coprocess</a>, Up: <a href="Getline.html">Explicit Input with <code class="code">getline</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

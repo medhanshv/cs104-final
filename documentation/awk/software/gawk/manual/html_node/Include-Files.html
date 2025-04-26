@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Include Files (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Include Files (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Include Files (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Invoking-Gawk.html" rel="up" title="Invoking Gawk">
+<link href="Loading-Shared-Libraries.html" rel="next" title="Loading Shared Libraries">
+<link href="Exit-Status.html" rel="prev" title="Exit Status">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Include-Files">
+<div class="nav-panel">
+<p>
+Next: <a href="Loading-Shared-Libraries.html" accesskey="n" rel="next">Loading Dynamic Extensions into Your Program</a>, Previous: <a href="Exit-Status.html" accesskey="p" rel="prev"><code class="command">gawk</code>&rsquo;s Exit Status</a>, Up: <a href="Invoking-Gawk.html" accesskey="u" rel="up">Running <code class="command">awk</code> and <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Including-Other-Files-into-Your-Program"><span>2.7 Including Other Files into Your Program<a class="copiable-link" href="Include-Files.html#Including-Other-Files-into-Your-Program"> &para;</a></span></h3>
+
+
+<p>This section describes a feature that is specific to <code class="command">gawk</code>.
+</p>
+<a class="index-entry-id" id="index-_0040-_0028at_002dsign_0029-_0040include-directive-1"></a>
+<a class="index-entry-id" id="index-at_002dsign-_0028_0040_0029-_0040include-directive-1"></a>
+<a class="index-entry-id" id="index-file-inclusion_002c-_0040include-directive"></a>
+<a class="index-entry-id" id="index-including-files_002c-_0040include-directive"></a>
+<a class="index-entry-id" id="index-_0040include-directive-1"></a>
+<a class="index-entry-id" id="index-AWKPATH-environment-variable-1"></a>
+<a class="index-entry-id" id="index-environment-variables-AWKPATH-1"></a>
+<p>The <code class="code">@include</code> directive can be used to read external <code class="command">awk</code> source
+files.  This gives you the ability to split large <code class="command">awk</code> source files
+into smaller, more manageable pieces, and also lets you reuse common <code class="command">awk</code>
+code from various <code class="command">awk</code> scripts.  In other words, you can group
+together <code class="command">awk</code> functions used to carry out specific tasks
+into external files. These files can be used just like function libraries,
+using the <code class="code">@include</code> directive in conjunction with the <code class="env">AWKPATH</code>
+environment variable.  Note that source files may also be included
+using the <samp class="option">-i</samp> option.
+</p>
+<p>Let&rsquo;s see an example.
+We&rsquo;ll start with two (trivial) <code class="command">awk</code> scripts, namely
+<samp class="file">test1</samp> and <samp class="file">test2</samp>. Here is the <samp class="file">test1</samp> script:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+    print &quot;This is script test1.&quot;
+}
+</pre></div>
+
+<p>and here is <samp class="file">test2</samp>:
+</p>
+<div class="example">
+<pre class="example-preformatted">@include &quot;test1&quot;
+BEGIN {
+    print &quot;This is script test2.&quot;
+}
+</pre></div>
+
+<p>Running <code class="command">gawk</code> with <samp class="file">test2</samp>
+produces the following result:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk -f test2</kbd>
+-| This is script test1.
+-| This is script test2.
+</pre></div>
+
+<p><code class="command">gawk</code> runs the <samp class="file">test2</samp> script, which includes <samp class="file">test1</samp>
+using the <code class="code">@include</code>
+directive.  So, to include external <code class="command">awk</code> source files, you just
+use <code class="code">@include</code> followed by the name of the file to be included,
+enclosed in double quotes.
+</p>
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> Keep in mind that this is a language construct and the file name cannot
+be a string variable, but rather just a literal string constant in double quotes.
+</p></blockquote>
+
+<p>The files to be included may be nested; e.g., given a third
+script, namely <samp class="file">test3</samp>:
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">@include &quot;test2&quot;
+BEGIN {
+    print &quot;This is script test3.&quot;
+}
+</pre></div></div>
+
+<p>Running <code class="command">gawk</code> with the <samp class="file">test3</samp> script produces the
+following results:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk -f test3</kbd>
+-| This is script test1.
+-| This is script test2.
+-| This is script test3.
+</pre></div>
+
+<p>The file name can, of course, be a pathname. For example:
+</p>
+<div class="example">
+<pre class="example-preformatted">@include &quot;../io_funcs&quot;
+</pre></div>
+
+<p>and:
+</p>
+<div class="example">
+<pre class="example-preformatted">@include &quot;/usr/awklib/network&quot;
+</pre></div>
+
+<p>are both valid. The <code class="env">AWKPATH</code> environment variable can be of great
+value when using <code class="code">@include</code>. The same rules for the use
+of the <code class="env">AWKPATH</code> variable in command-line file searches
+(see <a class="pxref" href="AWKPATH-Variable.html">The <code class="env">AWKPATH</code> Environment Variable</a>) apply to
+<code class="code">@include</code> also.
+</p>
+<p>This is very helpful in constructing <code class="command">gawk</code> function libraries.
+If you have a large script with useful, general-purpose <code class="command">awk</code>
+functions, you can break it down into library files and put those files
+in a special directory.  You can then include those &ldquo;libraries,&rdquo;
+either by using the full pathnames of the files, or by setting the <code class="env">AWKPATH</code>
+environment variable accordingly and then using <code class="code">@include</code> with
+just the file part of the full pathname. Of course,
+you can keep library files in more than one directory;
+the more complex the working
+environment is, the more directories you may need to organize the files
+to be included.
+</p>
+<p>Given the ability to specify multiple <samp class="option">-f</samp> options, the
+<code class="code">@include</code> mechanism is not strictly necessary.
+However, the <code class="code">@include</code> directive
+can help you in constructing self-contained <code class="command">gawk</code> programs,
+thus reducing the need for writing complex and tedious command lines.
+In particular, <code class="code">@include</code> is very useful for writing CGI scripts
+to be run from web pages.
+</p>
+<p>The <code class="code">@include</code> directive and the <samp class="option">-i</samp>/<samp class="option">--include</samp>
+command line option are completely equivalent. An included program
+source is not loaded if it has been previously loaded.
+</p>
+<p>The rules for finding a source file described in <a class="ref" href="AWKPATH-Variable.html">The <code class="env">AWKPATH</code> Environment Variable</a> also
+apply to files loaded with <code class="code">@include</code>.
+</p>
+<p>Finally, files included with <code class="code">@include</code>
+are treated as if they had &lsquo;<samp class="samp">@namespace &quot;awk&quot;</samp>&rsquo;
+at their beginning.  See <a class="xref" href="Changing-The-Namespace.html">Changing The Namespace</a>, for more information.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Loading-Shared-Libraries.html">Loading Dynamic Extensions into Your Program</a>, Previous: <a href="Exit-Status.html"><code class="command">gawk</code>&rsquo;s Exit Status</a>, Up: <a href="Invoking-Gawk.html">Running <code class="command">awk</code> and <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

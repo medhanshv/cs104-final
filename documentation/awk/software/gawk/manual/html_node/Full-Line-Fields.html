@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Full Line Fields (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Full Line Fields (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Full Line Fields (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Field-Separators.html" rel="up" title="Field Separators">
+<link href="Field-Splitting-Summary.html" rel="next" title="Field Splitting Summary">
+<link href="Command-Line-Field-Separator.html" rel="prev" title="Command Line Field Separator">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Full-Line-Fields">
+<div class="nav-panel">
+<p>
+Next: <a href="Field-Splitting-Summary.html" accesskey="n" rel="next">Field-Splitting Summary</a>, Previous: <a href="Command-Line-Field-Separator.html" accesskey="p" rel="prev">Setting <code class="code">FS</code> from the Command Line</a>, Up: <a href="Field-Separators.html" accesskey="u" rel="up">Specifying How Fields Are Separated</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Making-the-Full-Line-Be-a-Single-Field"><span>4.5.6 Making the Full Line Be a Single Field<a class="copiable-link" href="Full-Line-Fields.html#Making-the-Full-Line-Be-a-Single-Field"> &para;</a></span></h4>
+
+<p>Occasionally, it&rsquo;s useful to treat the whole input line as a
+single field.  This can be done easily and portably simply by
+setting <code class="code">FS</code> to <code class="code">&quot;\n&quot;</code> (a newline):<a class="footnote" id="DOCF24" href="Full-Line-Fields.html#FOOT24"><sup>24</sup></a>
+</p>
+<div class="example">
+<pre class="example-preformatted">awk -F'\n' '<var class="var">program</var>' <var class="var">files ...</var>
+</pre></div>
+
+<p>When you do this, <code class="code">$1</code> is the same as <code class="code">$0</code>.
+</p>
+<a class="index-entry-id" id="index-sidebar-Changing-FS-Does-Not-Affect-the-Fields"></a>
+<table class="cartouche" border="1"><tr><th>
+Changing <code class="code">FS</code> Does Not Affect the Fields</th></tr><tr><td>
+
+<a class="index-entry-id" id="index-POSIX-awk-field-separators-and"></a>
+<a class="index-entry-id" id="index-field-separator-POSIX-and"></a>
+<p>According to the POSIX standard, <code class="command">awk</code> is supposed to behave
+as if each record is split into fields at the time it is read.
+In particular, this means that if you change the value of <code class="code">FS</code>
+after a record is read, the values of the fields (i.e., how they were split)
+should reflect the old value of <code class="code">FS</code>, not the new one.
+</p>
+<a class="index-entry-id" id="index-dark-corner-field-separators"></a>
+<a class="index-entry-id" id="index-sed-utility"></a>
+<a class="index-entry-id" id="index-stream-editors"></a>
+<p>However, many older implementations of <code class="command">awk</code> do not work this way.  Instead,
+they defer splitting the fields until a field is actually
+referenced.  The fields are split
+using the <em class="emph">current</em> value of <code class="code">FS</code>!
+(d.c.)
+This behavior can be difficult
+to diagnose. The following example illustrates the difference
+between the two methods:
+</p>
+<div class="example">
+<pre class="example-preformatted">sed 1q /etc/passwd | awk '{ FS = &quot;:&quot; ; print $1 }'
+</pre></div>
+
+<p>which usually prints:
+</p>
+<div class="example">
+<pre class="example-preformatted">root
+</pre></div>
+
+<p>on an incorrect implementation of <code class="command">awk</code>, while <code class="command">gawk</code>
+prints the full first line of the file, something like:
+</p>
+<div class="example">
+<pre class="example-preformatted">root:x:0:0:Root:/:
+</pre></div>
+
+<p>(The <code class="command">sed</code><a class="footnote" id="DOCF25" href="Full-Line-Fields.html#FOOT25"><sup>25</sup></a>
+command prints just the first line of <samp class="file">/etc/passwd</samp>.)
+</p></td></tr></table>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT24" href="Full-Line-Fields.html#DOCF24">(24)</a></h5>
+<p>Thanks to
+Andrew Schorr for this tip.</p>
+<h5 class="footnote-body-heading"><a id="FOOT25" href="Full-Line-Fields.html#DOCF25">(25)</a></h5>
+<p>The <code class="command">sed</code> utility is a &ldquo;stream editor.&rdquo;
+Its behavior is also defined by the POSIX standard.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Field-Splitting-Summary.html">Field-Splitting Summary</a>, Previous: <a href="Command-Line-Field-Separator.html">Setting <code class="code">FS</code> from the Command Line</a>, Up: <a href="Field-Separators.html">Specifying How Fields Are Separated</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

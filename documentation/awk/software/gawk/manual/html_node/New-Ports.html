@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>New Ports (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="New Ports (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="New Ports (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Additions.html" rel="up" title="Additions">
+<link href="Derived-Files.html" rel="next" title="Derived Files">
+<link href="Adding-Code.html" rel="prev" title="Adding Code">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="appendixsubsec-level-extent" id="New-Ports">
+<div class="nav-panel">
+<p>
+Next: <a href="Derived-Files.html" accesskey="n" rel="next">Why Generated Files Are Kept In Git</a>, Previous: <a href="Adding-Code.html" accesskey="p" rel="prev">Adding New Features</a>, Up: <a href="Additions.html" accesskey="u" rel="up">Making Additions to <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="appendixsubsec" id="Porting-gawk-to-a-New-Operating-System"><span>C.2.3 Porting <code class="command">gawk</code> to a New Operating System<a class="copiable-link" href="New-Ports.html#Porting-gawk-to-a-New-Operating-System"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-portability-gawk"></a>
+<a class="index-entry-id" id="index-operating-systems-porting-gawk-to"></a>
+
+<a class="index-entry-id" id="index-porting-gawk"></a>
+<p>If you want to port <code class="command">gawk</code> to a new operating system, there are
+several steps:
+</p>
+<ol class="enumerate">
+<li> Follow the guidelines in
+the previous section
+concerning coding style, submission of diffs, and so on.
+
+</li><li> Be prepared to sign the appropriate paperwork.
+In order for the FSF to distribute your code, you must either place
+your code in the public domain and submit a signed statement to that
+effect, or assign the copyright in your code to the FSF.
+Both of these actions are easy to do and <em class="emph">many</em> people have done so
+already. If you have questions, please contact me, or
+&ldquo;gnu at gnu dot org&rdquo;.
+
+</li><li> When doing a port, bear in mind that your code must coexist peacefully
+with the rest of <code class="command">gawk</code> and the other ports. Avoid gratuitous
+changes to the system-independent parts of the code. If at all possible,
+avoid sprinkling &lsquo;<samp class="samp">#ifdef</samp>&rsquo;s just for your port throughout the
+code.
+
+<p>If the changes needed for a particular system affect too much of the
+code, I probably will not accept them.  In such a case, you can, of course,
+distribute your changes on your own, as long as you comply
+with the GPL
+(see <a class="pxref" href="Copying.html">GNU General Public License</a>).
+</p>
+</li><li> A number of the files that come with <code class="command">gawk</code> are maintained by other
+people.  Thus, you should not change them
+unless it is for a very good reason; i.e., changes are not out of the
+question, but changes to these files are scrutinized extra carefully.
+These are all the files in the <samp class="file">support</samp> directory
+within the <code class="command">gawk</code> distribution. See there.
+
+</li><li> A number of other files are provided by the GNU
+Autotools (Autoconf, Automake, and GNU <code class="command">gettext</code>).
+You should not change them either, unless it is for a very
+good reason. The files are
+<samp class="file">ABOUT-NLS</samp>,
+<samp class="file">config.guess</samp>,
+<samp class="file">config.rpath</samp>,
+<samp class="file">config.sub</samp>,
+<samp class="file">depcomp</samp>,
+<samp class="file">INSTALL</samp>,
+<samp class="file">install-sh</samp>,
+<samp class="file">missing</samp>,
+<samp class="file">mkinstalldirs</samp>,
+and
+<samp class="file">ylwrap</samp>.
+
+</li><li> Be willing to continue to maintain the port.
+Non-Unix operating systems are supported by volunteers who maintain
+the code needed to compile and run <code class="command">gawk</code> on their systems. If no-one
+volunteers to maintain a port, it becomes unsupported and it may
+be necessary to remove it from the distribution.
+
+</li><li> Supply an appropriate <samp class="file">gawkmisc.???</samp> file.
+Each port has its own <samp class="file">gawkmisc.???</samp> that implements certain
+operating system specific functions. This is cleaner than a plethora of
+&lsquo;<samp class="samp">#ifdef</samp>&rsquo;s scattered throughout the code.  The <samp class="file">gawkmisc.c</samp> in
+the main source directory includes the appropriate
+<samp class="file">gawkmisc.???</samp> file from each subdirectory.
+Be sure to update it as well.
+
+<p>Each port&rsquo;s <samp class="file">gawkmisc.???</samp> file has a suffix reminiscent of the machine
+or operating system for the port&mdash;for example, <samp class="file">pc/gawkmisc.pc</samp> and
+<samp class="file">vms/gawkmisc.vms</samp>. The use of separate suffixes, instead of plain
+<samp class="file">gawkmisc.c</samp>, makes it possible to move files from a port&rsquo;s subdirectory
+into the main subdirectory, without accidentally destroying the real
+<samp class="file">gawkmisc.c</samp> file.  (Currently, this is only an issue for the
+PC operating system ports.)
+</p>
+</li><li> Supply a <samp class="file">Makefile</samp> as well as any other C source and header files that are
+necessary for your operating system.  All your code should be in a
+separate subdirectory, with a name that is the same as, or reminiscent
+of, either your operating system or the computer system.  If possible,
+try to structure things so that it is not necessary to move files out
+of the subdirectory into the main source directory.  If that is not
+possible, then be sure to avoid using names for your files that
+duplicate the names of files in the main source directory.
+
+</li><li> Update the documentation.
+Please write a section (or sections) for this Web page describing the
+installation and compilation steps needed to compile and/or install
+<code class="command">gawk</code> for your system.
+</li></ol>
+
+<p>Following these steps makes it much easier to integrate your changes
+into <code class="command">gawk</code> and have them coexist happily with other
+operating systems&rsquo; code that is already there.
+</p>
+<p>In the code that you supply and maintain, feel free to use a
+coding style and brace layout that suits your taste.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Derived-Files.html">Why Generated Files Are Kept In Git</a>, Previous: <a href="Adding-Code.html">Adding New Features</a>, Up: <a href="Additions.html">Making Additions to <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

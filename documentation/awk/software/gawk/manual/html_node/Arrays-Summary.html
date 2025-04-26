@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Arrays Summary (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Arrays Summary (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Arrays Summary (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Arrays.html" rel="up" title="Arrays">
+<link href="Arrays-of-Arrays.html" rel="prev" title="Arrays of Arrays">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Arrays-Summary">
+<div class="nav-panel">
+<p>
+Previous: <a href="Arrays-of-Arrays.html" accesskey="p" rel="prev">Arrays of Arrays</a>, Up: <a href="Arrays.html" accesskey="u" rel="up">Arrays in <code class="command">awk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Summary-7"><span>8.7 Summary<a class="copiable-link" href="Arrays-Summary.html#Summary-7"> &para;</a></span></h3>
+
+<ul class="itemize mark-bullet">
+<li>Standard <code class="command">awk</code> provides one-dimensional associative arrays
+(arrays indexed by string values).  All arrays are associative; numeric
+indices are converted automatically to strings.
+
+</li><li>Array elements are referenced as <code class="code"><var class="var">array</var>[<var class="var">indx</var>]</code>.
+Referencing an element creates it if it did not exist previously.
+
+</li><li>The proper way to see if an array has an element with a given index
+is to use the <code class="code">in</code> operator: &lsquo;<samp class="samp"><var class="var">indx</var> in <var class="var">array</var></samp>&rsquo;.
+
+</li><li>Use &lsquo;<samp class="samp">for (<var class="var">indx</var> in <var class="var">array</var>) &hellip;</samp>&rsquo; to scan through all the
+individual elements of an array. In the body of the loop, <var class="var">indx</var> takes
+on the value of each element&rsquo;s index in turn.
+
+</li><li>The order in which a &lsquo;<samp class="samp">for (<var class="var">indx</var> in <var class="var">array</var>)</samp>&rsquo; loop
+traverses an array is undefined in POSIX <code class="command">awk</code> and varies among
+implementations.  <code class="command">gawk</code> lets you control the order by assigning
+special predefined values to <code class="code">PROCINFO[&quot;sorted_in&quot;]</code>.
+
+</li><li>Use &lsquo;<samp class="samp">delete <var class="var">array</var>[<var class="var">indx</var>]</samp>&rsquo; to delete an individual element.
+To delete all of the elements in an array,
+use &lsquo;<samp class="samp">delete <var class="var">array</var></samp>&rsquo;.
+This latter feature has been a common extension for many
+years and is now standard, but may not be supported by all commercial
+versions of <code class="command">awk</code>.
+
+</li><li>Standard <code class="command">awk</code> simulates multidimensional arrays by separating
+subscript values with commas.  The values are concatenated into a
+single string, separated by the value of <code class="code">SUBSEP</code>.  The fact
+that such a subscript was created in this way is not retained; thus,
+changing <code class="code">SUBSEP</code> may have unexpected consequences.  You can use
+&lsquo;<samp class="samp">(<var class="var">sub1</var>, <var class="var">sub2</var>, &hellip;) in <var class="var">array</var></samp>&rsquo; to see if such
+a multidimensional subscript exists in <var class="var">array</var>.
+
+</li><li><code class="command">gawk</code> provides true arrays of arrays. You use a separate
+set of square brackets for each dimension in such an array:
+<code class="code">data[row][col]</code>, for example. Array elements may thus be either
+scalar values (number or string) or other arrays.
+
+</li><li>Use the <code class="code">isarray()</code> built-in function to determine if an array
+element is itself a subarray.
+
+</li></ul>
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Arrays-of-Arrays.html">Arrays of Arrays</a>, Up: <a href="Arrays.html">Arrays in <code class="command">awk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

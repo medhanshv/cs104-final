@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Delete (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Delete (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Delete (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Arrays.html" rel="up" title="Arrays">
+<link href="Multidimensional.html" rel="next" title="Multidimensional">
+<link href="Uninitialized-Subscripts.html" rel="prev" title="Uninitialized Subscripts">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Delete">
+<div class="nav-panel">
+<p>
+Next: <a href="Multidimensional.html" accesskey="n" rel="next">Multidimensional Arrays</a>, Previous: <a href="Uninitialized-Subscripts.html" accesskey="p" rel="prev">Using Uninitialized Variables as Subscripts</a>, Up: <a href="Arrays.html" accesskey="u" rel="up">Arrays in <code class="command">awk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="The-delete-Statement"><span>8.4 The <code class="code">delete</code> Statement<a class="copiable-link" href="Delete.html#The-delete-Statement"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-delete-statement"></a>
+<a class="index-entry-id" id="index-deleting-elements-in-arrays"></a>
+<a class="index-entry-id" id="index-arrays-elements-deleting"></a>
+<a class="index-entry-id" id="index-elements-in-arrays-deleting"></a>
+
+<p>To remove an individual element of an array, use the <code class="code">delete</code>
+statement:
+</p>
+<div class="example">
+<pre class="example-preformatted">delete <var class="var">array</var>[<var class="var">index-expression</var>]
+</pre></div>
+
+<p>Once an array element has been deleted, any value the element once
+had is no longer available. It is as if the element had never
+been referred to or been given a value.
+The following is an example of deleting elements in an array:
+</p>
+<div class="example">
+<pre class="example-preformatted">for (i in frequencies)
+    delete frequencies[i]
+</pre></div>
+
+<p>This example removes all the elements from the array <code class="code">frequencies</code>.
+Once an element is deleted, a subsequent <code class="code">for</code> statement to scan the array
+does not report that element and using the <code class="code">in</code> operator to check for
+the presence of that element returns zero (i.e., false):
+</p>
+<div class="example">
+<pre class="example-preformatted">delete foo[4]
+if (4 in foo)
+    print &quot;This will never be printed&quot;
+</pre></div>
+
+<a class="index-entry-id" id="index-null-strings-deleting-array-elements-and"></a>
+<p>It is important to note that deleting an element is <em class="emph">not</em> the
+same as assigning it a null value (the empty string, <code class="code">&quot;&quot;</code>).
+For example:
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">foo[4] = &quot;&quot;
+if (4 in foo)
+  print &quot;This is printed, even though foo[4] is empty&quot;
+</pre></div></div>
+
+<a class="index-entry-id" id="index-lint-checking-array-subscripts-1"></a>
+<p>It is not an error to delete an element that does not exist.
+However, if <samp class="option">--lint</samp> is provided on the command line
+(see <a class="pxref" href="Options.html">Command-Line Options</a>),
+<code class="command">gawk</code> issues a warning message when an element that
+is not in the array is deleted.
+</p>
+<a class="index-entry-id" id="index-common-extensions-delete-to-delete-entire-arrays"></a>
+<a class="index-entry-id" id="index-extensions-common-delete-to-delete-entire-arrays"></a>
+<a class="index-entry-id" id="index-arrays-deleting-entire-contents"></a>
+<a class="index-entry-id" id="index-deleting-entire-arrays"></a>
+<a class="index-entry-id" id="index-delete-array"></a>
+<a class="index-entry-id" id="index-differences-in-awk-and-gawk-array-elements_002c-deleting"></a>
+<p>All the elements of an array may be deleted with a single statement
+by leaving off the subscript in the <code class="code">delete</code> statement,
+as follows:
+</p>
+
+<div class="example">
+<pre class="example-preformatted">delete <var class="var">array</var>
+</pre></div>
+
+<p>Using this version of the <code class="code">delete</code> statement is about three times
+more efficient than the equivalent loop that deletes each element one
+at a time.
+</p>
+<p>This form of the <code class="code">delete</code> statement is also supported
+by BWK <code class="command">awk</code> and <code class="command">mawk</code>, as well as
+by a number of other implementations.
+</p>
+<a class="index-entry-id" id="index-Brian-Kernighan_0027s-awk-11"></a>
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> For many years, using <code class="code">delete</code> without a subscript was a common
+extension.  In September 2012, it was accepted for inclusion into the
+POSIX standard.  See <a class="uref" href="http://austingroupbugs.net/view.php?id=544">the Austin Group website</a>.
+</p></blockquote>
+
+<a class="index-entry-id" id="index-portability-deleting-array-elements"></a>
+<a class="index-entry-id" id="index-Brennan_002c-Michael-3"></a>
+<p>The following statement provides a portable but nonobvious way to clear
+out an array:<a class="footnote" id="DOCF46" href="Delete.html#FOOT46"><sup>46</sup></a>
+</p>
+<div class="example">
+<pre class="example-preformatted">split(&quot;&quot;, array)
+</pre></div>
+
+<a class="index-entry-id" id="index-split_0028_0029-function-array-elements_002c-deleting"></a>
+<p>The <code class="code">split()</code> function
+(see <a class="pxref" href="String-Functions.html">String-Manipulation Functions</a>)
+clears out the target array first. This call asks it to split
+apart the null string. Because there is no data to split out, the
+function simply clears the array and then returns.
+</p>
+<blockquote class="quotation">
+<p><b class="b">CAUTION:</b> Deleting all the elements from an array does not change its type; you cannot
+clear an array and then use the array&rsquo;s name as a scalar
+(i.e., a regular variable). For example, the following does not work:
+</p>
+<div class="example">
+<pre class="example-preformatted">a[1] = 3
+delete a
+a = 3
+</pre></div>
+</blockquote>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT46" href="Delete.html#DOCF46">(46)</a></h5>
+<p>Thanks to Michael Brennan for pointing this out.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Multidimensional.html">Multidimensional Arrays</a>, Previous: <a href="Uninitialized-Subscripts.html">Using Uninitialized Variables as Subscripts</a>, Up: <a href="Arrays.html">Arrays in <code class="command">awk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

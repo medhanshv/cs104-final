@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Viewing And Changing Data (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Viewing And Changing Data (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Viewing And Changing Data (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="List-of-Debugger-Commands.html" rel="up" title="List of Debugger Commands">
+<link href="Execution-Stack.html" rel="next" title="Execution Stack">
+<link href="Debugger-Execution-Control.html" rel="prev" title="Debugger Execution Control">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Viewing-And-Changing-Data">
+<div class="nav-panel">
+<p>
+Next: <a href="Execution-Stack.html" accesskey="n" rel="next">Working with the Stack</a>, Previous: <a href="Debugger-Execution-Control.html" accesskey="p" rel="prev">Control of Execution</a>, Up: <a href="List-of-Debugger-Commands.html" accesskey="u" rel="up">Main Debugger Commands</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Viewing-and-Changing-Data"><span>14.3.3 Viewing and Changing Data<a class="copiable-link" href="Viewing-And-Changing-Data.html#Viewing-and-Changing-Data"> &para;</a></span></h4>
+
+<p>The commands for viewing and changing variables inside of <code class="command">gawk</code> are:
+</p>
+<dl class="table">
+<dd><a class="index-entry-id" id="index-debugger-commands-display"></a>
+</dd>
+<dt><a id="index-display-debugger-command"></a><span><code class="code">display</code> [<var class="var">var</var> | <code class="code">$</code><var class="var">n</var>]<a class="copiable-link" href="Viewing-And-Changing-Data.html#index-display-debugger-command"> &para;</a></span></dt>
+<dd><p>Add variable <var class="var">var</var> (or field <code class="code">$<var class="var">n</var></code>) to the display list.
+The value of the variable or field is displayed each time the program stops.
+Each variable added to the list is identified by a unique number:
+</p>
+<div class="example">
+<pre class="example-preformatted">gawk&gt; <kbd class="kbd">display x</kbd>
+-| 10: x = 1
+</pre></div>
+
+<p>This displays the assigned item number, the variable name, and its current value.
+If the display variable refers to a function parameter, it is silently
+deleted from the list as soon as the execution reaches a context where
+no such variable of the given name exists.
+Without argument, <code class="code">display</code> displays the current values of
+items on the list.
+</p>
+<a class="index-entry-id" id="index-debugger-commands-eval"></a>
+</dd>
+<dt><a class="index-entry-id" id="index-evaluate-expressions_002c-in-debugger"></a>
+<a id="index-eval-debugger-command"></a><span><code class="code">eval &quot;<var class="var">awk statements</var>&quot;</code><a class="copiable-link" href="Viewing-And-Changing-Data.html#index-eval-debugger-command"> &para;</a></span></dt>
+<dd><p>Evaluate <var class="var">awk statements</var> in the context of the running program.
+You can do anything that an <code class="command">awk</code> program would do: assign
+values to variables, call functions, and so on.
+</p>
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> You cannot use <code class="code">eval</code> to execute a statement containing
+any of the following:
+<code class="code">exit</code>,
+<code class="code">getline</code>,
+<code class="code">next</code>,
+<code class="code">nextfile</code>,
+or
+<code class="code">return</code>.
+</p></blockquote>
+
+</dd>
+<dt><code class="code">eval</code> <var class="var">param</var>, &hellip;</dt>
+<dt><var class="var">awk statements</var></dt>
+<dt><code class="code">end</code></dt>
+<dd><p>This form of <code class="code">eval</code> is similar, but it allows you to define
+&ldquo;local variables&rdquo; that exist in the context of the
+<var class="var">awk statements</var>, instead of using variables or function
+parameters defined by the program.
+</p>
+<a class="index-entry-id" id="index-debugger-commands-p-_0028print_0029-1"></a>
+<a class="index-entry-id" id="index-debugger-commands-print-1"></a>
+</dd>
+<dt><a class="index-entry-id" id="index-p-debugger-command-_0028alias-for-print_0029"></a>
+<a class="index-entry-id" id="index-print-variables_002c-in-debugger"></a>
+<a id="index-print-debugger-command"></a><span><code class="code">print</code> <var class="var">var1</var>[<code class="code">,</code> <var class="var">var2</var> &hellip;]<a class="copiable-link" href="Viewing-And-Changing-Data.html#index-print-debugger-command"> &para;</a></span></dt>
+<dt><code class="code">p</code> <var class="var">var1</var>[<code class="code">,</code> <var class="var">var2</var> &hellip;]</dt>
+<dd><p>Print the value of a <code class="command">gawk</code> variable or field.
+Fields must be referenced by constants:
+</p>
+<div class="example">
+<pre class="example-preformatted">gawk&gt; <kbd class="kbd">print $3</kbd>
+</pre></div>
+
+<p>This prints the third field in the input record (if the specified field does not
+exist, it prints &lsquo;<samp class="samp">Null field</samp>&rsquo;). A variable can be an array element, with
+the subscripts being constant string values. To print the contents of an array,
+prefix the name of the array with the &lsquo;<samp class="samp">@</samp>&rsquo; symbol:
+</p>
+<div class="example">
+<pre class="example-preformatted">gawk&gt; <kbd class="kbd">print @a</kbd>
+</pre></div>
+
+<p>This prints the indices and the corresponding values for all elements in
+the array <code class="code">a</code>.
+</p>
+<a class="index-entry-id" id="index-debugger-commands-printf"></a>
+</dd>
+<dt><a id="index-printf-debugger-command"></a><span><code class="code">printf</code> <var class="var">format</var> [<code class="code">,</code> <var class="var">arg</var> &hellip;]<a class="copiable-link" href="Viewing-And-Changing-Data.html#index-printf-debugger-command"> &para;</a></span></dt>
+<dd><p>Print formatted text. The <var class="var">format</var> may include escape sequences,
+such as &lsquo;<samp class="samp">\n</samp>&rsquo;
+(see <a class="pxref" href="Escape-Sequences.html">Escape Sequences</a>).
+No newline is printed unless one is specified.
+</p>
+<a class="index-entry-id" id="index-debugger-commands-set"></a>
+</dd>
+<dt><a class="index-entry-id" id="index-assign-values-to-variables_002c-in-debugger"></a>
+<a id="index-set-debugger-command"></a><span><code class="code">set</code> <var class="var">var</var><code class="code">=</code><var class="var">value</var><a class="copiable-link" href="Viewing-And-Changing-Data.html#index-set-debugger-command"> &para;</a></span></dt>
+<dd><p>Assign a constant (number or string) value to an <code class="command">awk</code> variable
+or field.
+String values must be enclosed between double quotes (<code class="code">&quot;</code>&hellip;<code class="code">&quot;</code>).
+</p>
+<p>You can also set special <code class="command">awk</code> variables, such as <code class="code">FS</code>,
+<code class="code">NF</code>, <code class="code">NR</code>, and so on.
+</p>
+<a class="index-entry-id" id="index-debugger-commands-w-_0028watch_0029"></a>
+<a class="index-entry-id" id="index-debugger-commands-watch"></a>
+</dd>
+<dt><a class="index-entry-id" id="index-w-debugger-command-_0028alias-for-watch_0029"></a>
+<a class="index-entry-id" id="index-set-watchpoint"></a>
+<a id="index-watch-debugger-command"></a><span><code class="code">watch</code> <var class="var">var</var> | <code class="code">$</code><var class="var">n</var> [<code class="code">&quot;<var class="var">expression</var>&quot;</code>]<a class="copiable-link" href="Viewing-And-Changing-Data.html#index-watch-debugger-command"> &para;</a></span></dt>
+<dt><code class="code">w</code> <var class="var">var</var> | <code class="code">$</code><var class="var">n</var> [<code class="code">&quot;<var class="var">expression</var>&quot;</code>]</dt>
+<dd><p>Add variable <var class="var">var</var> (or field <code class="code">$<var class="var">n</var></code>) to the watch list.
+The debugger then stops whenever
+the value of the variable or field changes. Each watched item is assigned a
+number that can be used to delete it from the watch list using the
+<code class="code">unwatch</code> command.
+</p>
+<p>With a watchpoint, you may also supply a condition.  This is an
+<code class="command">awk</code> expression (enclosed in double quotes) that the debugger
+evaluates whenever the watchpoint is reached. If the condition is true,
+then the debugger stops execution and prompts for a command. Otherwise,
+<code class="command">gawk</code> continues executing the program.
+</p>
+<a class="index-entry-id" id="index-debugger-commands-undisplay"></a>
+</dd>
+<dt><a class="index-entry-id" id="index-stop-automatic-display_002c-in-debugger"></a>
+<a id="index-undisplay-debugger-command"></a><span><code class="code">undisplay</code> [<var class="var">n</var>]<a class="copiable-link" href="Viewing-And-Changing-Data.html#index-undisplay-debugger-command"> &para;</a></span></dt>
+<dd><p>Remove item number <var class="var">n</var> (or all items, if no argument) from the
+automatic display list.
+</p>
+<a class="index-entry-id" id="index-debugger-commands-unwatch"></a>
+</dd>
+<dt><a class="index-entry-id" id="index-delete-watchpoint"></a>
+<a id="index-unwatch-debugger-command"></a><span><code class="code">unwatch</code> [<var class="var">n</var>]<a class="copiable-link" href="Viewing-And-Changing-Data.html#index-unwatch-debugger-command"> &para;</a></span></dt>
+<dd><p>Remove item number <var class="var">n</var> (or all items, if no argument) from the
+watch list.
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Execution-Stack.html">Working with the Stack</a>, Previous: <a href="Debugger-Execution-Control.html">Control of Execution</a>, Up: <a href="List-of-Debugger-Commands.html">Main Debugger Commands</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

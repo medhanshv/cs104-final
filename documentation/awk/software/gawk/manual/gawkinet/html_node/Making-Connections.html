@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>Making Connections (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="Making Connections (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="Making Connections (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Introduction.html" rel="up" title="Introduction">
+<link href="The-TCP_002fIP-Protocols.html" rel="prev" title="The TCP/IP Protocols">
+<style type="text/css">
+<!--
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Making-Connections">
+<div class="nav-panel">
+<p>
+Previous: <a href="The-TCP_002fIP-Protocols.html" accesskey="p" rel="prev">The Internet Protocols</a>, Up: <a href="Introduction.html" accesskey="u" rel="up">Networking Concepts</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Making-TCP_002fIP-Connections-_0028And-Some-Terminology_0029">1.4 Making TCP/IP Connections (And Some Terminology)</h3>
+
+<p>Two terms come up repeatedly when discussing networking:
+<em class="dfn">client</em> and <em class="dfn">server</em>.  For now, we&rsquo;ll discuss these terms
+at the <em class="dfn">connection level</em>, when first establishing connections
+between two processes on different systems over a network.
+(Once the connection is established, the higher level, or
+<em class="dfn">application level</em> protocols,
+such as HTTP or FTP, determine who is the client and who is the
+server.  Often, it turns out that the client and server are the
+same in both roles.)
+</p>
+<a class="index-entry-id" id="index-servers"></a>
+<p>The <em class="dfn">server</em> is the system providing the service, such as the
+web server or email server.  It is the <em class="dfn">host</em> (system) which
+is <em class="emph">connected to</em> in a transaction.
+For this to work though, the server must be expecting connections.
+Much as there has to be someone at the office building to answer
+the phone,<a class="footnote" id="DOCF3" href="Making-Connections.html#FOOT3"><sup>3</sup></a> the
+server process (usually) has to be started first and be waiting
+for a connection.
+</p>
+<a class="index-entry-id" id="index-clients"></a>
+<p>The <em class="dfn">client</em> is the system requesting the service.
+It is the system <em class="emph">initiating the connection</em> in a transaction.
+(Just as when you pick up the phone to call an office or store.)
+</p>
+<p>In the TCP/IP framework, each end of a connection is represented by a pair
+of (<var class="var">address</var>, <var class="var">port</var>) pairs.  For the duration of the connection,
+the ports in use at each end are unique, and cannot be used simultaneously
+by other processes on the same system.  (Only after closing a connection
+can a new one be built up on the same port. This is contrary to the usual
+behavior of fully developed web servers which have to avoid situations
+in which they are not reachable. We have to pay this price in order to
+enjoy the benefits of a simple communication paradigm in <code class="command">gawk</code>.)
+</p>
+<a class="index-entry-id" id="index-blocking"></a>
+<a class="index-entry-id" id="index-synchronous-communications"></a>
+<p>Furthermore, once the connection is established, communications are
+<em class="dfn">synchronous</em>.<a class="footnote" id="DOCF4" href="Making-Connections.html#FOOT4"><sup>4</sup></a> I.e.,
+each end waits on the other to finish transmitting, before replying. This
+is much like two people in a phone conversation.  While both could talk
+simultaneously, doing so usually doesn&rsquo;t work too well.
+</p>
+<p>In the case of TCP, the synchronicity is enforced by the protocol when
+sending data.  Data writes <em class="dfn">block</em> until the data have been received on the
+other end.  For both TCP and UDP, data reads block until there is incoming
+data waiting to be read.  This is summarized in the following table,
+where an &ldquo;x&rdquo; indicates that the given action blocks.
+</p>
+<table class="multitable">
+<tbody><tr><td>TCP</td><td>x</td><td>x</td></tr>
+<tr><td>UDP</td><td>x</td><td></td></tr>
+</tbody>
+</table>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT3" href="Making-Connections.html#DOCF3">(3)</a></h5>
+<p>In the days before voice mail systems!</p>
+<h5 class="footnote-body-heading"><a id="FOOT4" href="Making-Connections.html#DOCF4">(4)</a></h5>
+<p>For the technically savvy, data reads
+block&mdash;if there&rsquo;s no incoming data, the program is made to wait until
+there is, instead of receiving a &ldquo;there&rsquo;s no data&rdquo; error return.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="The-TCP_002fIP-Protocols.html">The Internet Protocols</a>, Up: <a href="Introduction.html">Networking Concepts</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

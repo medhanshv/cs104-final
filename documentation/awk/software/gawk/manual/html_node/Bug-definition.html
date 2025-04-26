@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Bug definition (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Bug definition (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Bug definition (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Bugs.html" rel="up" title="Bugs">
+<link href="Bug-address.html" rel="next" title="Bug address">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="appendixsubsec-level-extent" id="Bug-definition">
+<div class="nav-panel">
+<p>
+Next: <a href="Bug-address.html" accesskey="n" rel="next">Submitting Bug Reports</a>, Up: <a href="Bugs.html" accesskey="u" rel="up">Reporting Problems and Bugs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="appendixsubsec" id="Defining-What-Is-and-What-Is-Not-A-Bug"><span>B.4.1 Defining What Is and What Is Not A Bug<a class="copiable-link" href="Bug-definition.html#Defining-What-Is-and-What-Is-Not-A-Bug"> &para;</a></span></h4>
+
+<p>Before talking about reporting bugs, let&rsquo;s define what is a bug,
+and what is not.
+</p>
+<p>A bug is:
+</p>
+<ul class="itemize mark-bullet">
+<li>When <code class="command">gawk</code> behaves differently from what&rsquo;s described
+in the POSIX standard, and that difference is not mentioned
+in this Web page as being done on purpose.
+
+</li><li>When <code class="command">gawk</code> behaves differently from what&rsquo;s described
+in this Web page.
+
+</li><li>When <code class="command">gawk</code> behaves differently from other <code class="command">awk</code>
+implementations in particular circumstances, and that behavior cannot
+be attributed to an additional feature in <code class="command">gawk</code>.
+
+</li><li>Something that is obviously wrong, such as a core dump.
+
+</li><li>When this Web page is unclear or ambiguous about a particular
+feature&rsquo;s behavior.
+</li></ul>
+
+<p>The following things are <em class="emph">not</em> bugs, and should not be reported
+to the bug mailing list.  You can ask about them on the &ldquo;help&rdquo; mailing
+list (see <a class="pxref" href="Asking-for-help.html">Where To Send Non-bug Questions</a>), but don&rsquo;t be surprised if you get an
+answer of the form &ldquo;that&rsquo;s how <code class="command">gawk</code> behaves and it isn&rsquo;t
+going to change.&rdquo; Here&rsquo;s the list:
+</p>
+<ul class="itemize mark-bullet">
+<li>Missing features, for any definition of <em class="dfn">feature</em>. For example,
+additional built-in arithmetic functions, or additional ways to split
+fields or records, or anything else.
+
+<p>The number of features that <code class="command">gawk</code> does <em class="emph">not</em> have is
+by definition infinite.  It cannot be all things to all people.
+In short, just because <code class="command">gawk</code> doesn&rsquo;t do what <em class="emph">you</em>
+think it should, it&rsquo;s not necessarily a bug.
+</p>
+</li><li>Behaviors that are defined by the POSIX standard and/or for historical
+compatibility with Unix <code class="command">awk</code>.  Even if you happen to dislike
+those behaviors, they&rsquo;re not going to change: changing them would
+break millions of existing <code class="command">awk</code> programs.
+
+</li><li>Behaviors that differ from how it&rsquo;s done in other languages. <code class="command">awk</code>
+and <code class="command">gawk</code> stand on their own and do not have to follow the crowd.
+This is particularly true when the requested behavior change would break
+backwards compatibility.
+
+<p>This applies also to differences in behavior between <code class="command">gawk</code>
+and other language compilers and interpreters, such as wishes for more
+detailed descriptions of what the problem is when a syntax error is
+encountered.
+</p>
+</li><li>Documentation issues of the form &ldquo;the manual doesn&rsquo;t tell me how to
+do XYZ.&rdquo;  The manual is not a cookbook to solve every little problem
+you may have.  Its purpose is to teach you how to solve your problems
+on your own.
+
+</li><li>General questions and discussion about <code class="command">awk</code> programming or
+why <code class="command">gawk</code> behaves the way it does. For that use the &ldquo;help&rdquo;
+mailing list: see <a class="ref" href="Asking-for-help.html">Where To Send Non-bug Questions</a>.
+</li></ul>
+
+<p>For more information, see <a class="uref" href="http://www.skeeve.com/fork-my-code.html"><cite class="cite">Fork My Code, Please!&mdash;An Open Letter To Those of You Who Are Unhappy</cite></a>,
+by Arnold Robbins and Chet Ramey.
+</p>
+<a class="index-entry-id" id="index-sidebar-A-Note-About-Fuzzers"></a>
+<table class="cartouche" border="1"><tr><th>
+A Note About Fuzzers</th></tr><tr><td>
+<p>In recent years, people have been running &ldquo;fuzzers&rdquo; to generate
+invalid <code class="command">awk</code> programs in order to find and report (so-called)
+bugs in <code class="command">gawk</code>.
+</p>
+<p>In general, such reports are not of much practical use.  The programs
+they create are not realistic and the bugs found are generally from
+some kind of memory corruption that is fatal anyway.
+</p>
+<p>So, if you want to run a fuzzer against <code class="command">gawk</code> and report the
+results, you may do so, but be aware that such reports don&rsquo;t carry the
+same weight as reports of real bugs do.
+</p></td></tr></table>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Bug-address.html">Submitting Bug Reports</a>, Up: <a href="Bugs.html">Reporting Problems and Bugs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+Weightage: 6
+
+Welcome to the Git activity. 
+Some useful instructions are below:
+
+1. labDirectory contains the following files and folders
+  a. scripts: This directory contains a script 'reset.sh' which you can use to reset the repository to its original state if you want to start over again and a script 'submit.sh' which you can use to submit your activity.
+  Usage: bash reset.sh ; bash submit.sh
+  THE ‘reset.sh’ SCRIPT WILL RESET THE REPOSITORY TO ITS ORIGINAL STATE WITH NO WAY TO RECOVER THE CHANGES. USE IT WISELY.
+  b. README.txt: The file that you are currently reading.
+2. The working_directory is the directory where you will perform all the tasks. To get the working_directory, navigate to the 'scripts' directory and run “bash reset.sh”. The working directory will be created under labDirectory.
+3. RUN ALL THE GIT COMMANDS INSIDE THE WORKING_DIRECTORY ONLY. RUNNING THE COMMANDS ELSEWHERE MAY LEAD TO PROBLEMS. 
+4. Run config command WITHOUT --global flag to set configurations for the repository.
+5. You can use the following command to view the commit history of the repository
+  a. git graph
+
+*************************** Current Repository Overview ***************************
+1. You are given a Git repository with three branches 'master', 'first-branch' and 'second-branch'. 
+2. The 'master' branch has four files 'file1.cpp', 'file2.cpp', 'file3.cpp' and 'file4.cpp'.
+3. The 'first-branch' branch has four files 'file1.cpp', 'file2.cpp', 'file3.cpp' and 'file4.cpp'. 
+4. The 'second-branch' branch has five files 'file1.cpp', 'file2.cpp', 'file3.cpp', 'file4.cpp' and 'extra.cpp'.
+5. Commit history:
+  a. master: 5 commits
+  b. first-branch: 1 commit after branching from master
+  c. second-branch: 1 commit after branching from master
+
+*************************** Perform below Tasks, Total marks 40, scaled down to 6 ***************************
+1. [5 marks with certain weightage to each of the 4 commits given below]
+  Change the Git repository's configurations with the following author's details. Run config command WITHOUT --global flag to set configurations for the repository. Otherwise, the evaluation will fail and you will get 0 marks for this task.
+    a. name: student-cs108
+    b. email: student@cs108.cse.iitb.ac.in
+2. [10 marks: 8 marks for creating the branch at correct commit, maintaining correct files and 2 marks for the correct commit message]
+  Accidently, file5.cpp was removed from the 'master' branch at some point in the past. 
+  Therefore,
+    a. Create a new branch 'third-branch' from 'master' branch at the commit where file5.cpp was LAST PRESENT in the 'master' branch. 
+    b. Delete all the files except 'file5.cpp' in the 'third-branch'
+    c. And make a commit with the message 'Recovered file5.cpp'.
+3. [10 marks: 4 marks each for file1.cpp and file2.cpp and 2 marks for the correct commit message]
+  Merge the 'first-branch' into 'master' branch and resolve the conflicts as mentioned further below. 
+    a. Commit message: 'Merging first-branch into master'
+4. [5 marks: 3 marks for maintaining correct files and 2 marks for the correct commit message]
+  Checkout to 'second-branch' and perform the following tasks
+    a. Delete the file 'extra.cpp' from the 'second-branch'
+    b. Make a commit in 'second-branch' with the message 'Removed extra.cpp'.
+5. [10 marks: 3 marks each for file3.cpp, file4_master.cpp and file4_second.cpp and 1 mark for the correct commit message]
+  Merge the 'second-branch' into 'master' branch and resolve the conflicts as mentioned further below.
+    a. Commit message: 'Merging second-branch into master'.
+
+*************************** Merge Conflicts ***************************
+1. Merge the branch 'first-branch' into 'master' branch. Resolve the conflicts in following ways:
+  a. For the file 'file1.cpp', keep the changes from 'first-branch' and discard the changes from 'master' branch.
+  b. For the file 'file2.cpp', keep the changes from 'master' and discard the changes from 'first-branch'.
+  c. Note that the files 'file3.cpp' and 'file4.cpp' are not conflicting and should be merged without any conflicts.
+2. Merge the branch 'second-branch' into 'master' branch. Resolve the conflicts in following ways:
+  a. For the file 'file3.cpp', keep changes from both 'master' and 'second-branch' i.e. accept both changes.
+  b. Unlike lab activity, here you are not expected to understand the code and/or resolve compilation/logical errors.
+  c. For the file 'file4.cpp', replace the original file4.cpp with two files :
+  'file4_master.cpp' with the content of file4.cpp IN LATEST COMMIT in the 'master' branch
+  'file4_second.cpp' with the content of file4.cpp IN LATEST COMMIT in the 'second-branch' branch
+  Delete the file 'file4.cpp' that got modified due to auto-merge.
+  d. Note that the files 'file1.cpp' and 'file2.cpp' are not conflicting and should be merged without any conflicts. 
+
+*************************** IMPORTANT NOTES ***************************
+1. NOTE THAT YOU HAVE TO FIRST MERGE 'first-branch' INTO 'master' AND THEN 'second-branch' INTO 'master'. DO NOT TRY TO MERGE 'second-branch' INTO 'master' BEFORE MERGING 'first-branch' INTO 'master'. OTHERWISE, EVALUATION WILL FAIL AND YOU WILL GET 0 MARKS FOR THE MERGING TASKS.
+2. DO NOT MODIFY THE COMMIT HISTORY OF THE REPOSITORY. ONLY ADD NEW COMMITS. OTHERWISE, EVALUATION WILL FAIL AND YOU WILL GET 0 MARKS.
+3. IN ORDER FOR YOUR SUBMISSION TO BE EVALUATED, YOU NEED TO MAKE SURE THAT YOU DON'T HAVE ANY BRANCH IN THE REPOSITORY OTHER THAN 'master', 'first-branch', 'second-branch' and 'third-branch'.
+4. THE COMMIT HISTORY SHOULD BE AS MENTIONED IN THE FINAL STATE OF THE REPOSITORY SECTION BELOW. OTHERWISE, EVALUATION WILL FAIL FOR THAT PARTICULAR TASK AND YOU WILL GET 0 MARKS.
+5. BE SURE TO RESOLVE THE CONFLICTS CORRECTLY AND DO NOT TRY TO HARDCODE THE FILES TO PASS THE TEST CASES. THE EVALUATION MARKS THAT YOU SEE ARE PROVISIONAL AND BY NO MEANS THE FINAL MARKS.
+6. DO NOT ADD ANY ADDITIONAL FILES/FOLDERS IN THE REPOSITORY. ONLY MODIFY THE EXISTING FILES AS MENTIONED IN THE TASKS. OTHERWISE, EVALUATION WILL FAIL AND YOU WILL GET 0 MARKS.
+
+*************************** Final State of Repository ***************************
+You are expected to submit the final state of the repository. The final state of the repository should contain the following:
+1. a. Files 'file1.cpp', 'file2.cpp', 'file3.cpp', 'file4_master.cpp' and 'file4_second.cpp' in the 'master' branch.
+  b. Files 'file1.cpp', 'file2.cpp', 'file3.cpp' and 'file4.cpp' in the 'first-branch' branch.
+  c. Files 'file1.cpp', 'file2.cpp', 'file3.cpp' and 'file4.cpp' in the 'second-branch' branch.
+  d. File 'file5.cpp' in the 'third-branch' branch.
+2. Commit messages as mentioned in the tasks.
+    a. master: 10 commits (THINK WHY 10 COMMITS INSTEAD OF 7 COMMITS?)
+    b. first-branch: 1 commit after branching from master
+    c. second-branch: 2 commits after branching from master
+    d. third-branch: 1 commit after branching from master
+3. The 4 commits that you make should have the author details as mentioned in the first task.

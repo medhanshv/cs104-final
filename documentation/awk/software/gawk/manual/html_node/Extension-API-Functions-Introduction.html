@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Extension API Functions Introduction (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Extension API Functions Introduction (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Extension API Functions Introduction (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Extension-API-Description.html" rel="up" title="Extension API Description">
+<link href="General-Data-Types.html" rel="next" title="General Data Types">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+ul.mark-minus {list-style-type: "\2212"}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Extension-API-Functions-Introduction">
+<div class="nav-panel">
+<p>
+Next: <a href="General-Data-Types.html" accesskey="n" rel="next">General-Purpose Data Types</a>, Up: <a href="Extension-API-Description.html" accesskey="u" rel="up">API Description</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Introduction-1"><span>17.4.1 Introduction<a class="copiable-link" href="Extension-API-Functions-Introduction.html#Introduction-1"> &para;</a></span></h4>
+
+<p>Access to facilities within <code class="command">gawk</code> is achieved
+by calling through function pointers passed into your extension.
+</p>
+<p>API function pointers are provided for the following kinds of operations:
+</p>
+<ul class="itemize mark-bullet">
+<li>Allocating, reallocating, and releasing memory.
+
+</li><li>Registration functions. You may register:
+
+<ul class="itemize mark-minus">
+<li>Extension functions
+</li><li>Exit callbacks
+</li><li>A version string
+</li><li>Input parsers
+</li><li>Output wrappers
+</li><li>Two-way processors
+</li></ul>
+
+<p>All of these are discussed in detail later in this chapter.
+</p>
+</li><li>Printing fatal, warning, and &ldquo;lint&rdquo; warning messages.
+
+</li><li>Updating <code class="code">ERRNO</code>, or unsetting it.
+
+</li><li>Accessing parameters, including converting an undefined parameter into
+an array.
+
+</li><li>Symbol table access: retrieving a global variable, creating one,
+or changing one.
+
+</li><li>Creating and releasing cached values; this provides an
+efficient way to use values for multiple variables and
+can be a big performance win.
+
+</li><li>Manipulating arrays:
+
+<ul class="itemize mark-minus">
+<li>Retrieving, adding, deleting, and modifying elements
+
+</li><li>Getting the count of elements in an array
+
+</li><li>Creating a new array
+
+</li><li>Clearing an array
+
+</li><li>Flattening an array for easy C-style looping over all its indices and elements
+</li></ul>
+
+</li><li>Accessing and manipulating redirections.
+
+</li></ul>
+
+<p>Some points about using the API:
+</p>
+<ul class="itemize mark-bullet">
+<li>The following types, macros, and/or functions are referenced
+in <samp class="file">gawkapi.h</samp>.  For correct use, you must therefore include the
+corresponding standard header file <em class="emph">before</em> including <samp class="file">gawkapi.h</samp>.
+The list of macros and related header files is shown in <a class="ref" href="Extension-API-Functions-Introduction.html#table_002dapi_002dstd_002dheaders">Table 17.1</a>.
+
+<div class="float" id="table_002dapi_002dstd_002dheaders">
+<table class="multitable">
+<thead><tr><th>C entity</th><th>Header file</th></tr></thead>
+<tbody><tr><td><code class="code">EOF</code></td><td><code class="code">&lt;stdio.h&gt;</code></td></tr>
+<tr><td>Values for <code class="code">errno</code></td><td><code class="code">&lt;errno.h&gt;</code></td></tr>
+<tr><td><code class="code">FILE</code></td><td><code class="code">&lt;stdio.h&gt;</code></td></tr>
+<tr><td><code class="code">NULL</code></td><td><code class="code">&lt;stddef.h&gt;</code></td></tr>
+<tr><td><code class="code">memcpy()</code></td><td><code class="code">&lt;string.h&gt;</code></td></tr>
+<tr><td><code class="code">memset()</code></td><td><code class="code">&lt;string.h&gt;</code></td></tr>
+<tr><td><code class="code">size_t</code></td><td><code class="code">&lt;sys/types.h&gt;</code></td></tr>
+<tr><td><code class="code">struct stat</code></td><td><code class="code">&lt;sys/stat.h&gt;</code></td></tr>
+</tbody>
+</table>
+<div class="caption"><p><strong class="strong">Table 17.1: </strong>Standard header files needed by API</p></div></div>
+<p>Due to portability concerns, especially to systems that are not
+fully standards-compliant, it is your responsibility
+to include the correct files in the correct way. This requirement
+is necessary in order to keep <samp class="file">gawkapi.h</samp> clean, instead of becoming
+a portability hodge-podge as can be seen in some parts of
+the <code class="command">gawk</code> source code.
+</p>
+</li><li>If your extension uses MPFR facilities, and you wish to receive such
+values from <code class="command">gawk</code> and/or pass such values to it, you must include the
+<code class="code">&lt;mpfr.h&gt;</code> header before including <code class="code">&lt;gawkapi.h&gt;</code>.
+
+</li><li>The <samp class="file">gawkapi.h</samp> file may be included more than once without ill effect.
+Doing so, however, is poor coding practice.
+
+</li><li>Although the API only uses ISO C 90 features, there is an exception; the
+&ldquo;constructor&rdquo; functions use the <code class="code">inline</code> keyword. If your compiler
+does not support this keyword, you should either place
+&lsquo;<samp class="samp">-Dinline=''</samp>&rsquo; on your command line or use the GNU Autotools and include a
+<samp class="file">config.h</samp> file in your extensions.
+
+</li><li>All pointers filled in by <code class="command">gawk</code> point to memory
+managed by <code class="command">gawk</code> and should be treated by the extension as
+read-only.
+
+<p>Memory for <em class="emph">all</em> strings passed into <code class="command">gawk</code>
+from the extension <em class="emph">must</em> come from calling one of
+<code class="code">gawk_malloc()</code>, <code class="code">gawk_calloc()</code>, or <code class="code">gawk_realloc()</code>,
+and is managed by <code class="command">gawk</code> from then on.
+</p>
+<p>Memory for MPFR/GMP values that come from <code class="command">gawk</code>
+should also be treated as read-only.  However, unlike strings,
+memory for MPFR/GMP values allocated by an extension and passed
+into <code class="command">gawk</code> is <em class="emph">copied</em> by <code class="command">gawk</code>; the extension
+should then free the values itself to avoid memory leaks. This is
+discussed further in <strong class="strong">API Ownership of MPFR and GMP Values</strong>.
+</p>
+</li><li>The API defines several simple <code class="code">struct</code>s that map values as seen
+from <code class="command">awk</code>.  A value can be a <code class="code">double</code>, a string, or an
+array (as in multidimensional arrays, or when creating a new array).
+
+<p>String values maintain both pointer and length, because embedded <small class="sc">NUL</small>
+characters are allowed.
+</p>
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> By intent, <code class="command">gawk</code> maintains strings using the current multibyte
+encoding (as defined by <code class="env">LC_<var class="var">xxx</var></code> environment variables)
+and not using wide characters.  This matches how <code class="command">gawk</code> stores
+strings internally and also how characters are likely to be input into
+and output from files.
+</p></blockquote>
+
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> String values passed to an extension by <code class="command">gawk</code> are always
+<small class="sc">NUL</small>-terminated.  Thus it is safe to pass such string values to
+standard library and system routines. However, because <code class="command">gawk</code>
+allows embedded <small class="sc">NUL</small> characters in string data, before using the data
+as a regular C string, you should check that the length for that string
+passed to the extension matches the return value of <code class="code">strlen()</code>
+for it.
+</p></blockquote>
+
+</li><li>When retrieving a value (such as a parameter or that of a global variable
+or array element), the extension requests a specific type (number, string,
+scalar, value cookie, array, or &ldquo;undefined&rdquo;).  When the request is
+&ldquo;undefined,&rdquo; the returned value will have the real underlying type.
+
+<p>However, if the request and actual type don&rsquo;t match, the access function
+returns &ldquo;false&rdquo; and fills in the type of the actual value that is there,
+so that the extension can, e.g., print an error message
+(such as &ldquo;scalar passed where array expected&rdquo;).
+</p>
+</li></ul>
+
+<p>You may call the API functions by using the function pointers
+directly, but the interface is not so pretty. To make extension code look
+more like regular code, the <samp class="file">gawkapi.h</samp> header file defines several
+macros that you should use in your code.  This section presents
+the macros as if they were functions.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="General-Data-Types.html">General-Purpose Data Types</a>, Up: <a href="Extension-API-Description.html">API Description</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

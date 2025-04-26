@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Printing Messages (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Printing Messages (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Printing Messages (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Extension-API-Description.html" rel="up" title="Extension API Description">
+<link href="Updating-ERRNO.html" rel="next" title="Updating ERRNO">
+<link href="Registration-Functions.html" rel="prev" title="Registration Functions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Printing-Messages">
+<div class="nav-panel">
+<p>
+Next: <a href="Updating-ERRNO.html" accesskey="n" rel="next">Updating <code class="code">ERRNO</code></a>, Previous: <a href="Registration-Functions.html" accesskey="p" rel="prev">Registration Functions</a>, Up: <a href="Extension-API-Description.html" accesskey="u" rel="up">API Description</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Printing-Messages-1"><span>17.4.7 Printing Messages<a class="copiable-link" href="Printing-Messages.html#Printing-Messages-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-printing-messages-from-extensions"></a>
+<a class="index-entry-id" id="index-messages-from-extensions"></a>
+
+<p>You can print different kinds of warning messages from your
+extension, as described here.  Note that for these functions,
+you must pass in the extension ID received from <code class="command">gawk</code>
+when the extension was loaded:<a class="footnote" id="DOCF108" href="Printing-Messages.html#FOOT108"><sup>108</sup></a>
+</p>
+<dl class="table">
+<dt><code class="code">void fatal(awk_ext_id_t id, const char *format, ...);</code></dt>
+<dd><p>Print a message and then cause <code class="command">gawk</code> to exit immediately.
+</p>
+</dd>
+<dt><code class="code">void nonfatal(awk_ext_id_t id, const char *format, ...);</code></dt>
+<dd><p>Print a nonfatal error message.
+</p>
+</dd>
+<dt><code class="code">void warning(awk_ext_id_t id, const char *format, ...);</code></dt>
+<dd><p>Print a warning message.
+</p>
+</dd>
+<dt><code class="code">void lintwarn(awk_ext_id_t id, const char *format, ...);</code></dt>
+<dd><p>Print a &ldquo;lint warning.&rdquo;  Normally this is the same as printing a
+warning message, but if <code class="command">gawk</code> was invoked with &lsquo;<samp class="samp">--lint=fatal</samp>&rsquo;,
+then lint warnings become fatal error messages.
+</p></dd>
+</dl>
+
+<p>All of these functions are otherwise like the C <code class="code">printf()</code>
+family of functions, where the <code class="code">format</code> parameter is a string
+with literal characters and formatting codes intermixed.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT108" href="Printing-Messages.html#DOCF108">(108)</a></h5>
+<p>Because the API uses only ISO C 90
+features, it cannot make use of the ISO C 99 variadic macro feature to hide
+that parameter. More&rsquo;s the pity.</p>
+</div>
+
+
+
+</body>
+</html>

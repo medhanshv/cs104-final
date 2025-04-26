@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>Stream Communications (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="Stream Communications (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="Stream Communications (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Introduction.html" rel="up" title="Introduction">
+<link href="Datagram-Communications.html" rel="next" title="Datagram Communications">
+<link href="Introduction.html" rel="prev" title="Introduction">
+<style type="text/css">
+<!--
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Stream-Communications">
+<div class="nav-panel">
+<p>
+Next: <a href="Datagram-Communications.html" accesskey="n" rel="next">Best-effort Datagrams (Mailed Letters)</a>, Previous: <a href="Introduction.html" accesskey="p" rel="prev">Networking Concepts</a>, Up: <a href="Introduction.html" accesskey="u" rel="up">Networking Concepts</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Reliable-Byte_002dstreams-_0028Phone-Calls_0029">1.1 Reliable Byte-streams (Phone Calls)</h3>
+
+<p>When you make a phone call, the following steps occur:
+</p>
+<ol class="enumerate">
+<li> You dial a number.
+
+</li><li> The phone system connects to the called party, telling
+them there is an incoming call. (Their phone rings.)
+
+</li><li> The other party answers the call, or, in the case of a
+computer network, refuses to answer the call.
+
+</li><li> Assuming the other party answers, the connection between
+you is now a <em class="dfn">duplex</em> (two-way), <em class="dfn">reliable</em> (no data lost),
+sequenced (data comes out in the order sent) data stream.
+
+</li><li> You and your friend may now talk freely, with the phone system
+moving the data (your voices) from one end to the other.
+From your point of view, you have a direct end-to-end
+connection with the person on the other end.
+</li></ol>
+
+<p>The same steps occur in a duplex reliable computer networking connection.
+There is considerably more overhead in setting up the communications,
+but once it&rsquo;s done, data moves in both directions, reliably, in sequence.
+</p>
+</div>
+
+
+
+</body>
+</html>

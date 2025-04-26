@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Dynamic Extensions (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Dynamic Extensions (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Dynamic Extensions (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Language-History.html" rel="next" title="Language History">
+<link href="Arbitrary-Precision-Arithmetic.html" rel="prev" title="Arbitrary Precision Arithmetic">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Dynamic-Extensions">
+<div class="nav-panel">
+<p>
+Next: <a href="Language-History.html" accesskey="n" rel="next">The Evolution of the <code class="command">awk</code> Language</a>, Previous: <a href="Arbitrary-Precision-Arithmetic.html" accesskey="p" rel="prev">Arithmetic and Arbitrary-Precision Arithmetic with <code class="command">gawk</code></a>, Up: <a href="index.html" accesskey="u" rel="up">General Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Writing-Extensions-for-gawk"><span>17 Writing Extensions for <code class="command">gawk</code><a class="copiable-link" href="Dynamic-Extensions.html#Writing-Extensions-for-gawk"> &para;</a></span></h2>
+<a class="index-entry-id" id="index-dynamically-loaded-extensions"></a>
+
+<p>It is possible to add new functions written in C or C++ to <code class="command">gawk</code> using
+dynamically loaded libraries. This facility is available on systems
+that support the C <code class="code">dlopen()</code> and <code class="code">dlsym()</code>
+functions.  This chapter describes how to create extensions
+using code written in C or C++.
+</p>
+<p>If you don&rsquo;t know anything about C programming, you can safely skip this
+chapter, although you may wish to review the documentation on the
+extensions that come with <code class="command">gawk</code> (see <a class="pxref" href="Extension-Samples.html">The Sample Extensions in the <code class="command">gawk</code> Distribution</a>),
+and the information on the <code class="code">gawkextlib</code> project (see <a class="pxref" href="gawkextlib.html">The <code class="code">gawkextlib</code> Project</a>).
+The sample extensions are automatically built and installed when
+<code class="command">gawk</code> is.
+</p>
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> When <samp class="option">--sandbox</samp> is specified, extensions are disabled
+(see <a class="pxref" href="Options.html">Command-Line Options</a>).
+</p></blockquote>
+
+
+<ul class="mini-toc">
+<li><a href="Extension-Intro.html" accesskey="1">Introduction</a></li>
+<li><a href="Plugin-License.html" accesskey="2">Extension Licensing</a></li>
+<li><a href="Extension-Mechanism-Outline.html" accesskey="3">How It Works at a High Level</a></li>
+<li><a href="Extension-API-Description.html" accesskey="4">API Description</a></li>
+<li><a href="Finding-Extensions.html" accesskey="5">How <code class="command">gawk</code> Finds Extensions</a></li>
+<li><a href="Extension-Example.html" accesskey="6">Example: Some File Functions</a></li>
+<li><a href="Extension-Samples.html" accesskey="7">The Sample Extensions in the <code class="command">gawk</code> Distribution</a></li>
+<li><a href="gawkextlib.html" accesskey="8">The <code class="code">gawkextlib</code> Project</a></li>
+<li><a href="Extension-summary.html" accesskey="9">Summary</a></li>
+<li><a href="Extension-Exercises.html">Exercises</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

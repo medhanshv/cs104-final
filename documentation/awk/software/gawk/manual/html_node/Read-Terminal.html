@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Read Terminal (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Read Terminal (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Read Terminal (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Running-gawk.html" rel="up" title="Running gawk">
+<link href="Long.html" rel="next" title="Long">
+<link href="One_002dshot.html" rel="prev" title="One-shot">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Read-Terminal">
+<div class="nav-panel">
+<p>
+Next: <a href="Long.html" accesskey="n" rel="next">Running Long Programs</a>, Previous: <a href="One_002dshot.html" accesskey="p" rel="prev">One-Shot Throwaway <code class="command">awk</code> Programs</a>, Up: <a href="Running-gawk.html" accesskey="u" rel="up">How to Run <code class="command">awk</code> Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Running-awk-Without-Input-Files"><span>1.1.2 Running <code class="command">awk</code> Without Input Files<a class="copiable-link" href="Read-Terminal.html#Running-awk-Without-Input-Files"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-standard-input"></a>
+<a class="index-entry-id" id="index-input-standard"></a>
+<a class="index-entry-id" id="index-input-files-running-awk-without"></a>
+<p>You can also run <code class="command">awk</code> without any input files.  If you type the
+following command line:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk '<var class="var">program</var>'
+</pre></div>
+
+<p><code class="command">awk</code> applies the <var class="var">program</var> to the <em class="dfn">standard input</em>,
+which usually means whatever you type on the keyboard.  This continues
+until you indicate end-of-file by typing <kbd class="kbd">Ctrl-d</kbd>.
+(On non-POSIX operating systems, the end-of-file character may be different.)
+</p>
+<a class="index-entry-id" id="index-files-input"></a>
+<a class="index-entry-id" id="index-input-files-running-awk-without-1"></a>
+<a class="index-entry-id" id="index-awk-programs-running-without-input-files"></a>
+<p>As an example, the following program prints a friendly piece of advice
+(from Douglas Adams&rsquo;s <cite class="cite">The Hitchhiker&rsquo;s Guide to the Galaxy</cite>),
+to keep you from worrying about the complexities of computer
+programming:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">awk 'BEGIN { print &quot;Don\47t Panic!&quot; }'</kbd>
+-| Don't Panic!
+</pre></div>
+
+<p><code class="command">awk</code> executes statements associated with <code class="code">BEGIN</code> before
+reading any input.  If there are no other statements in your program,
+as is the case here, <code class="command">awk</code> just stops, instead of trying to read
+input it doesn&rsquo;t know how to process.
+The &lsquo;<samp class="samp">\47</samp>&rsquo; is a magic way (explained later) of getting a single quote into
+the program, without having to engage in ugly shell quoting tricks.
+</p>
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> If you use Bash as your shell, you should execute the
+command &lsquo;<samp class="samp">set +H</samp>&rsquo; before running this program interactively, to
+disable the C shell-style command history, which treats &lsquo;<samp class="samp">!</samp>&rsquo; as a
+special character. We recommend putting this command into your personal
+startup file.
+</p></blockquote>
+
+<p>This next simple <code class="command">awk</code> program
+emulates the <code class="command">cat</code> utility; it copies whatever you type on the
+keyboard to its standard output (why this works is explained shortly):
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">awk '{ print }'</kbd>
+<kbd class="kbd">Now is the time for all good men</kbd>
+-| Now is the time for all good men
+<kbd class="kbd">to come to the aid of their country.</kbd>
+-| to come to the aid of their country.
+<kbd class="kbd">Four score and seven years ago, ...</kbd>
+-| Four score and seven years ago, ...
+<kbd class="kbd">What, me worry?</kbd>
+-| What, me worry?
+<kbd class="kbd">Ctrl-d</kbd>
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Long.html">Running Long Programs</a>, Previous: <a href="One_002dshot.html">One-Shot Throwaway <code class="command">awk</code> Programs</a>, Up: <a href="Running-gawk.html">How to Run <code class="command">awk</code> Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

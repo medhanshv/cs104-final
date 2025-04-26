@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>File Checking (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="File Checking (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="File Checking (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Data-File-Management.html" rel="up" title="Data File Management">
+<link href="Empty-Files.html" rel="next" title="Empty Files">
+<link href="Rewind-Function.html" rel="prev" title="Rewind Function">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="File-Checking">
+<div class="nav-panel">
+<p>
+Next: <a href="Empty-Files.html" accesskey="n" rel="next">Checking for Zero-Length Files</a>, Previous: <a href="Rewind-Function.html" accesskey="p" rel="prev">Rereading the Current File</a>, Up: <a href="Data-File-Management.html" accesskey="u" rel="up">Data file Management</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Checking-for-Readable-Data-files"><span>10.3.3 Checking for Readable Data files<a class="copiable-link" href="File-Checking.html#Checking-for-Readable-Data-files"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-troubleshooting-readable-data-files"></a>
+<a class="index-entry-id" id="index-readable-data-files_002c-checking"></a>
+<a class="index-entry-id" id="index-files-skipping"></a>
+<p>Normally, if you give <code class="command">awk</code> a data file that isn&rsquo;t readable,
+it stops with a fatal error.  There are times when you might want to
+just ignore such files and keep going.<a class="footnote" id="DOCF74" href="File-Checking.html#FOOT74"><sup>74</sup></a> You can do this by prepending
+the following program to your <code class="command">awk</code> program:
+</p>
+<a class="index-entry-id" id="index-readable_002eawk-program"></a>
+<div class="example">
+<pre class="example-preformatted"># readable.awk --- library file to skip over unreadable files
+
+BEGIN {
+    for (i = 1; i &lt; ARGC; i++) {
+        if (ARGV[i] ~ /^[a-zA-Z_][a-zA-Z0-9_]*=.*/ \
+            || ARGV[i] == &quot;-&quot; || ARGV[i] == &quot;/dev/stdin&quot;)
+            continue    # assignment or standard input
+        else if ((getline junk &lt; ARGV[i]) &lt; 0) # unreadable
+            delete ARGV[i]
+        else
+            close(ARGV[i])
+    }
+}
+</pre></div>
+
+<a class="index-entry-id" id="index-troubleshooting-getline-function"></a>
+<p>This works, because the <code class="code">getline</code> won&rsquo;t be fatal.
+Removing the element from <code class="code">ARGV</code> with <code class="code">delete</code>
+skips the file (because it&rsquo;s no longer in the list).
+See also <a class="ref" href="ARGC-and-ARGV.html">Using <code class="code">ARGC</code> and <code class="code">ARGV</code></a>.
+</p>
+<p>Because <code class="command">awk</code> variable names only allow the English letters,
+the regular expression check purposely does not use character classes
+such as &lsquo;<samp class="samp">[:alpha:]</samp>&rsquo; and &lsquo;<samp class="samp">[:alnum:]</samp>&rsquo;
+(see <a class="pxref" href="Bracket-Expressions.html">Using Bracket Expressions</a>).
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT74" href="File-Checking.html#DOCF74">(74)</a></h5>
+<p>The <code class="code">BEGINFILE</code>
+special pattern (see <a class="pxref" href="BEGINFILE_002fENDFILE.html">The <code class="code">BEGINFILE</code> and <code class="code">ENDFILE</code> Special Patterns</a>) provides an alternative
+mechanism for dealing with files that can&rsquo;t be opened.  However, the
+code here provides a portable solution.</p>
+</div>
+
+
+
+</body>
+</html>

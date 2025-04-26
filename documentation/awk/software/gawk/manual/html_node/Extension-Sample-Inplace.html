@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Extension Sample Inplace (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Extension Sample Inplace (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Extension Sample Inplace (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Extension-Samples.html" rel="up" title="Extension Samples">
+<link href="Extension-Sample-Ord.html" rel="next" title="Extension Sample Ord">
+<link href="Extension-Sample-Fork.html" rel="prev" title="Extension Sample Fork">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Extension-Sample-Inplace">
+<div class="nav-panel">
+<p>
+Next: <a href="Extension-Sample-Ord.html" accesskey="n" rel="next">Character and Numeric values: <code class="code">ord()</code> and <code class="code">chr()</code></a>, Previous: <a href="Extension-Sample-Fork.html" accesskey="p" rel="prev">Interface to <code class="code">fork()</code>, <code class="code">wait()</code>, and <code class="code">waitpid()</code></a>, Up: <a href="Extension-Samples.html" accesskey="u" rel="up">The Sample Extensions in the <code class="command">gawk</code> Distribution</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Enabling-In_002dPlace-File-Editing"><span>17.7.4 Enabling In-Place File Editing<a class="copiable-link" href="Extension-Sample-Inplace.html#Enabling-In_002dPlace-File-Editing"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-inplace-extension"></a>
+<p>The <code class="code">inplace</code> extension emulates GNU <code class="command">sed</code>&rsquo;s <samp class="option">-i</samp> option,
+which performs &ldquo;in-place&rdquo; editing of each input file.  Like GNU <code class="command">sed</code>,
+the <code class="code">inplace</code> extension replaces links (both hard and symbolic) with new
+files.  If you wish to affect the target, you must dereference it first, for
+example using <code class="command">realpath</code> from GNU Coreutils.
+It uses the bundled <samp class="file">inplace.awk</samp> include file to invoke the extension
+properly.  This extension makes use of the namespace facility to place
+all the variables and functions in the <code class="code">inplace</code> namespace
+(see <a class="pxref" href="Namespaces.html">Namespaces in <code class="command">gawk</code></a>):
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted"># inplace --- load and invoke the inplace extension.
+
+@load &quot;inplace&quot;
+
+# Please set inplace::suffix to make a backup copy.  For example, you may
+# want to set inplace::suffix to .bak on the command line or in a BEGIN rule.
+
+# Before there were namespaces in gawk, this extension used
+# INPLACE_SUFFIX as the variable for making backup copies. We allow this
+# too, so that any code that used the previous version continues to work.
+
+# By default, each filename on the command line will be edited inplace.
+# But you can selectively disable this by adding an inplace::enable=0 argument
+# prior to files that you do not want to process this way.  You can then
+# reenable it later on the commandline by putting inplace::enable=1 before files
+# that you wish to be subject to inplace editing.
+
+# N.B. We call inplace::end() in the BEGINFILE and END rules so that any
+# actions in an ENDFILE rule will be redirected as expected.
+
+@namespace &quot;inplace&quot;
+</pre></div><pre class="example-preformatted">
+
+</pre><div class="group"><pre class="example-preformatted">BEGIN {
+    enable = 1         # enabled by default
+}
+</pre></div><pre class="example-preformatted">
+
+</pre><div class="group"><pre class="example-preformatted">BEGINFILE {
+    sfx = (suffix ? suffix : awk::INPLACE_SUFFIX)
+    if (filename != &quot;&quot;)
+        end(filename, sfx)
+    if (enable)
+        begin(filename = FILENAME, sfx)
+    else
+        filename = &quot;&quot;
+}
+</pre></div><pre class="example-preformatted">
+
+</pre><div class="group"><pre class="example-preformatted">END {
+    if (filename != &quot;&quot;)
+        end(filename, (suffix ? suffix : awk::INPLACE_SUFFIX))
+}
+</pre></div></div>
+
+<p>For each regular file that is processed, the extension redirects
+standard output to a temporary file configured to have the same owner
+and permissions as the original.  After the file has been processed,
+the extension restores standard output to its original destination.
+(Due to this implementation, it helps to redirect <code class="command">gawk</code>&rsquo;s
+standard output to <samp class="file">/dev/null</samp>, instead of leaving it set to
+your terminal, so that output will be block-buffered instead of
+line-buffered.)
+</p>
+<p>If <code class="code">inplace::suffix</code> is not an empty string, the original file is
+linked to a backup file name created by appending that suffix.  Finally,
+the temporary file is renamed to the original file name.
+</p>
+<p>Note that the use of this feature can be controlled by placing
+&lsquo;<samp class="samp">inplace::enable=0</samp>&rsquo; on the command-line prior to listing files that
+should not be processed this way.  You can reenable inplace editing by adding
+an &lsquo;<samp class="samp">inplace::enable=1</samp>&rsquo; argument prior to files that should be subject
+to inplace editing.
+</p>
+<p>The <code class="code">inplace::filename</code> variable serves to keep track of the
+current file name so as to not invoke <code class="code">inplace::end()</code> before
+processing the first file.
+</p>
+<p>If any error occurs, the extension issues a fatal error to terminate
+processing immediately without damaging the original file.
+</p>
+<p>Here are some simple examples:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk -i inplace '{ gsub(/foo/, &quot;bar&quot;) }; { print }' file1 file2 file3</kbd>
+</pre></div>
+
+<p>To keep a backup copy of the original files, try this:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk -i inplace -v inplace::suffix=.bak '{ gsub(/foo/, &quot;bar&quot;) }</kbd>
+&gt; <kbd class="kbd">{ print }' file1 file2 file3</kbd>
+</pre></div>
+
+<p>Please note that, while the extension does attempt to preserve ownership
+and permissions, it makes no attempt to copy the ACLs from the original
+file.
+</p>
+<p>If the program dies prematurely, as might happen if an unhandled signal
+is received, a temporary file may be left behind.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Extension-Sample-Ord.html">Character and Numeric values: <code class="code">ord()</code> and <code class="code">chr()</code></a>, Previous: <a href="Extension-Sample-Fork.html">Interface to <code class="code">fork()</code>, <code class="code">wait()</code>, and <code class="code">waitpid()</code></a>, Up: <a href="Extension-Samples.html">The Sample Extensions in the <code class="command">gawk</code> Distribution</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

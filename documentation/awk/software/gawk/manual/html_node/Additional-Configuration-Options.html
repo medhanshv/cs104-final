@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Additional Configuration Options (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Additional Configuration Options (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Additional Configuration Options (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Unix-Installation.html" rel="up" title="Unix Installation">
+<link href="Configuration-Philosophy.html" rel="next" title="Configuration Philosophy">
+<link href="Shell-Startup-Files.html" rel="prev" title="Shell Startup Files">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="appendixsubsec-level-extent" id="Additional-Configuration-Options">
+<div class="nav-panel">
+<p>
+Next: <a href="Configuration-Philosophy.html" accesskey="n" rel="next">The Configuration Process</a>, Previous: <a href="Shell-Startup-Files.html" accesskey="p" rel="prev">Shell Startup Files</a>, Up: <a href="Unix-Installation.html" accesskey="u" rel="up">Compiling and Installing <code class="command">gawk</code> on Unix-Like Systems</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="appendixsubsec" id="Additional-Configuration-Options-1"><span>B.2.3 Additional Configuration Options<a class="copiable-link" href="Additional-Configuration-Options.html#Additional-Configuration-Options-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-gawk-configuring-options"></a>
+<a class="index-entry-id" id="index-configuration-options_002c-gawk"></a>
+
+<p>There are several additional options you may use on the <code class="command">configure</code>
+command line when compiling <code class="command">gawk</code> from scratch, including:
+</p>
+<dl class="table">
+<dd>
+<a class="index-entry-id" id="index-_002d_002ddisable_002dextensions-configuration-option"></a>
+<a class="index-entry-id" id="index-configuration-option-_002d_002ddisable_002dextensions"></a>
+</dd>
+<dt><code class="code">--disable-extensions</code></dt>
+<dd><p>Disable the extension mechanism within <code class="command">gawk</code>. With this
+option, it is not possible to use dynamic extensions.  This also
+disables configuring and building the sample extensions in the
+<samp class="file">extension</samp> directory.
+</p>
+<p>This option may be useful for cross-compiling.
+The default action is to dynamically check if the extensions
+can be configured and compiled.
+</p>
+<a class="index-entry-id" id="index-_002d_002ddisable_002dlint-configuration-option"></a>
+<a class="index-entry-id" id="index-configuration-option-_002d_002ddisable_002dlint"></a>
+</dd>
+<dt><code class="code">--disable-lint</code></dt>
+<dd><p>Disable all lint checking within <code class="command">gawk</code>.  The
+<samp class="option">--lint</samp> and <samp class="option">--lint-old</samp> options
+(see <a class="pxref" href="Options.html">Command-Line Options</a>)
+are accepted, but silently do nothing.
+Similarly, setting the <code class="code">LINT</code> variable
+(see <a class="pxref" href="User_002dmodified.html">Built-in Variables That Control <code class="command">awk</code></a>)
+has no effect on the running <code class="command">awk</code> program.
+</p>
+<p>When used with the GNU Compiler Collection&rsquo;s (GCC&rsquo;s)
+automatic dead-code-elimination, this option
+cuts almost 23K bytes off the size of the <code class="command">gawk</code>
+executable on GNU/Linux x86_64 systems.  Results on other systems and
+with other compilers are likely to vary.
+Using this option may bring you some slight performance improvement.
+</p>
+<blockquote class="quotation">
+<p><b class="b">CAUTION:</b> Using this option will cause some of the tests in the test suite
+to fail.  This option may be removed at a later date.
+</p></blockquote>
+
+<a class="index-entry-id" id="index-_002d_002ddisable_002dmpfr-configuration-option"></a>
+<a class="index-entry-id" id="index-configuration-option-_002d_002ddisable_002dmpfr"></a>
+</dd>
+<dt><code class="code">--disable-mpfr</code></dt>
+<dd><p>Skip checking for the MPFR and GMP libraries. This is useful
+mainly for the developers, to make sure nothing breaks if
+MPFR support is not available.
+</p>
+<a class="index-entry-id" id="index-_002d_002ddisable_002dnls-configuration-option"></a>
+<a class="index-entry-id" id="index-configuration-option-_002d_002ddisable_002dnls"></a>
+</dd>
+<dt><code class="code">--disable-nls</code></dt>
+<dd><p>Disable all message-translation facilities.
+This is usually not desirable, but it may bring you some slight performance
+improvement.
+</p>
+<a class="index-entry-id" id="index-_002d_002denable_002dversioned_002dextension_002ddir-configuration-option"></a>
+<a class="index-entry-id" id="index-configuration-option-_002d_002denable_002dversioned_002dextension_002ddir"></a>
+</dd>
+<dt><code class="code">--enable-versioned-extension-dir</code></dt>
+<dd><p>Use a versioned directory for extensions.  The directory name will
+include the major and minor API versions in it. This makes it possible
+to keep extensions for different API versions on the same system
+without their conflicting with one another.
+</p>
+</dd>
+</dl>
+
+<p>Use the command &lsquo;<samp class="samp">./configure --help</samp>&rsquo; to see the full list of
+options supplied by <code class="command">configure</code>.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Configuration-Philosophy.html">The Configuration Process</a>, Previous: <a href="Shell-Startup-Files.html">Shell Startup Files</a>, Up: <a href="Unix-Installation.html">Compiling and Installing <code class="command">gawk</code> on Unix-Like Systems</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

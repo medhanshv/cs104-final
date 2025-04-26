@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Very Simple (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Very Simple (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Very Simple (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Getting-Started.html" rel="up" title="Getting Started">
+<link href="Two-Rules.html" rel="next" title="Two Rules">
+<link href="Sample-Data-Files.html" rel="prev" title="Sample Data Files">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Very-Simple">
+<div class="nav-panel">
+<p>
+Next: <a href="Two-Rules.html" accesskey="n" rel="next">An Example with Two Rules</a>, Previous: <a href="Sample-Data-Files.html" accesskey="p" rel="prev">Data files for the Examples</a>, Up: <a href="Getting-Started.html" accesskey="u" rel="up">Getting Started with <code class="command">awk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Some-Simple-Examples"><span>1.3 Some Simple Examples<a class="copiable-link" href="Very-Simple.html#Some-Simple-Examples"> &para;</a></span></h3>
+
+<p>The following command runs a simple <code class="command">awk</code> program that searches the
+input file <samp class="file">mail-list</samp> for the character string &lsquo;<samp class="samp">li</samp>&rsquo; (a
+grouping of characters is usually called a <em class="dfn">string</em>;
+the term <em class="dfn">string</em> is based on similar usage in English, such
+as &ldquo;a string of pearls&rdquo; or &ldquo;a string of cars in a train&rdquo;):
+</p>
+<div class="example">
+<pre class="example-preformatted">awk '/li/ { print $0 }' mail-list
+</pre></div>
+
+<p>When lines containing &lsquo;<samp class="samp">li</samp>&rsquo; are found, they are printed because
+&lsquo;<samp class="samp">print&nbsp;$0</samp>&rsquo;<!-- /@w --> means print the current line.  (Just &lsquo;<samp class="samp">print</samp>&rsquo; by
+itself means the same thing, so we could have written that
+instead.)
+</p>
+<p>You will notice that slashes (&lsquo;<samp class="samp">/</samp>&rsquo;) surround the string &lsquo;<samp class="samp">li</samp>&rsquo;
+in the <code class="command">awk</code> program.  The slashes indicate that &lsquo;<samp class="samp">li</samp>&rsquo;
+is the pattern to search for.  This type of pattern is called a
+<em class="dfn">regular expression</em>, which is covered in more detail later
+(see <a class="pxref" href="Regexp.html">Regular Expressions</a>).
+The pattern is allowed to match parts of words.
+There are
+single quotes around the <code class="command">awk</code> program so that the shell won&rsquo;t
+interpret any of it as special shell characters.
+</p>
+<p>Here is what this program prints:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">awk '/li/ { print $0 }' mail-list</kbd>
+-| Amelia       555-5553     amelia.zodiacusque@gmail.com    F
+-| Broderick    555-0542     broderick.aliquotiens@yahoo.com R
+-| Julie        555-6699     julie.perscrutabor@skeeve.com   F
+-| Samuel       555-3430     samuel.lanceolis@shu.edu        A
+</pre></div>
+
+<a class="index-entry-id" id="index-actions-default"></a>
+<a class="index-entry-id" id="index-patterns-default"></a>
+<p>In an <code class="command">awk</code> rule, either the pattern or the action can be omitted,
+but not both.  If the pattern is omitted, then the action is performed
+for <em class="emph">every</em> input line.  If the action is omitted, the default
+action is to print all lines that match the pattern.
+</p>
+<a class="index-entry-id" id="index-actions-empty"></a>
+<p>Thus, we could leave out the action (the <code class="code">print</code> statement and the
+braces) in the previous example and the result would be the same:
+<code class="command">awk</code> prints all lines matching the pattern &lsquo;<samp class="samp">li</samp>&rsquo;.  By comparison,
+omitting the <code class="code">print</code> statement but retaining the braces makes an
+empty action that does nothing (i.e., no lines are printed).
+</p>
+<a class="index-entry-id" id="index-awk-programs-one_002dline-examples"></a>
+<p>Many practical <code class="command">awk</code> programs are just a line or two long.  Following is a
+collection of useful, short programs to get you started.  Some of these
+programs contain constructs that haven&rsquo;t been covered yet. (The description
+of the program will give you a good idea of what is going on, but you&rsquo;ll
+need to read the rest of the Web page to become an <code class="command">awk</code> expert!)
+Most of the examples use a data file named <samp class="file">data</samp>.  This is just a
+placeholder; if you use these programs yourself, substitute
+your own file names for <samp class="file">data</samp>.
+</p>
+<a class="index-entry-id" id="index-ls-utility"></a>
+<p>Some of the following examples use the output of &lsquo;<samp class="samp">ls&nbsp;-l</samp>&rsquo;<!-- /@w --> as input.
+<code class="command">ls</code> is a system command that gives you a listing of the files in a
+directory. With the <samp class="option">-l</samp> option, this listing includes each file&rsquo;s
+size and the date the file was last modified. Its output looks like this:
+</p>
+<div class="example">
+<pre class="example-preformatted">-rw-r--r--  1 arnold   user   1933 Nov  7 13:05 Makefile
+-rw-r--r--  1 arnold   user  10809 Nov  7 13:03 awk.h
+-rw-r--r--  1 arnold   user    983 Apr 13 12:14 awk.tab.h
+-rw-r--r--  1 arnold   user  31869 Jun 15 12:20 awkgram.y
+-rw-r--r--  1 arnold   user  22414 Nov  7 13:03 awk1.c
+-rw-r--r--  1 arnold   user  37455 Nov  7 13:03 awk2.c
+-rw-r--r--  1 arnold   user  27511 Dec  9 13:07 awk3.c
+-rw-r--r--  1 arnold   user   7989 Nov  7 13:03 awk4.c
+</pre></div>
+
+<p>The first field contains read-write permissions, the second field contains
+the number of links to the file, and the third field identifies the
+file&rsquo;s owner.  The fourth field identifies the file&rsquo;s group.  The fifth
+field contains the file&rsquo;s size in bytes.  The sixth, seventh, and eighth
+fields contain the month, day, and time, respectively, that the file
+was last modified.  Finally, the ninth field contains the file name.
+</p>
+<p>For future reference, note that there is often more than
+one way to do things in <code class="command">awk</code>.  At some point, you may want
+to look back at these examples and see if
+you can come up with different ways to do the same things shown here:
+</p>
+<ul class="itemize mark-bullet">
+<li>Print every line that is longer than 80 characters:
+
+<div class="example">
+<pre class="example-preformatted">awk 'length($0) &gt; 80' data
+</pre></div>
+
+<p>The sole rule has a relational expression as its pattern and has no
+action&mdash;so it uses the default action, printing the record.
+</p>
+</li><li>Print the length of the longest input line:
+
+<div class="example">
+<div class="group"><pre class="example-preformatted">awk '{ if (length($0) &gt; max) max = length($0) }
+     END { print max }' data
+</pre></div></div>
+
+<p>The code associated with <code class="code">END</code> executes after all
+input has been read; it&rsquo;s the other side of the coin to <code class="code">BEGIN</code>.
+</p>
+</li><li><a class="index-entry-id" id="index-expand-utility"></a>
+Print the length of the longest line in <samp class="file">data</samp>:
+
+<div class="example">
+<pre class="example-preformatted">expand data | awk '{ if (x &lt; length($0)) x = length($0) }
+                   END { print &quot;maximum line length is &quot; x }'
+</pre></div>
+
+<p>This example differs slightly from the previous one:
+the input is processed by the <code class="command">expand</code> utility to change TABs
+into spaces, so the widths compared are actually the right-margin columns,
+as opposed to the number of input characters on each line.
+</p>
+</li><li>Print every line that has at least one field:
+
+<div class="example">
+<pre class="example-preformatted">awk 'NF &gt; 0' data
+</pre></div>
+
+<p>This is an easy way to delete blank lines from a file (or rather, to
+create a new file similar to the old file but from which the blank lines
+have been removed).
+</p>
+</li><li>Print seven random numbers from 0 to 100, inclusive:
+
+<div class="example">
+<pre class="example-preformatted">awk 'BEGIN { for (i = 1; i &lt;= 7; i++)
+                 print int(101 * rand()) }'
+</pre></div>
+
+</li><li>Print the total number of bytes used by <var class="var">files</var>:
+
+<div class="example">
+<pre class="example-preformatted">ls -l <var class="var">files</var> | awk '{ x += $5 }
+                   END { print &quot;total bytes: &quot; x }'
+</pre></div>
+
+</li><li>Print the total number of kilobytes used by <var class="var">files</var>:
+
+<div class="example">
+<pre class="example-preformatted">ls -l <var class="var">files</var> | awk '{ x += $5 }
+   END { print &quot;total K-bytes:&quot;, x / 1024 }'
+</pre></div>
+
+</li><li>Print a sorted list of the login names of all users:
+
+<div class="example">
+<pre class="example-preformatted">awk -F: '{ print $1 }' /etc/passwd | sort
+</pre></div>
+
+</li><li>Count the lines in a file:
+
+<div class="example">
+<pre class="example-preformatted">awk 'END { print NR }' data
+</pre></div>
+
+</li><li>Print the even-numbered lines in the data file:
+
+<div class="example">
+<pre class="example-preformatted">awk 'NR % 2 == 0' data
+</pre></div>
+
+<p>If you used the expression &lsquo;<samp class="samp">NR % 2 == 1</samp>&rsquo; instead,
+the program would print the odd-numbered lines.
+</p></li></ul>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Two-Rules.html">An Example with Two Rules</a>, Previous: <a href="Sample-Data-Files.html">Data files for the Examples</a>, Up: <a href="Getting-Started.html">Getting Started with <code class="command">awk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

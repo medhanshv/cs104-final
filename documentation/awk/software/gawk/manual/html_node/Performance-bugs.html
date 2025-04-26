@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Performance bugs (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Performance bugs (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Performance bugs (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Bugs.html" rel="up" title="Bugs">
+<link href="Asking-for-help.html" rel="next" title="Asking for help">
+<link href="Usenet.html" rel="prev" title="Usenet">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="appendixsubsec-level-extent" id="Performance-bugs">
+<div class="nav-panel">
+<p>
+Next: <a href="Asking-for-help.html" accesskey="n" rel="next">Where To Send Non-bug Questions</a>, Previous: <a href="Usenet.html" accesskey="p" rel="prev">Please Don&rsquo;t Post Bug Reports to USENET</a>, Up: <a href="Bugs.html" accesskey="u" rel="up">Reporting Problems and Bugs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="appendixsubsec" id="What-To-Do-If-You-Think-There-Is-A-Performance-Issue"><span>B.4.4 What To Do If You Think There Is A Performance Issue<a class="copiable-link" href="Performance-bugs.html#What-To-Do-If-You-Think-There-Is-A-Performance-Issue"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-performance_002c-checking-issues"></a>
+<a class="index-entry-id" id="index-profiling_002c-compiling-gawk-for"></a>
+<p>If you think that <code class="command">gawk</code> is too slow at doing a particular task,
+you should investigate before sending in a bug report. Here are the steps
+to follow:
+</p>
+<ol class="enumerate">
+<li> Run <code class="command">gawk</code> with the <samp class="option">--profile</samp> option (see <a class="pxref" href="Options.html">Command-Line Options</a>)
+to see what your
+program is doing. It may be that you have written it in an inefficient manner.
+For example, you may be doing something for every record that could be done
+just once, for every file.
+(Use a <code class="code">BEGINFILE</code> rule; see <a class="pxref" href="BEGINFILE_002fENDFILE.html">The <code class="code">BEGINFILE</code> and <code class="code">ENDFILE</code> Special Patterns</a>.)
+Or you may be doing something for every file that only needs to be done
+once per run of the program.
+(Use a <code class="code">BEGIN</code> rule; see <a class="pxref" href="BEGIN_002fEND.html">The <code class="code">BEGIN</code> and <code class="code">END</code> Special Patterns</a>.)
+
+</li><li> If profiling at the <code class="command">awk</code> level doesn&rsquo;t help, then you will
+need to compile <code class="command">gawk</code> itself for profiling at the C language level.
+
+<p>To do that, start with the latest released version of
+<code class="command">gawk</code>. Unpack the source code in a new directory, and configure
+it:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">tar -xpzvf gawk-X.Y.Z.tar.gz</kbd>
+...                                <i class="i">Output omitted</i>
+$ <kbd class="kbd">cd gawk-X.Y.Z</kbd>
+$ <kbd class="kbd">./configure</kbd>
+...                                <i class="i">Output omitted</i>
+</pre></div>
+
+</li><li> Edit the files <samp class="file">Makefile</samp> and <samp class="file">support/Makefile</samp>.
+Change every instance of <samp class="option">-O2</samp> or <samp class="option">-O</samp> to <samp class="option">-pg</samp>.
+This causes <code class="command">gawk</code> to be compiled for profiling.
+
+</li><li> Compile the program by running the <code class="command">make</code> command:
+
+<div class="example">
+<div class="group"><pre class="example-preformatted">$ <kbd class="kbd">make</kbd>
+...                                <i class="i">Output omitted</i>
+</pre></div></div>
+
+</li><li> Run the freshly compiled <code class="command">gawk</code> on a <em class="emph">real</em> program,
+using <em class="emph">real</em> data.  Using an artificial program to try to time one
+particular feature of <code class="command">gawk</code> is useless; real <code class="command">awk</code> programs
+generally spend most of their time doing I/O, not computing.  If you want to prove
+that something is slow, it <em class="emph">must</em> be done using a real program and real data.
+
+<p>Use a data file that is large enough for the statistical profiling to measure
+where <code class="command">gawk</code> spends its time. It should be at least 100 megabytes in size.
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">./gawk -f realprogram.awk realdata &gt; /dev/null</kbd>
+</pre></div>
+
+</li><li> When done, you should have a file in the current directory named <samp class="file">gmon.out</samp>.
+Run the command &lsquo;<samp class="samp">gprof gawk gmon.out &gt; gprof.out</samp>&rsquo;.
+
+</li><li> Submit a bug report explaining what you think is slow. Include the <samp class="file">gprof.out</samp>
+file with it.
+
+<p>Preferably, you should also submit the program and the data, or else indicate where to
+get the data if the file is large.
+</p>
+</li><li> If you have not submitted your program and data, be prepared to apply patches and
+rerun the profiling in order to see if the patches were effective.
+
+</li></ol>
+
+<p>If you are incapable or unwilling to do the steps listed above, then you will
+just have to live with <code class="command">gawk</code> as it is.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Asking-for-help.html">Where To Send Non-bug Questions</a>, Previous: <a href="Usenet.html">Please Don&rsquo;t Post Bug Reports to USENET</a>, Up: <a href="Bugs.html">Reporting Problems and Bugs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

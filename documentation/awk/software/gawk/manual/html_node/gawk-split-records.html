@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>gawk split records (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="gawk split records (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="gawk split records (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Records.html" rel="up" title="Records">
+<link href="awk-split-records.html" rel="prev" title="awk split records">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="gawk-split-records">
+<div class="nav-panel">
+<p>
+Previous: <a href="awk-split-records.html" accesskey="p" rel="prev">Record Splitting with Standard <code class="command">awk</code></a>, Up: <a href="Records.html" accesskey="u" rel="up">How Input Is Split into Records</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Record-Splitting-with-gawk"><span>4.1.2 Record Splitting with <code class="command">gawk</code><a class="copiable-link" href="gawk-split-records.html#Record-Splitting-with-gawk"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-common-extensions-RS-as-a-regexp"></a>
+<a class="index-entry-id" id="index-extensions-common-RS-as-a-regexp"></a>
+<p>When using <code class="command">gawk</code>, the value of <code class="code">RS</code> is not limited to a
+one-character string.  If it contains more than one character, it is
+treated as a regular expression
+(see <a class="pxref" href="Regexp.html">Regular Expressions</a>). (c.e.)
+In general, each record
+ends at the next string that matches the regular expression; the next
+record starts at the end of the matching string.  This general rule is
+actually at work in the usual case, where <code class="code">RS</code> contains just a
+newline: a record ends at the beginning of the next matching string (the
+next newline in the input), and the following record starts just after
+the end of this string (at the first character of the following line).
+The newline, because it matches <code class="code">RS</code>, is not part of either record.
+</p>
+<p>When <code class="code">RS</code> is a single character, <code class="code">RT</code>
+contains the same single character. However, when <code class="code">RS</code> is a
+regular expression, <code class="code">RT</code> contains
+the actual input text that matched the regular expression.
+</p>
+<p>If the input file ends without any text matching <code class="code">RS</code>,
+<code class="command">gawk</code> sets <code class="code">RT</code> to the null string.
+</p>
+<p>The following example illustrates both of these features.
+It sets <code class="code">RS</code> equal to a regular expression that
+matches either a newline or a series of one or more uppercase letters
+with optional leading and/or trailing whitespace:
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">$ <kbd class="kbd">echo record 1 AAAA record 2 BBBB record 3 |</kbd>
+&gt; <kbd class="kbd">gawk 'BEGIN { RS = &quot;\n|( *[[:upper:]]+ *)&quot; }</kbd>
+&gt;             <kbd class="kbd">{ print &quot;Record =&quot;, $0,&quot;and RT = [&quot; RT &quot;]&quot; }'</kbd>
+</pre></div><pre class="example-preformatted">-| Record = record 1 and RT = [ AAAA ]
+-| Record = record 2 and RT = [ BBBB ]
+-| Record = record 3 and RT = [
+-| ]
+</pre></div>
+
+<p>The square brackets delineate the contents of <code class="code">RT</code>, letting you
+see the leading and trailing whitespace. The final value of
+<code class="code">RT</code> is a newline.
+See <a class="xref" href="Simple-Sed.html">A Simple Stream Editor</a> for a more useful example
+of <code class="code">RS</code> as a regexp and <code class="code">RT</code>.
+</p>
+<p>If you set <code class="code">RS</code> to a regular expression that allows optional
+trailing text, such as &lsquo;<samp class="samp">RS = &quot;abc(XYZ)?&quot;</samp>&rsquo;, it is possible, due
+to implementation constraints, that <code class="command">gawk</code> may match the leading
+part of the regular expression, but not the trailing part, particularly
+if the input text that could match the trailing part is fairly long.
+<code class="command">gawk</code> attempts to avoid this problem, but currently, there&rsquo;s
+no guarantee that this will never happen.
+</p>
+<a class="index-entry-id" id="index-sidebar-Caveats-When-Using-Regular-Expressions-for-RS"></a>
+<table class="cartouche" border="1"><tr><th>
+Caveats When Using Regular Expressions for <code class="code">RS</code></th></tr><tr><td>
+<p>Remember that in <code class="command">awk</code>, the &lsquo;<samp class="samp">^</samp>&rsquo; and &lsquo;<samp class="samp">$</samp>&rsquo; anchor
+metacharacters match the beginning and end of a <em class="emph">string</em>, and not
+the beginning and end of a <em class="emph">line</em>.  As a result, something like
+&lsquo;<samp class="samp">RS = &quot;^[[:upper:]]&quot;</samp>&rsquo; can only match at the beginning of a file.
+This is because <code class="command">gawk</code> views the input file as one long string
+that happens to contain newline characters.
+It is thus best to avoid anchor metacharacters in the value of <code class="code">RS</code>.
+</p>
+<p>Record splitting with regular expressions works differently than
+regexp matching with the <code class="code">sub()</code>, <code class="code">gsub()</code>, and <code class="code">gensub()</code>
+(see <a class="pxref" href="String-Functions.html">String-Manipulation Functions</a>).  Those functions allow a regexp to match the empty string;
+record splitting does not.  Thus, for example &lsquo;<samp class="samp">RS = &quot;()&quot;</samp>&rsquo; does <em class="emph">not</em>
+split records between characters.
+</p></td></tr></table>
+
+<a class="index-entry-id" id="index-gawk-RT-variable-in-1"></a>
+<a class="index-entry-id" id="index-RT-variable-1"></a>
+<a class="index-entry-id" id="index-differences-in-awk-and-gawk-RS_002fRT-variables-1"></a>
+<p>The use of <code class="code">RS</code> as a regular expression and the <code class="code">RT</code>
+variable are <code class="command">gawk</code> extensions; they are not available in
+compatibility mode
+(see <a class="pxref" href="Options.html">Command-Line Options</a>).
+In compatibility mode, only the first character of the value of
+<code class="code">RS</code> determines the end of the record.
+</p>
+<a class="index-entry-id" id="index-Brian-Kernighan_0027s-awk-3"></a>
+<p><code class="command">mawk</code> has allowed <code class="code">RS</code> to be a regexp for decades.
+As of October, 2019, BWK <code class="command">awk</code> also supports it.  Neither
+version supplies <code class="code">RT</code>, however.
+</p>
+<a class="index-entry-id" id="index-sidebar-RS-_003d-_0022_005c0_0022-Is-Not-Portable"></a>
+<table class="cartouche" border="1"><tr><th>
+<code class="code">RS = &quot;\0&quot;</code> Is Not Portable</th></tr><tr><td>
+<a class="index-entry-id" id="index-portability-data-files-as-single-record"></a>
+<p>There are times when you might want to treat an entire data file as a
+single record.  The only way to make this happen is to give <code class="code">RS</code>
+a value that you know doesn&rsquo;t occur in the input file.  This is hard
+to do in a general way, such that a program always works for arbitrary
+input files.
+</p>
+<p>You might think that for text files, the <small class="sc">NUL</small> character, which
+consists of a character with all bits equal to zero, is a good
+value to use for <code class="code">RS</code> in this case:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN { RS = &quot;\0&quot; }  # whole file becomes one record?
+</pre></div>
+
+<a class="index-entry-id" id="index-differences-in-awk-and-gawk-strings-storing"></a>
+<p><code class="command">gawk</code> in fact accepts this, and uses the <small class="sc">NUL</small>
+character for the record separator.
+This works for certain special files, such as <samp class="file">/proc/environ</samp> on
+GNU/Linux systems, where the <small class="sc">NUL</small> character is in fact the record separator.
+However, this usage is <em class="emph">not</em> portable
+to most other <code class="command">awk</code> implementations.
+</p>
+<a class="index-entry-id" id="index-dark-corner-strings_002c-storing"></a>
+<p>Almost all other <code class="command">awk</code> implementations<a class="footnote" id="DOCF21" href="gawk-split-records.html#FOOT21"><sup>21</sup></a> store strings internally as C-style strings.  C strings use the
+<small class="sc">NUL</small> character as the string terminator.  In effect, this means that
+&lsquo;<samp class="samp">RS = &quot;\0&quot;</samp>&rsquo; is the same as &lsquo;<samp class="samp">RS = &quot;&quot;</samp>&rsquo;.
+(d.c.)
+</p>
+<p>It happens that recent versions of <code class="command">mawk</code> can use the <small class="sc">NUL</small>
+character as a record separator. However, this is a special case:
+<code class="command">mawk</code> does not allow embedded <small class="sc">NUL</small> characters in strings.
+(This may change in a future version of <code class="command">mawk</code>.)
+</p>
+<a class="index-entry-id" id="index-records-treating-files-as"></a>
+<a class="index-entry-id" id="index-treating-files_002c-as-single-records"></a>
+<a class="index-entry-id" id="index-single-records_002c-treating-files-as"></a>
+<p>See <a class="xref" href="Readfile-Function.html">Reading a Whole File at Once</a> for an interesting way to read
+whole files.  If you are using <code class="command">gawk</code>, see <a class="ref" href="Extension-Sample-Readfile.html">Reading an Entire File</a> for another option.
+</p></td></tr></table>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT21" href="gawk-split-records.html#DOCF21">(21)</a></h5>
+<p>At least that we know
+about.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="awk-split-records.html">Record Splitting with Standard <code class="command">awk</code></a>, Up: <a href="Records.html">How Input Is Split into Records</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

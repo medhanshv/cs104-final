@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Other Arguments (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Other Arguments (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Other Arguments (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Invoking-Gawk.html" rel="up" title="Invoking Gawk">
+<link href="Naming-Standard-Input.html" rel="next" title="Naming Standard Input">
+<link href="Options.html" rel="prev" title="Options">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Other-Arguments">
+<div class="nav-panel">
+<p>
+Next: <a href="Naming-Standard-Input.html" accesskey="n" rel="next">Naming Standard Input</a>, Previous: <a href="Options.html" accesskey="p" rel="prev">Command-Line Options</a>, Up: <a href="Invoking-Gawk.html" accesskey="u" rel="up">Running <code class="command">awk</code> and <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Other-Command_002dLine-Arguments"><span>2.3 Other Command-Line Arguments<a class="copiable-link" href="Other-Arguments.html#Other-Command_002dLine-Arguments"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-command-line-arguments"></a>
+<a class="index-entry-id" id="index-arguments-command_002dline"></a>
+
+<p>Any additional arguments on the command line are normally treated as
+input files to be processed in the order specified.   However, an
+argument that has the form <code class="code"><var class="var">var</var>=<var class="var">value</var></code>, assigns
+the value <var class="var">value</var> to the variable <var class="var">var</var>&mdash;it does not specify a
+file at all.  (See <a class="ref" href="Assignment-Options.html">Assigning Variables on the Command Line</a>.) In the following example,
+&lsquo;<samp class="samp">count=1</samp>&rsquo; is a variable assignment, not a file name:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk -f program.awk file1 count=1 file2
+</pre></div>
+
+<p>As a side point, should you really need to have <code class="command">awk</code>
+process a file named <samp class="file">count=1</samp> (or any file whose name looks like
+a variable assignment), precede the file name with &lsquo;<samp class="samp">./</samp>&rsquo;, like so:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk -f program.awk file1 ./count=1 file2
+</pre></div>
+
+<a class="index-entry-id" id="index-gawk-ARGIND-variable-in"></a>
+<a class="index-entry-id" id="index-ARGIND-variable-command_002dline-arguments"></a>
+<a class="index-entry-id" id="index-ARGV-array_002c-indexing-into"></a>
+<a class="index-entry-id" id="index-ARGC_002fARGV-variables-command_002dline-arguments"></a>
+<a class="index-entry-id" id="index-gawk-PROCINFO-array-in"></a>
+<p>All the command-line arguments are made available to your <code class="command">awk</code> program in the
+<code class="code">ARGV</code> array (see <a class="pxref" href="Built_002din-Variables.html">Predefined Variables</a>).  Command-line options
+and the program text (if present) are omitted from <code class="code">ARGV</code>.
+All other arguments, including variable assignments, are
+included.   As each element of <code class="code">ARGV</code> is processed, <code class="command">gawk</code>
+sets <code class="code">ARGIND</code> to the index in <code class="code">ARGV</code> of the
+current element.  (<code class="command">gawk</code> makes the full command line,
+including program text and options, available in <code class="code">PROCINFO[&quot;argv&quot;]</code>;
+see <a class="pxref" href="Auto_002dset.html">Built-in Variables That Convey Information</a>.)
+</p>
+<p>Changing <code class="code">ARGC</code> and <code class="code">ARGV</code> in your <code class="command">awk</code> program lets
+you control how <code class="command">awk</code> processes the input files; this is described
+in more detail in <a class="ref" href="ARGC-and-ARGV.html">Using <code class="code">ARGC</code> and <code class="code">ARGV</code></a>.
+</p>
+<a class="index-entry-id" id="index-input-files-variable-assignments-and"></a>
+<a class="index-entry-id" id="index-variable-assignments-and-input-files"></a>
+<p>The distinction between file name arguments and variable-assignment
+arguments is made when <code class="command">awk</code> is about to open the next input file.
+At that point in execution, it checks the file name to see whether
+it is really a variable assignment; if so, <code class="command">awk</code> sets the variable
+instead of reading a file.
+</p>
+<p>Therefore, the variables actually receive the given values after all
+previously specified files have been read.  In particular, the values of
+variables assigned in this fashion are <em class="emph">not</em> available inside a
+<code class="code">BEGIN</code> rule
+(see <a class="pxref" href="BEGIN_002fEND.html">The <code class="code">BEGIN</code> and <code class="code">END</code> Special Patterns</a>),
+because such rules are run before <code class="command">awk</code> begins scanning the argument list.
+</p>
+<a class="index-entry-id" id="index-dark-corner-escape-sequences"></a>
+<p>The variable values given on the command line are processed for escape
+sequences (see <a class="pxref" href="Escape-Sequences.html">Escape Sequences</a>).
+(d.c.)
+</p>
+<p>In some very early implementations of <code class="command">awk</code>, when a variable assignment
+occurred before any file names, the assignment would happen <em class="emph">before</em>
+the <code class="code">BEGIN</code> rule was executed.  <code class="command">awk</code>&rsquo;s behavior was thus
+inconsistent; some command-line assignments were available inside the
+<code class="code">BEGIN</code> rule, while others were not.  Unfortunately,
+some applications came to depend
+upon this &ldquo;feature.&rdquo;  When <code class="command">awk</code> was changed to be more consistent,
+the <samp class="option">-v</samp> option was added to accommodate applications that depended
+upon the old behavior.
+</p>
+<p>The variable assignment feature is most useful for assigning to variables
+such as <code class="code">RS</code>, <code class="code">OFS</code>, and <code class="code">ORS</code>, which control input and
+output formats, before scanning the data files.  It is also useful for
+controlling state if multiple passes are needed over a data file.  For
+example:
+</p>
+<a class="index-entry-id" id="index-files-multiple-passes-over"></a>
+<div class="example">
+<pre class="example-preformatted">awk 'pass == 1  { <var class="var">pass 1 stuff</var> }
+     pass == 2  { <var class="var">pass 2 stuff</var> }' pass=1 mydata pass=2 mydata
+</pre></div>
+
+<p>Given the variable assignment feature, the <samp class="option">-F</samp> option for setting
+the value of <code class="code">FS</code> is not
+strictly necessary.  It remains for historical compatibility.
+</p>
+<a class="index-entry-id" id="index-sidebar-Quoting-Shell-Variables-On-The-awk-Command-Line"></a>
+<table class="cartouche" border="1"><tr><th>
+Quoting Shell Variables On The <code class="command">awk</code> Command Line</th></tr><tr><td>
+<a class="index-entry-id" id="index-quoting-in-gawk-command-lines-1"></a>
+<a class="index-entry-id" id="index-shell-quoting_002c-rules-for-1"></a>
+<a class="index-entry-id" id="index-null-strings-in-gawk-arguments_002c-quoting-and-1"></a>
+
+<p>Small <code class="command">awk</code> programs are often embedded in larger shell scripts,
+so it&rsquo;s worthwhile to understand some shell basics. Consider the following:
+</p>
+<div class="example">
+<pre class="example-preformatted">f=&quot;&quot;
+awk '{ print(&quot;hi&quot;) }' $f
+</pre></div>
+
+<p>In this case, <code class="command">awk</code> reads from standard input instead of trying
+to open any command line files. To the unwary, this looks like <code class="command">awk</code>
+is hanging.
+</p>
+<p>However <code class="command">awk</code> doesn&rsquo;t see an explicit empty string. When a
+variable expansion is the null string, <em class="emph">and</em> it&rsquo;s not quoted,
+the shell simply removes it from the command line. To demonstrate:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">f=&quot;&quot;</kbd>
+$ <kbd class="kbd">awk 'BEGIN { print ARGC }' $f</kbd>
+-| 1
+$ <kbd class="kbd">awk 'BEGIN { print ARGC }' &quot;$f&quot;</kbd>
+-| 2
+</pre></div>
+</td></tr></table>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Naming-Standard-Input.html">Naming Standard Input</a>, Previous: <a href="Options.html">Command-Line Options</a>, Up: <a href="Invoking-Gawk.html">Running <code class="command">awk</code> and <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

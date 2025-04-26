@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Library Names (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Library Names (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Library Names (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Library-Functions.html" rel="up" title="Library Functions">
+<link href="General-Functions.html" rel="next" title="General Functions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Library-Names">
+<div class="nav-panel">
+<p>
+Next: <a href="General-Functions.html" accesskey="n" rel="next">General Programming</a>, Up: <a href="Library-Functions.html" accesskey="u" rel="up">A Library of <code class="command">awk</code> Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Naming-Library-Function-Global-Variables"><span>10.1 Naming Library Function Global Variables<a class="copiable-link" href="Library-Names.html#Naming-Library-Function-Global-Variables"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-names-arrays_002fvariables"></a>
+<a class="index-entry-id" id="index-names-functions-1"></a>
+<a class="index-entry-id" id="index-naming-issues"></a>
+<a class="index-entry-id" id="index-awk-programs-documenting-1"></a>
+<a class="index-entry-id" id="index-documentation-of-awk-programs"></a>
+<p>Due to the way the <code class="command">awk</code> language evolved, variables are either
+<em class="dfn">global</em> (usable by the entire program) or <em class="dfn">local</em> (usable just by
+a specific function).  There is no intermediate state analogous to
+<code class="code">static</code> variables in C.
+</p>
+<a class="index-entry-id" id="index-variables-global-for-library-functions"></a>
+<a class="index-entry-id" id="index-private-variables"></a>
+<a class="index-entry-id" id="index-variables-private"></a>
+<p>Library functions often need to have global variables that they can use to
+preserve state information between calls to the function&mdash;for example,
+<code class="code">getopt()</code>&rsquo;s variable <code class="code">_opti</code>
+(see <a class="pxref" href="Getopt-Function.html">Processing Command-Line Options</a>).
+Such variables are called <em class="dfn">private</em>, as the only functions that need to
+use them are the ones in the library.
+</p>
+<p>When writing a library function, you should try to choose names for your
+private variables that will not conflict with any variables used by
+either another library function or a user&rsquo;s main program.  For example, a
+name like <code class="code">i</code> or <code class="code">j</code> is not a good choice, because user programs
+often use variable names like these for their own purposes.
+</p>
+<a class="index-entry-id" id="index-programming-conventions-private-variable-names"></a>
+<p>The example programs shown in this chapter all start the names of their
+private variables with an underscore (&lsquo;<samp class="samp">_</samp>&rsquo;).  Users generally don&rsquo;t use
+leading underscores in their variable names, so this convention immediately
+decreases the chances that the variable names will be accidentally shared
+with the user&rsquo;s program.
+</p>
+<a class="index-entry-id" id="index-_005f-_0028underscore_0029-in-names-of-private-variables"></a>
+<a class="index-entry-id" id="index-underscore-_0028_005f_0029-in-names-of-private-variables"></a>
+<p>In addition, several of the library functions use a prefix that helps
+indicate what function or set of functions use the variables&mdash;for example,
+<code class="code">_pw_byname()</code> in the user database routines
+(see <a class="pxref" href="Passwd-Functions.html">Reading the User Database</a>).
+This convention is recommended, as it even further decreases the
+chance of inadvertent conflict among variable names.  Note that this
+convention is used equally well for variable names and for private
+function names.<a class="footnote" id="DOCF69" href="Library-Names.html#FOOT69"><sup>69</sup></a>
+</p>
+<p>As a final note on variable naming, if a function makes global variables
+available for use by a main program, it is a good convention to start those
+variables&rsquo; names with a capital letter&mdash;for
+example, <code class="code">getopt()</code>&rsquo;s <code class="code">Opterr</code> and <code class="code">Optind</code> variables
+(see <a class="pxref" href="Getopt-Function.html">Processing Command-Line Options</a>).
+The leading capital letter indicates that it is global, while the fact that
+the variable name is not all capital letters indicates that the variable is
+not one of <code class="command">awk</code>&rsquo;s predefined variables, such as <code class="code">FS</code>.
+</p>
+<a class="index-entry-id" id="index-_002d_002ddump_002dvariables-option-using-for-library-functions"></a>
+<p>It is also important that <em class="emph">all</em> variables in library
+functions that do not need to save state are, in fact, declared
+local.<a class="footnote" id="DOCF70" href="Library-Names.html#FOOT70"><sup>70</sup></a> If this is not done, the variables
+could accidentally be used in the user&rsquo;s program, leading to bugs that
+are very difficult to track down:
+</p>
+<div class="example">
+<pre class="example-preformatted">function lib_func(x, y,    l1, l2)
+{
+    ...
+    # some_var should be local but by oversight is not
+    <var class="var">use variable</var> some_var
+    ...
+}
+</pre></div>
+
+<a class="index-entry-id" id="index-arrays-associative-library-functions-and"></a>
+<a class="index-entry-id" id="index-libraries-of-awk-functions-associative-arrays-and"></a>
+<a class="index-entry-id" id="index-functions-library-associative-arrays-and"></a>
+<a class="index-entry-id" id="index-Tcl"></a>
+<p>A different convention, common in the Tcl community, is to use a single
+associative array to hold the values needed by the library function(s), or
+&ldquo;package.&rdquo;  This significantly decreases the number of actual global names
+in use.  For example, the functions described in
+<a class="ref" href="Passwd-Functions.html">Reading the User Database</a>
+might have used array elements <code class="code">PW_data[&quot;inited&quot;]<!-- /@w --></code>, <code class="code">PW_data[&quot;total&quot;]<!-- /@w --></code>,
+<code class="code">PW_data[&quot;count&quot;]<!-- /@w --></code>, and <code class="code">PW_data[&quot;awklib&quot;]<!-- /@w --></code>, instead of
+<code class="code">_pw_inited<!-- /@w --></code>, <code class="code">_pw_awklib<!-- /@w --></code>, <code class="code">_pw_total<!-- /@w --></code>,
+and <code class="code">_pw_count<!-- /@w --></code>.
+</p>
+<p>The conventions presented in this section are exactly
+that: conventions. You are not required to write your programs this
+way&mdash;we merely recommend that you do so.
+</p>
+<p>Beginning with version 5.0, <code class="command">gawk</code> provides
+a powerful mechanism for solving the problems described in this
+section: <em class="dfn">namespaces</em>.  Namespaces and their use are described
+in detail in <a class="ref" href="Namespaces.html">Namespaces in <code class="command">gawk</code></a>.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT69" href="Library-Names.html#DOCF69">(69)</a></h5>
+<p>Although all the library routines could have
+been rewritten to use this convention, this was not done, in order to
+show how our own <code class="command">awk</code> programming style has evolved and to
+provide some basis for this discussion.</p>
+<h5 class="footnote-body-heading"><a id="FOOT70" href="Library-Names.html#DOCF70">(70)</a></h5>
+<p><code class="command">gawk</code>&rsquo;s <samp class="option">--dump-variables</samp> command-line
+option is useful for verifying this.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="General-Functions.html">General Programming</a>, Up: <a href="Library-Functions.html">A Library of <code class="command">awk</code> Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

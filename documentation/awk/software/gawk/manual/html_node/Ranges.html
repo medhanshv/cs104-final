@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Ranges (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Ranges (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Ranges (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Pattern-Overview.html" rel="up" title="Pattern Overview">
+<link href="BEGIN_002fEND.html" rel="next" title="BEGIN/END">
+<link href="Expression-Patterns.html" rel="prev" title="Expression Patterns">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Ranges">
+<div class="nav-panel">
+<p>
+Next: <a href="BEGIN_002fEND.html" accesskey="n" rel="next">The <code class="code">BEGIN</code> and <code class="code">END</code> Special Patterns</a>, Previous: <a href="Expression-Patterns.html" accesskey="p" rel="prev">Expressions as Patterns</a>, Up: <a href="Pattern-Overview.html" accesskey="u" rel="up">Pattern Elements</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Specifying-Record-Ranges-with-Patterns"><span>7.1.3 Specifying Record Ranges with Patterns<a class="copiable-link" href="Ranges.html#Specifying-Record-Ranges-with-Patterns"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-range-patterns"></a>
+<a class="index-entry-id" id="index-patterns-ranges-in"></a>
+<a class="index-entry-id" id="index-lines-matching-ranges-of"></a>
+<a class="index-entry-id" id="index-_002c-_0028comma_0029_002c-in-range-patterns"></a>
+<a class="index-entry-id" id="index-comma-_0028_002c_0029_002c-in-range-patterns"></a>
+<p>A <em class="dfn">range pattern</em> is made of two patterns separated by a comma, in
+the form &lsquo;<samp class="samp"><var class="var">begpat</var>, <var class="var">endpat</var></samp>&rsquo;.  It is used to match ranges of
+consecutive input records.  The first pattern, <var class="var">begpat</var>, controls
+where the range begins, while <var class="var">endpat</var> controls where
+the pattern ends.  For example, the following:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk '$1 == &quot;on&quot;, $1 == &quot;off&quot;' myfile
+</pre></div>
+
+<p>prints every record in <samp class="file">myfile</samp> between &lsquo;<samp class="samp">on</samp>&rsquo;/&lsquo;<samp class="samp">off</samp>&rsquo; pairs, inclusive.
+</p>
+<p>A range pattern starts out by matching <var class="var">begpat</var> against every
+input record.  When a record matches <var class="var">begpat</var>, the range pattern is
+<em class="dfn">turned on</em>, and the range pattern matches this record as well.  As long as
+the range pattern stays turned on, it automatically matches every input
+record read.  The range pattern also matches <var class="var">endpat</var> against every
+input record; when this succeeds, the range pattern is <em class="dfn">turned off</em> again
+for the following record.  Then the range pattern goes back to checking
+<var class="var">begpat</var> against each record.
+</p>
+<a class="index-entry-id" id="index-if-statement-actions_002c-changing"></a>
+<p>The record that turns on the range pattern and the one that turns it
+off both match the range pattern.  If you don&rsquo;t want to operate on
+these records, you can write <code class="code">if</code> statements in the rule&rsquo;s action
+to distinguish them from the records you are interested in.
+</p>
+<p>It is possible for a pattern to be turned on and off by the same
+record. If the record satisfies both conditions, then the action is
+executed for just that record.
+For example, suppose there is text between two identical markers (e.g.,
+the &lsquo;<samp class="samp">%</samp>&rsquo; symbol), each on its own line, that should be ignored.
+A first attempt would be to
+combine a range pattern that describes the delimited text with the
+<code class="code">next</code> statement
+(not discussed yet, see <a class="pxref" href="Next-Statement.html">The <code class="code">next</code> Statement</a>).
+This causes <code class="command">awk</code> to skip any further processing of the current
+record and start over again with the next input record. Such a program
+looks like this:
+</p>
+<div class="example">
+<pre class="example-preformatted">/^%$/,/^%$/    { next }
+               { print }
+</pre></div>
+
+<a class="index-entry-id" id="index-lines-skipping-between-markers"></a>
+<p>This program fails because the range pattern is both turned on and turned off
+by the first line, which just has a &lsquo;<samp class="samp">%</samp>&rsquo; on it.  To accomplish this task,
+write the program in the following manner, using a flag:
+</p>
+<a class="index-entry-id" id="index-_0021-_0028exclamation-point_0029-_0021-operator-2"></a>
+<div class="example">
+<pre class="example-preformatted">/^%$/     { skip = ! skip; next }
+skip == 1 { next } # skip lines with `skip' set
+</pre></div>
+
+<p>In a range pattern, the comma (&lsquo;<samp class="samp">,</samp>&rsquo;) has the lowest precedence of
+all the operators (i.e., it is evaluated last).  Thus, the following
+program attempts to combine a range pattern with another, simpler test:
+</p>
+<div class="example">
+<pre class="example-preformatted">echo Yes | awk '/1/,/2/ || /Yes/'
+</pre></div>
+
+<p>The intent of this program is &lsquo;<samp class="samp">(/1/,/2/) || /Yes/</samp>&rsquo;.
+However, <code class="command">awk</code> interprets this as &lsquo;<samp class="samp">/1/, (/2/ || /Yes/)</samp>&rsquo;.
+This cannot be changed or worked around; range patterns do not combine
+with other patterns:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">echo Yes | gawk '(/1/,/2/) || /Yes/'</kbd>
+error&rarr; gawk: cmd. line:1: (/1/,/2/) || /Yes/
+error&rarr; gawk: cmd. line:1:           ^ syntax error
+</pre></div>
+
+<a class="index-entry-id" id="index-range-patterns-line-continuation-and"></a>
+<a class="index-entry-id" id="index-dark-corner-range-patterns_002c-line-continuation-and"></a>
+<p>As a minor point of interest, although it is poor style,
+POSIX allows you to put a newline after the comma in
+a range pattern.  (d.c.)
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="BEGIN_002fEND.html">The <code class="code">BEGIN</code> and <code class="code">END</code> Special Patterns</a>, Previous: <a href="Expression-Patterns.html">Expressions as Patterns</a>, Up: <a href="Pattern-Overview.html">Pattern Elements</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

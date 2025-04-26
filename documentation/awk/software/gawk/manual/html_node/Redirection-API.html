@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Redirection API (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Redirection API (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Redirection API (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Extension-API-Description.html" rel="up" title="Extension API Description">
+<link href="Extension-API-Variables.html" rel="next" title="Extension API Variables">
+<link href="Array-Manipulation.html" rel="prev" title="Array Manipulation">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Redirection-API">
+<div class="nav-panel">
+<p>
+Next: <a href="Extension-API-Variables.html" accesskey="n" rel="next">API Variables</a>, Previous: <a href="Array-Manipulation.html" accesskey="p" rel="prev">Array Manipulation</a>, Up: <a href="Extension-API-Description.html" accesskey="u" rel="up">API Description</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Accessing-and-Manipulating-Redirections"><span>17.4.13 Accessing and Manipulating Redirections<a class="copiable-link" href="Redirection-API.html#Accessing-and-Manipulating-Redirections"> &para;</a></span></h4>
+
+<p>The following function allows extensions to access and manipulate redirections.
+</p>
+<dl class="table">
+<dt><code class="code">awk_bool_t get_file(const char *name,</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;size_t name_len,</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const char *filetype,</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int fd,</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const awk_input_buf_t **ibufp,</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const awk_output_buf_t **obufp);</code></dt>
+<dd><p>Look up file <code class="code">name</code> in <code class="command">gawk</code>&rsquo;s internal redirection table.
+If <code class="code">name</code> is <code class="code">NULL</code> or <code class="code">name_len</code> is zero, return
+data for the currently open input file corresponding to <code class="code">FILENAME</code>.
+(This does not access the <code class="code">filetype</code> argument, so that may be undefined).
+If the file is not already open, attempt to open it.
+The <code class="code">filetype</code> argument must be zero-terminated and should be one of:
+</p>
+<dl class="table">
+<dt><code class="code">&quot;&gt;&quot;</code></dt>
+<dd><p>A file opened for output.
+</p>
+</dd>
+<dt><code class="code">&quot;&gt;&gt;&quot;</code></dt>
+<dd><p>A file opened for append.
+</p>
+</dd>
+<dt><code class="code">&quot;&lt;&quot;</code></dt>
+<dd><p>A file opened for input.
+</p>
+</dd>
+<dt><code class="code">&quot;|&gt;&quot;</code></dt>
+<dd><p>A pipe opened for output.
+</p>
+</dd>
+<dt><code class="code">&quot;|&lt;&quot;</code></dt>
+<dd><p>A pipe opened for input.
+</p>
+</dd>
+<dt><code class="code">&quot;|&amp;&quot;</code></dt>
+<dd><p>A two-way coprocess.
+</p></dd>
+</dl>
+
+<p>On error, return <code class="code">awk_false</code>.  Otherwise, return
+<code class="code">awk_true</code>, and return additional information about the redirection
+in the <code class="code">ibufp</code> and <code class="code">obufp</code> pointers.
+</p>
+<p>For input redirections, the <code class="code">*ibufp</code> value should be non-<code class="code">NULL</code>,
+and <code class="code">*obufp</code> should be <code class="code">NULL</code>.  For output redirections,
+the <code class="code">*obufp</code> value should be non-<code class="code">NULL</code>, and <code class="code">*ibufp</code>
+should be <code class="code">NULL</code>.  For two-way coprocesses, both values should
+be non-<code class="code">NULL</code>.
+</p>
+<p>In the usual case, the extension is interested in <code class="code">(*ibufp)-&gt;fd</code>
+and/or <code class="code">fileno((*obufp)-&gt;fp)</code>.  If the file is not already
+open, and the <code class="code">fd</code> argument is nonnegative, <code class="command">gawk</code>
+will use that file descriptor instead of opening the file in the
+usual way.  If <code class="code">fd</code> is nonnegative, but the file exists already,
+<code class="command">gawk</code> ignores <code class="code">fd</code> and returns the existing file.  It is
+the caller&rsquo;s responsibility to notice that neither the <code class="code">fd</code> in
+the returned <code class="code">awk_input_buf_t</code> nor the <code class="code">fd</code> in the returned
+<code class="code">awk_output_buf_t</code> matches the requested value.
+</p>
+<p>Note that supplying a file descriptor is currently <em class="emph">not</em> supported
+for pipes.  However, supplying a file descriptor should work for input,
+output, append, and two-way (coprocess) sockets.  If <code class="code">filetype</code>
+is two-way, <code class="command">gawk</code> assumes that it is a socket!  Note that in
+the two-way case, the input and output file descriptors may differ.
+To check for success, you must check whether either matches.
+</p></dd>
+</dl>
+
+<p>It is anticipated that this API function will be used to implement I/O
+multiplexing and a socket library.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Extension-API-Variables.html">API Variables</a>, Previous: <a href="Array-Manipulation.html">Array Manipulation</a>, Up: <a href="Extension-API-Description.html">API Description</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

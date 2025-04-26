@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Arbitrary Precision Arithmetic (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Arbitrary Precision Arithmetic (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Arbitrary Precision Arithmetic (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Dynamic-Extensions.html" rel="next" title="Dynamic Extensions">
+<link href="Namespaces.html" rel="prev" title="Namespaces">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Arbitrary-Precision-Arithmetic">
+<div class="nav-panel">
+<p>
+Next: <a href="Dynamic-Extensions.html" accesskey="n" rel="next">Writing Extensions for <code class="command">gawk</code></a>, Previous: <a href="Namespaces.html" accesskey="p" rel="prev">Namespaces in <code class="command">gawk</code></a>, Up: <a href="index.html" accesskey="u" rel="up">General Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Arithmetic-and-Arbitrary_002dPrecision-Arithmetic-with-gawk"><span>16 Arithmetic and Arbitrary-Precision Arithmetic with <code class="command">gawk</code><a class="copiable-link" href="Arbitrary-Precision-Arithmetic.html#Arithmetic-and-Arbitrary_002dPrecision-Arithmetic-with-gawk"> &para;</a></span></h2>
+<a class="index-entry-id" id="index-arbitrary-precision"></a>
+<a class="index-entry-id" id="index-multiple-precision"></a>
+<a class="index-entry-id" id="index-infinite-precision"></a>
+<a class="index-entry-id" id="index-floating_002dpoint-numbers-arbitrary_002dprecision"></a>
+
+<p>This chapter introduces some basic concepts relating to
+how computers do arithmetic and defines some important terms.
+It then proceeds to describe floating-point arithmetic,
+which is what <code class="command">awk</code> uses for all its computations, including a
+discussion of arbitrary-precision floating-point arithmetic, which is
+a feature available only in <code class="command">gawk</code>. It continues on to present
+arbitrary-precision integers, and concludes with a description of some
+points where <code class="command">gawk</code> and the POSIX standard are not quite in
+agreement.
+</p>
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> Most users of <code class="command">gawk</code> can safely skip this chapter.
+But if you want to do scientific calculations with <code class="command">gawk</code>,
+this is the place to be.
+</p></blockquote>
+
+
+<ul class="mini-toc">
+<li><a href="Computer-Arithmetic.html" accesskey="1">A General Description of Computer Arithmetic</a></li>
+<li><a href="Math-Definitions.html" accesskey="2">Other Stuff to Know</a></li>
+<li><a href="MPFR-features.html" accesskey="3">Arbitrary-Precision Arithmetic Features in <code class="command">gawk</code></a></li>
+<li><a href="FP-Math-Caution.html" accesskey="4">Floating-Point Arithmetic: Caveat Emptor!</a></li>
+<li><a href="Arbitrary-Precision-Integers.html" accesskey="5">Arbitrary-Precision Integer Arithmetic with <code class="command">gawk</code></a></li>
+<li><a href="Checking-for-MPFR.html" accesskey="6">How To Check If MPFR Is Available</a></li>
+<li><a href="POSIX-Floating-Point-Problems.html" accesskey="7">Standards Versus Existing Practice</a></li>
+<li><a href="Floating-point-summary.html" accesskey="8">Summary</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Print (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Print (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Print (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Printing.html" rel="up" title="Printing">
+<link href="Print-Examples.html" rel="next" title="Print Examples">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Print">
+<div class="nav-panel">
+<p>
+Next: <a href="Print-Examples.html" accesskey="n" rel="next"><code class="code">print</code> Statement Examples</a>, Up: <a href="Printing.html" accesskey="u" rel="up">Printing Output</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="The-print-Statement"><span>5.1 The <code class="code">print</code> Statement<a class="copiable-link" href="Print.html#The-print-Statement"> &para;</a></span></h3>
+
+<p>Use the <code class="code">print</code> statement to produce output with simple, standardized
+formatting.  You specify only the strings or numbers to print, in a
+list separated by commas.  They are output, separated by single spaces,
+followed by a newline.  The statement looks like this:
+</p>
+<div class="example">
+<pre class="example-preformatted">print <var class="var">item1</var>, <var class="var">item2</var>, ...
+</pre></div>
+
+<p>The entire list of items may be optionally enclosed in parentheses.  The
+parentheses are necessary if any of the item expressions uses the &lsquo;<samp class="samp">&gt;</samp>&rsquo;
+relational operator; otherwise it could be confused with an output redirection
+(see <a class="pxref" href="Redirection.html">Redirecting Output of <code class="code">print</code> and <code class="code">printf</code></a>).
+</p>
+<p>The items to print can be constant strings or numbers, fields of the
+current record (such as <code class="code">$1</code>), variables, or any <code class="command">awk</code>
+expression.  Numeric values are converted to strings and then printed.
+</p>
+<a class="index-entry-id" id="index-records-printing"></a>
+<a class="index-entry-id" id="index-lines-blank_002c-printing"></a>
+<a class="index-entry-id" id="index-text_002c-printing"></a>
+<p>The simple statement &lsquo;<samp class="samp">print</samp>&rsquo; with no items is equivalent to
+&lsquo;<samp class="samp">print $0</samp>&rsquo;: it prints the entire current record.  To print a blank
+line, use &lsquo;<samp class="samp">print &quot;&quot;</samp>&rsquo;.
+To print a fixed piece of text, use a string constant, such as
+<code class="code">&quot;Don't&nbsp;Panic&quot;</code><!-- /@w -->, as one item.  If you forget to use the
+double quote characters, your text is taken as an <code class="command">awk</code>
+expression, and you will probably get an error.  Keep in mind that a
+space is printed between any two items.
+</p>
+<p>Note that the <code class="code">print</code> statement is a statement and not an
+expression&mdash;you can&rsquo;t use it in the pattern part of a
+pattern&ndash;action statement, for example.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Print-Examples.html"><code class="code">print</code> Statement Examples</a>, Up: <a href="Printing.html">Printing Output</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

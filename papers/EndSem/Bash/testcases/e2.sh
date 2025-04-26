@@ -1,0 +1,1 @@
+/usr/bin/env bash car_sales.sh sales.csv 1 type sedan

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>Challenges (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="Challenges (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="Challenges (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Using-Networking.html" rel="up" title="Using Networking">
+<link href="Caveats.html" rel="prev" title="Caveats">
+<style type="text/css">
+<!--
+div.example {margin-left: 3.2em}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Challenges">
+<div class="nav-panel">
+<p>
+Previous: <a href="Caveats.html" accesskey="p" rel="prev">Network Programming Caveats</a>, Up: <a href="Using-Networking.html" accesskey="u" rel="up">Networking With <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Where-To-Go-From-Here">2.12 Where To Go From Here</h3>
+
+<a class="index-entry-id" id="index-Loebner_002c-Hugh"></a>
+<a class="index-entry-id" id="index-contest"></a>
+<p>Now, you have learned enough to build your own application. You could,
+for example, take part in the
+Loebner Contest
+to win $100,000.  The Loebner Prize is the first formal instantiation of
+a Turing Test. Hugh Loebner agreed with The Cambridge Center for Behavioral
+Studies to underwrite a contest designed to implement the Turing Test.
+Dr. Loebner pledged a Grand Prize of $100,000 for the first computer whose
+responses were indistinguishable from a human&rsquo;s. Each year an annual prize
+of $2000 and a bronze medal is awarded to the <em class="emph">most</em> human computer.
+The winner of the annual contest is the best entry relative to other entries
+that year, irrespective of how good it is in an absolute sense. Here is
+an example of a conversation with the winning program of 1997:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(c)1997 Cambridge Center For Behavioral Studies all rights reserved [CONVERSE]
+[Intelligent Research Ltd.] Start at: [1997/04/29 08:59:40]
+PROGRAM[10:39:20]Hi, my name is Catherine, what's yours?
+JUDGE02[10:39:36]My name is Nathan.
+PROGRAM[10:39:37]Well, it's nice to meet you, Nathan.
+PROGRAM[10:39:45]Did you see that story on CNN last night about the lesbian
+PROGRAM[10:40:03]couple who came out at a White House party on Sunday?
+JUDGE02[10:40:45]No.  I'm sorry I missed that.  How did the Prez take it?
+PROGRAM[10:40:47]Ellen Degeneres was one of them - she was kissing her lover
+PROGRAM[10:41:08]in front of Bill Clinton. Do you think he was very
+PROGRAM[10:41:21]embarrassed?
+JUDGE02[10:41:37]You tell me.  I didn't see it.
+PROGRAM[10:41:38]Are you still a Friend of Bill Clinton?
+JUDGE02[10:42:22]Yes.  I would like to talk about something else.  Do you know anything about sculpture.
+PROGRAM[10:42:24]Well, I suppose he's doing his best like most of us, but he
+PROGRAM[10:42:35]does seem to attract an UNUSUAL amount of bad publicity,
+PROGRAM[10:42:51]wouldnt you say--can it all be bad luck?
+JUDGE02[10:43:20]I asked you if you knew anything about sculpture.
+PROGRAM[10:43:21]OK, but what happens now--does it all drift on, with
+PROGRAM[10:43:36]everyone waiting to see how much his friends have said about
+PROGRAM[10:43:47]him under threat of lots and lots of jail-or will something
+PROGRAM[10:44:01]dramatic actually happen?
+JUDGE02[10:44:19]Do you know what sculpture is?
+PROGRAM[10:44:20]Well, youre more a fan of his than I am I guess---though I
+PROGRAM[10:44:34]cant SWEAR what Id have done in that locked hotel room, I
+PROGRAM[10:44:51]must say.
+JUDGE02[10:45:26]Have you ever been to the Salmagundi Club?
+PROGRAM[10:45:29]Never. to go back to the original discussion Time to get
+PROGRAM[10:45:43]off this one I think and onto something more down to earth!
+JUDGE02[10:46:20]What is more down to earth than art?
+PROGRAM[10:46:21]I don't know what -- to be honest. -
+PROGRAM[10:46:30]I suppose it depends on where you're coming from, but as the
+PROGRAM[10:46:46]song goes in My Fair Lady, &quot;Why can't a woman be more like a
+PROGRAM[10:47:03]man? &quot;
+JUDGE02[10:47:52]I liked that song but I prefer &quot;Why can't children be more like we are&quot;
+JUDGE02[10:48:10]from another play the name of which I cannot remember.
+PROGRAM[10:48:12]What, if anything, do you enjoy about being a man?
+JUDGE02[10:49:01]I would enjoy all aspects of life no matter what my gender.
+PROGRAM[10:49:02]Do you think of yourself as being attractive?
+</pre></div>
+
+<a class="index-entry-id" id="index-Clinton_002c-Bill"></a>
+<p>This program insists on always speaking about the same story around Bill
+Clinton. You see, even a program with a rather narrow mind can behave so
+much like a human being that it can win this prize. It is quite common to
+let these programs talk to each other via network connections. But during the
+competition itself, the program and its computer have to be present at the
+place the competition is held. We all would love to see a <code class="command">gawk</code>
+program win in such an event. Maybe it is up to you to accomplish this?
+</p>
+<p>Some other ideas for useful networked applications:
+</p><ul class="itemize mark-bullet">
+<li>Read the file <samp class="file">doc/awkforai.txt</samp> in earlier <code class="command">gawk</code>
+distributions.<a class="footnote" id="DOCF12" href="Challenges.html#FOOT12"><sup>12</sup></a>
+It was written by Ronald P. Loui (at the time, Associate
+Professor of Computer Science, at Washington University in St. Louis,
+<a class="email" href="mailto:loui@ai.wustl.edu">loui@ai.wustl.edu</a>) and summarizes why he taught <code class="command">gawk</code> to
+students of Artificial Intelligence. Here are some passages from the text:
+
+<a class="index-entry-id" id="index-AI"></a>
+<a class="index-entry-id" id="index-PROLOG"></a>
+<a class="index-entry-id" id="index-Loui_002c-Ronald"></a>
+<a class="index-entry-id" id="index-agent"></a>
+<blockquote class="quotation">
+<p>The GAWK manual can
+be consumed in a single lab session and the language can be mastered by
+the next morning by the average student.  GAWK&rsquo;s automatic
+initialization, implicit coercion, I/O support and lack of pointers
+forgive many of the mistakes that young programmers are likely to make.
+Those who have seen C but not mastered it are happy to see that GAWK
+retains some of the same sensibilities while adding what must be
+regarded as spoonsful of syntactic sugar.<br>
+&hellip;<br>
+<a class="index-entry-id" id="index-robot"></a>
+There are further simple answers.  Probably the best is the fact that
+increasingly, undergraduate AI programming is involving the Web.  Oren
+Etzioni (University of Washington, Seattle) has for a while been arguing
+that the &ldquo;softbot&rdquo; is replacing the mechanical engineers&rsquo; robot as the
+most glamorous AI testbed.  If the artifact whose behavior needs to be
+controlled in an intelligent way is the software agent, then a language
+that is well-suited to controlling the software environment is the
+appropriate language.  That would imply a scripting language.  If the
+robot is KAREL, then the right language is &ldquo;turn left; turn right.&rdquo; If
+the robot is Netscape, then the right language is something that can
+generate &lsquo;<samp class="samp">netscape -remote 'openURL(http://cs.wustl.edu/~loui)'</samp>&rsquo; with
+elan.<br>
+&hellip;<br>
+AI programming requires high-level thinking.  There have always been a few
+gifted programmers who can write high-level programs in assembly language.
+Most however need the ambient abstraction to have a higher floor.<br>
+&hellip;<br>
+Second, inference is merely the expansion of notation.  No matter whether
+the logic that underlies an AI program is fuzzy, probabilistic, deontic,
+defeasible, or deductive, the logic merely defines how strings can be
+transformed into other strings.  A language that provides the best
+support for string processing in the end provides the best support for
+logic, for the exploration of various logics, and for most forms of
+symbolic processing that AI might choose to call &ldquo;reasoning&rdquo; instead of
+&ldquo;logic.&rdquo;  The implication is that PROLOG, which saves the AI programmer
+from having to write a unifier, saves perhaps two dozen lines of GAWK
+code at the expense of strongly biasing the logic and representational
+expressiveness of any approach.
+</p></blockquote>
+
+<p>Now that <code class="command">gawk</code> itself can connect to the Internet, it should be obvious
+that it is suitable for writing intelligent web agents.
+</p>
+</li><li><code class="command">awk</code> is strong at pattern recognition and string processing.
+So, it is well suited to the classic problem of language translation.
+A first try could be a program that knows the 100 most frequent English
+words and their counterparts in German or French. The service could be
+implemented by regularly reading email with the program above, replacing
+each word by its translation and sending the translation back via SMTP.
+Users would send English email to their translation service and get
+back a translated email message in return. As soon as this works,
+more effort can be spent on a real translation program.
+
+</li><li>Another dialogue-oriented application (on the verge
+of ridicule) is the email &ldquo;support service.&rdquo; Troubled customers write an
+email to an automatic <code class="command">gawk</code> service that reads the email. It looks
+for keywords in the mail and assembles a reply email accordingly. By carefully
+investigating the email header, and repeating these keywords through the
+reply email, it is rather simple to give the customer a feeling that
+someone cares. Ideally, such a service would search a database of previous
+cases for solutions. If none exists, the database could, for example, consist
+of all the newsgroups, mailing lists and FAQs on the Internet.
+</li></ul>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT12" href="Challenges.html#DOCF12">(12)</a></h5>
+<p>The file is no longer distributed with
+<code class="command">gawk</code>, since the copyright on the file is not clear.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Caveats.html">Network Programming Caveats</a>, Up: <a href="Using-Networking.html">Networking With <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

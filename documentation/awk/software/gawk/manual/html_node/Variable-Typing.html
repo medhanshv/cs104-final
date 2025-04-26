@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Variable Typing (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Variable Typing (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Variable Typing (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Typing-and-Comparison.html" rel="up" title="Typing and Comparison">
+<link href="Comparison-Operators.html" rel="next" title="Comparison Operators">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Variable-Typing">
+<div class="nav-panel">
+<p>
+Next: <a href="Comparison-Operators.html" accesskey="n" rel="next">Comparison Operators</a>, Up: <a href="Typing-and-Comparison.html" accesskey="u" rel="up">Variable Typing and Comparison Expressions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="String-Type-versus-Numeric-Type"><span>6.3.2.1 String Type versus Numeric Type<a class="copiable-link" href="Variable-Typing.html#String-Type-versus-Numeric-Type"> &para;</a></span></h4>
+
+<p>Scalar objects in <code class="command">awk</code> (variables, array elements, and fields)
+are <em class="emph">dynamically</em> typed.  This means their type can change as the
+program runs, from <em class="dfn">untyped</em> before any use,<a class="footnote" id="DOCF36" href="Variable-Typing.html#FOOT36"><sup>36</sup></a> to string
+or number, and then from string to number or number to string, as the
+program progresses.  (<code class="command">gawk</code> also provides regexp-typed scalars,
+but let&rsquo;s ignore that for now; see <a class="pxref" href="Strong-Regexp-Constants.html">Strongly Typed Regexp Constants</a>.)
+</p>
+<p>You can&rsquo;t do much with untyped variables, other than tell that they
+are untyped. The following program tests <code class="code">a</code> against <code class="code">&quot;&quot;</code>
+and <code class="code">0</code>; the test succeeds when <code class="code">a</code> has never been assigned
+a value.  It also uses the built-in <code class="code">typeof()</code> function
+(not presented yet; see <a class="pxref" href="Type-Functions.html">Getting Type Information</a>) to show <code class="code">a</code>&rsquo;s type:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk 'BEGIN { print (a == &quot;&quot; &amp;&amp; a == 0 ?</kbd>
+&gt; <kbd class="kbd">&quot;a is untyped&quot; : &quot;a has a type!&quot;) ; print typeof(a) }'</kbd>
+-| a is untyped
+-| unassigned
+</pre></div>
+
+<p>A scalar has numeric type when assigned a numeric value,
+such as from a numeric constant, or from another scalar
+with numeric type:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk 'BEGIN { a = 42 ; print typeof(a)</kbd>
+&gt; <kbd class="kbd">b = a ; print typeof(b) }'</kbd>
+number
+number
+</pre></div>
+
+<p>Similarly, a scalar has string type when assigned a string
+value, such as from a string constant, or from another scalar
+with string type:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk 'BEGIN { a = &quot;forty two&quot; ; print typeof(a)</kbd>
+&gt; <kbd class="kbd">b = a ; print typeof(b) }'</kbd>
+string
+string
+</pre></div>
+
+<p>So far, this is all simple and straightforward.  What happens, though,
+when <code class="command">awk</code> has to process data from a user?  Let&rsquo;s start with
+field data.  What should the following command produce as output?
+</p>
+<div class="example">
+<pre class="example-preformatted">echo hello | awk '{ printf(&quot;%s %s &lt; 42\n&quot;, $1,
+                           ($1 &lt; 42 ? &quot;is&quot; : &quot;is not&quot;)) }'
+</pre></div>
+
+<p>Since &lsquo;<samp class="samp">hello</samp>&rsquo; is alphabetic data, <code class="command">awk</code> can only do a string
+comparison.  Internally, it converts <code class="code">42</code> into <code class="code">&quot;42&quot;</code> and compares
+the two string values <code class="code">&quot;hello&quot;</code> and <code class="code">&quot;42&quot;</code>. Here&rsquo;s the result:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">echo hello | awk '{ printf(&quot;%s %s &lt; 42\n&quot;, $1,</kbd>
+&gt; <kbd class="kbd">                           ($1 &lt; 42 ? &quot;is&quot; : &quot;is not&quot;)) }'</kbd>
+-| hello is not &lt; 42
+</pre></div>
+
+<p>However, what happens when data from a user <em class="emph">looks like</em> a number?
+On the one hand, in reality, the input data consists of characters, not
+binary numeric
+values.  But, on the other hand, the data looks numeric, and <code class="command">awk</code>
+really ought to treat it as such. And indeed, it does:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">echo 37 | awk '{ printf(&quot;%s %s &lt; 42\n&quot;, $1,</kbd>
+&gt; <kbd class="kbd">                        ($1 &lt; 42 ? &quot;is&quot; : &quot;is not&quot;)) }'</kbd>
+-| 37 is &lt; 42
+</pre></div>
+
+<p>Here are the rules for when <code class="command">awk</code>
+treats data as a number, and for when it treats data as a string.
+</p>
+<a class="index-entry-id" id="index-numeric-strings"></a>
+<a class="index-entry-id" id="index-strings-numeric"></a>
+<a class="index-entry-id" id="index-POSIX-awk-numeric-strings-and"></a>
+<p>The POSIX standard uses the term <em class="dfn">numeric string</em> for input data that
+looks numeric.  The &lsquo;<samp class="samp">37</samp>&rsquo; in the previous example is a numeric string.
+So what is the type of a numeric string? Answer: numeric.
+</p>
+<p>The type of a variable is important because the types of two variables
+determine how they are compared.
+Variable typing follows these definitions and rules:
+</p>
+<ul class="itemize mark-bullet">
+<li>A numeric constant or the result of a numeric operation has the <em class="dfn">numeric</em>
+attribute.
+
+</li><li>A string constant or the result of a string operation has the <em class="dfn">string</em>
+attribute.
+
+</li><li>Fields, <code class="code">getline</code> input, <code class="code">FILENAME</code>, <code class="code">ARGV</code> elements,
+<code class="code">ENVIRON</code> elements, and the elements of an array created by
+<code class="code">match()</code>, <code class="code">split()</code>, and <code class="code">patsplit()</code> that are numeric
+strings have the <em class="dfn">strnum</em> attribute.<a class="footnote" id="DOCF37" href="Variable-Typing.html#FOOT37"><sup>37</sup></a>
+Otherwise, they have
+the <em class="dfn">string</em> attribute.  Uninitialized variables also have the
+<em class="dfn">strnum</em> attribute.
+
+</li><li>Attributes propagate across assignments but are not changed by
+any use.
+</li></ul>
+
+<p>The last rule is particularly important. In the following program,
+<code class="code">a</code> has numeric type, even though it is later used in a string
+operation:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+     a = 12.345
+     b = a &quot; is a cute number&quot;
+     print b
+}
+</pre></div>
+
+<p>When two operands are compared, either string comparison or numeric comparison
+may be used. This depends upon the attributes of the operands, according to the
+following symmetric matrix:
+</p>
+<pre class="verbatim">        +----------------------------------------------
+        |       STRING          NUMERIC         STRNUM
+--------+----------------------------------------------
+        |
+STRING  |       string          string          string
+        |
+NUMERIC |       string          numeric         numeric
+        |
+STRNUM  |       string          numeric         numeric
+--------+----------------------------------------------
+</pre>
+<p>The basic idea is that user input that looks numeric&mdash;and <em class="emph">only</em>
+user input&mdash;should be treated as numeric, even though it is actually
+made of characters and is therefore also a string.
+Thus, for example, the string constant <code class="code">&quot;&nbsp;+3.14&quot;</code><!-- /@w -->,
+when it appears in program source code,
+is a string&mdash;even though it looks numeric&mdash;and
+is <em class="emph">never</em> treated as a number for comparison
+purposes.
+</p>
+<p>In short, when one operand is a &ldquo;pure&rdquo; string, such as a string
+constant, then a string comparison is performed.  Otherwise, a
+numeric comparison is performed.
+(The primary difference between a number and a strnum is that
+for strnums <code class="command">gawk</code> preserves the original string value that
+the scalar had when it came in.)
+</p>
+<p>This point bears additional emphasis:
+Input that looks numeric <em class="emph">is</em> numeric.
+All other input is treated as strings.
+</p>
+<p>Thus, the six-character input string &lsquo;<samp class="samp">&nbsp;+3.14</samp>&rsquo;<!-- /@w --> receives the
+strnum attribute. In contrast, the eight characters
+<code class="code">&quot;&nbsp;+3.14&quot;</code><!-- /@w --> appearing in program text comprise a string constant.
+The following examples print &lsquo;<samp class="samp">1</samp>&rsquo; when the comparison between
+the two different constants is true, and &lsquo;<samp class="samp">0</samp>&rsquo; otherwise:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">echo ' +3.14' | awk '{ print($0 == &quot; +3.14&quot;) }'</kbd>    <i class="i">True</i>
+-| 1
+$ <kbd class="kbd">echo ' +3.14' | awk '{ print($0 == &quot;+3.14&quot;) }'</kbd>     <i class="i">False</i>
+-| 0
+$ <kbd class="kbd">echo ' +3.14' | awk '{ print($0 == &quot;3.14&quot;) }'</kbd>      <i class="i">False</i>
+-| 0
+$ <kbd class="kbd">echo ' +3.14' | awk '{ print($0 == 3.14) }'</kbd>        <i class="i">True</i>
+-| 1
+$ <kbd class="kbd">echo ' +3.14' | awk '{ print($1 == &quot; +3.14&quot;) }'</kbd>    <i class="i">False</i>
+-| 0
+$ <kbd class="kbd">echo ' +3.14' | awk '{ print($1 == &quot;+3.14&quot;) }'</kbd>     <i class="i">True</i>
+-| 1
+$ <kbd class="kbd">echo ' +3.14' | awk '{ print($1 == &quot;3.14&quot;) }'</kbd>      <i class="i">False</i>
+-| 0
+$ <kbd class="kbd">echo ' +3.14' | awk '{ print($1 == 3.14) }'</kbd>        <i class="i">True</i>
+-| 1
+</pre></div>
+
+<p>You can see the type of an input field (or other user input)
+using <code class="code">typeof()</code>:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">echo hello 37 | gawk '{ print typeof($1), typeof($2) }'</kbd>
+-| string strnum
+</pre></div>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT36" href="Variable-Typing.html#DOCF36">(36)</a></h5>
+<p><code class="command">gawk</code>
+calls this <em class="dfn">unassigned</em>, as the following example shows.</p>
+<h5 class="footnote-body-heading"><a id="FOOT37" href="Variable-Typing.html#DOCF37">(37)</a></h5>
+<p>Thus, a POSIX
+numeric string and <code class="command">gawk</code>&rsquo;s strnum are the same thing.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Comparison-Operators.html">Comparison Operators</a>, Up: <a href="Typing-and-Comparison.html">Variable Typing and Comparison Expressions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>BEGIN/END (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="BEGIN/END (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="BEGIN/END (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Pattern-Overview.html" rel="up" title="Pattern Overview">
+<link href="BEGINFILE_002fENDFILE.html" rel="next" title="BEGINFILE/ENDFILE">
+<link href="Ranges.html" rel="prev" title="Ranges">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="BEGIN_002fEND">
+<div class="nav-panel">
+<p>
+Next: <a href="BEGINFILE_002fENDFILE.html" accesskey="n" rel="next">The <code class="code">BEGINFILE</code> and <code class="code">ENDFILE</code> Special Patterns</a>, Previous: <a href="Ranges.html" accesskey="p" rel="prev">Specifying Record Ranges with Patterns</a>, Up: <a href="Pattern-Overview.html" accesskey="u" rel="up">Pattern Elements</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="The-BEGIN-and-END-Special-Patterns"><span>7.1.4 The <code class="code">BEGIN</code> and <code class="code">END</code> Special Patterns<a class="copiable-link" href="BEGIN_002fEND.html#The-BEGIN-and-END-Special-Patterns"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-BEGIN-pattern-1"></a>
+<a class="index-entry-id" id="index-END-pattern"></a>
+<p>All the patterns described so far are for matching input records.
+The <code class="code">BEGIN</code> and <code class="code">END</code> special patterns are different.
+They supply startup and cleanup actions for <code class="command">awk</code> programs.
+<code class="code">BEGIN</code> and <code class="code">END</code> rules must have actions; there is no default
+action for these rules because there is no current record when they run.
+<code class="code">BEGIN</code> and <code class="code">END</code> rules are often referred to as
+&ldquo;<code class="code">BEGIN</code> and <code class="code">END</code> blocks&rdquo; by longtime <code class="command">awk</code>
+programmers.
+</p>
+
+<ul class="mini-toc">
+<li><a href="Using-BEGIN_002fEND.html" accesskey="1">Startup and Cleanup Actions</a></li>
+<li><a href="I_002fO-And-BEGIN_002fEND.html" accesskey="2">Input/Output from <code class="code">BEGIN</code> and <code class="code">END</code> Rules</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

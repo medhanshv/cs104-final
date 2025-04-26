@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Persistent Memory (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Persistent Memory (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Persistent Memory (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Advanced-Features.html" rel="up" title="Advanced Features">
+<link href="Extension-Philosophy.html" rel="next" title="Extension Philosophy">
+<link href="Profiling.html" rel="prev" title="Profiling">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Persistent-Memory">
+<div class="nav-panel">
+<p>
+Next: <a href="Extension-Philosophy.html" accesskey="n" rel="next">Builtin Features versus Extensions</a>, Previous: <a href="Profiling.html" accesskey="p" rel="prev">Profiling Your <code class="command">awk</code> Programs</a>, Up: <a href="Advanced-Features.html" accesskey="u" rel="up">Advanced Features of <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Preserving-Data-Between-Runs"><span>12.7 Preserving Data Between Runs<a class="copiable-link" href="Persistent-Memory.html#Preserving-Data-Between-Runs"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-persistent-memory"></a>
+<a class="index-entry-id" id="index-PMA-memory-allocator-1"></a>
+<p>Starting with version 5.2, <code class="command">gawk</code> supports
+<em class="dfn">persistent memory</em>.  This experimental feature stores the values of
+all of <code class="command">gawk</code>&rsquo;s variables, arrays and user-defined functions
+in a persistent heap, which resides in a file in
+the filesystem.  When persistent memory is not in use (the normal case),
+<code class="command">gawk</code>&rsquo;s data resides in ephemeral system memory.
+</p>
+<p>Persistent memory is enabled on certain 64-bit systems supporting the <code class="code">mmap()</code>
+and <code class="code">munmap()</code> system calls.  <code class="command">gawk</code> must be compiled as a
+non-PIE (Position Independent Executable) binary, since the persistent
+store ends up holding pointers to functions held within the <code class="command">gawk</code>
+executable.  This also means that to use the persistent memory, you must
+use the same <code class="command">gawk</code> executable from run to run.
+</p>
+<p>You can see if your version of <code class="command">gawk</code> supports persistent
+memory like so:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk --version</kbd>
+-| GNU Awk 5.2.2, API 3.2, PMA Avon 8-g1, (GNU MPFR 4.1.0, GNU MP 6.2.1)
+-| Copyright (C) 1989, 1991-2023 Free Software Foundation.
+...
+</pre></div>
+
+<p>If you see the &lsquo;<samp class="samp">PMA</samp>&rsquo; with a version indicator, then it&rsquo;s supported.
+</p>
+<a class="index-entry-id" id="index-REALLY_005fUSE_005fPERSIST_005fMALLOC-environment-variable"></a>
+<a class="index-entry-id" id="index-environment-variables-REALLY_005fUSE_005fPERSIST_005fMALLOC"></a>
+<p>As of this writing, persistent memory has only been tested on GNU/Linux,
+Cygwin, Solaris 2.11, Intel architecture macOS systems,
+FreeBSD 13.1 and OpenBSD 7.1.
+On all others, persistent memory is disabled by default. You can force
+it to be enabled by exporting the shell variable
+<code class="env">REALLY_USE_PERSIST_MALLOC</code> with a nonempty value before
+running <code class="command">configure</code> (see <a class="pxref" href="Quick-Installation.html">Compiling <code class="command">gawk</code> for Unix-Like Systems</a>).
+If you do so and all the tests pass, please let the maintainer know.
+</p>
+<p>To use persistent memory, follow these steps:
+</p>
+<ol class="enumerate">
+<li> Create a new, empty sparse file of the desired size. For example, four
+gigabytes.  On a GNU/Linux system, you can use the <code class="command">truncate</code>
+utility:
+
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">truncate -s 4G data.pma</kbd>
+</pre></div>
+
+</li><li> It is recommended (but not required) to change the permissions on the
+file so that only the owner can read and write it:
+
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">chmod 0600 data.pma</kbd>
+</pre></div>
+
+<a class="index-entry-id" id="index-GAWK_005fPERSIST_005fFILE-environment-variable-1"></a>
+<a class="index-entry-id" id="index-environment-variables-GAWK_005fPERSIST_005fFILE-1"></a>
+</li><li> Provide the path to the data file in the <code class="env">GAWK_PERSIST_FILE</code>
+environment variable.  This is best done by placing the value in the
+environment just for the run of <code class="command">gawk</code>, like so:
+
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">GAWK_PERSIST_FILE=data.pma gawk 'BEGIN { print ++i }'</kbd>
+1
+</pre></div>
+
+</li><li> Use the same data file in subsequent runs to use the preserved data values:
+
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">GAWK_PERSIST_FILE=data.pma gawk 'BEGIN { print ++i }'</kbd>
+2
+$ <kbd class="kbd">GAWK_PERSIST_FILE=data.pma gawk 'BEGIN { print ++i }'</kbd>
+3
+</pre></div>
+
+<p>As shown, in subsequent runs using the same data file, the values of
+<code class="command">gawk</code>&rsquo;s variables are preserved.  However, <code class="command">gawk</code>&rsquo;s
+special variables, such as <code class="code">NR</code>, are reset upon each run.
+Only the variables defined by the program are preserved across runs.
+</p>
+</li></ol>
+
+<p>Interestingly, the program that you execute need not be the same from
+run to run; the persistent store only maintains the values of variables,
+arrays, and user-defined functions, not the totality of <code class="command">gawk</code>&rsquo;s
+internal state.  This lets you share data between unrelated programs,
+eliminating the need for scripts to communicate via text files.
+</p>
+<a class="index-entry-id" id="index-Kelly_002c-Terence"></a>
+<p>Terence Kelly, the author of the persistent memory allocator
+<code class="command">gawk</code> uses, provides the following advice about the backing file:
+</p>
+<blockquote class="quotation">
+<p>Regarding backing file size, I recommend making it far larger
+than all of the data that will ever reside in it, assuming
+that the file system supports sparse files.  The &ldquo;pay only
+for what you use&rdquo; aspect of sparse files ensures that the
+actual storage resource footprint of the backing file will
+meet the application&rsquo;s needs but will be as small as
+possible.  If the file system does <em class="emph">not</em> support sparse
+files, there&rsquo;s a dilemma:  Making the backing file too large
+is wasteful, but making it too small risks memory exhaustion,
+i.e., <code class="code">pma_malloc()</code> returns <code class="code">NULL</code>.
+But persistent <code class="command">gawk</code> should
+still work even without sparse files.
+</p></blockquote>
+
+<p>You can disable the use of the persistent memory allocator in
+<code class="command">gawk</code> with the <samp class="option">--disable-pma</samp> option to the <code class="command">configure</code>
+command at the time that you build <code class="command">gawk</code> (see <a class="pxref" href="Unix-Installation.html">Compiling and Installing <code class="command">gawk</code> on Unix-Like Systems</a>).
+</p>
+<a class="index-entry-id" id="index-PMA_005fVERBOSITY-environment-variable-1"></a>
+<a class="index-entry-id" id="index-environment-variables-PMA_005fVERBOSITY-1"></a>
+<p>You can set the <code class="env">PMA_VERBOSITY</code> environment variable to a
+value between zero and three to control how much debugging
+and error information the persistent memory allocator will print.
+<code class="command">gawk</code> sets the default to one. See the <samp class="file">support/pma.c</samp>
+source code to understand what the different verbosity levels are.
+</p>
+<p>There are a few constraints on the use of persistent memory:
+</p>
+<ul class="itemize mark-bullet">
+<li>If you use MPFR mode (the <samp class="option">-M</samp> option) on the first run
+of a program using persistent memory, you <em class="emph">must</em> continue
+to use it on all subsequent runs.  Similarly, if you don&rsquo;t use <samp class="option">-M</samp>
+on the first run, do not use it on any subsequent runs.
+
+<p>Mixing and matching MPFR mode and regular mode with the same backing
+file is not allowed.  <code class="command">gawk</code> detects such a situation and issues
+a fatal error message.
+</p>
+</li><li>The GNU/Linux CIFS filesystem is known to not
+work well with the PMA allocator.
+Don&rsquo;t use a backing file on a CIFS filesystem.
+
+</li><li>If <code class="command">gawk</code> is run by the <code class="command">root</code> user, then
+persistent memory is not allowed. This is to avoid the possibility
+of private data &ldquo;leaking&rdquo; into the backing file and being
+recovered later by an attacker.
+
+</li><li>Over time, the backing file will be filled with memory &ldquo;leaked&rdquo;
+by <code class="command">gawk</code> as it runs. Most notably this is the memory used
+to compile your program into an internal form before running it,
+which happens each time, but there are other leakages as well.
+(For an extreme example of this, see
+<a class="uref" href="https://lists.gnu.org/archive/html/bug-gawk/2023-04/msg00025.html">this thread</a> in the &ldquo;bug-gawk at gnu.org&rdquo;
+mailing list archives.) It is up to you to use &lsquo;<samp class="samp">du -sh
+<var class="var">pmafile</var></samp>&rsquo; occasionally to monitor how full the file is, and
+arrange to dump any data you may need before the backing file becomes
+full.
+</li></ul>
+
+<p>Terence Kelly has provided a separate <cite class="cite">Persistent-Memory <code class="command">gawk</code> User Manual</cite>
+document, which is included in the <code class="command">gawk</code>
+distribution.  It is worth reading.
+</p>
+<p>Here are additional articles and web links that provide more information about
+persistent memory and why it&rsquo;s useful in a scripting language like
+<code class="command">gawk</code>.
+</p>
+<a class="index-entry-id" id="index-Kelly_002c-Terence-1"></a>
+<dl class="table">
+<dt><a class="uref" href="https://web.eecs.umich.edu/~tpkelly/pma/">https://web.eecs.umich.edu/~tpkelly/pma/</a></dt>
+<dd><p>This is the canonical source for Terence Kelly&rsquo;s Persistent Memory
+Allocator (PMA).  The latest source code and user manual
+will always be available at this location.
+Kelly may be reached directly at any of the following
+email addresses:
+&ldquo;tpkelly AT acm.org&rdquo;,
+&ldquo;tpkelly AT cs.princeton.edu&rdquo;, or
+&ldquo;tpkelly AT eecs.umich.edu&rdquo;.
+</p>
+</dd>
+<dt><cite class="cite">Persistent Memory Allocation</cite></dt>
+<dd><p>Terence Kelly, Zi Fan Tan, Jianan Li, and Haris Volos,
+ACM <cite class="cite">Queue</cite> magazine, Vol. 20 No. 2 (March/April 2022),
+<a class="uref" href="https://dl.acm.org/doi/pdf/10.1145/3534855">PDF</a>,
+<a class="uref" href="https://queue.acm.org/detail.cfm?id=3534855">HTML</a>.
+This paper explains the design of the PMA
+allocator used in persistent <code class="command">gawk</code>.
+</p>
+</dd>
+<dt><cite class="cite">Persistent Scripting</cite></dt>
+<dd><p>Zi Fan Tan, Jianan Li, Haris Volos, and Terence Kelly,
+Non-Volatile Memory Workshop (NVMW) 2022,
+<a class="uref" href="http://nvmw.ucsd.edu/program/">http://nvmw.ucsd.edu/program/</a>.
+This paper motivates and describes a research prototype of persistent
+<code class="command">gawk</code> and presents performance evaluations on Intel Optane
+non-volatile memory; note that the interface differs slightly.
+</p>
+</dd>
+<dt><cite class="cite">Persistent Memory Programming on Conventional Hardware</cite></dt>
+<dd><p>Terence Kelly,
+ACM <cite class="cite">Queue</cite> magazine Vol. 17 No. 4 (July/Aug 2019),
+<a class="uref" href="https://dl.acm.org/doi/pdf/10.1145/3358955.3358957">PDF</a>,
+<a class="uref" href="https://queue.acm.org/detail.cfm?id=3358957">HTML</a>.
+This paper describes simple techniques for persistent memory for C/C++
+code on conventional computers that lack non-volatile memory hardware.
+</p>
+</dd>
+<dt><cite class="cite">Is Persistent Memory Persistent?</cite></dt>
+<dd><p>Terence Kelly,
+ACM <cite class="cite">Queue</cite> magazine Vol. 18 No. 2 (March/April 2020),
+<a class="uref" href="https://dl.acm.org/doi/pdf/10.1145/3400899.3400902">PDF</a>,
+<a class="uref" href="https://queue.acm.org/detail.cfm?id=3400902">HTML</a>.
+This paper describes a simple and robust testbed for testing software
+against real power failures.
+</p>
+</dd>
+<dt><cite class="cite">Crashproofing the Original NoSQL Key/Value Store</cite></dt>
+<dd><p>Terence Kelly,
+ACM <cite class="cite">Queue</cite> magazine Vol. 19 No. 4 (July/Aug 2021),
+<a class="uref" href="https://dl.acm.org/doi/pdf/10.1145/3487019.3487353">PDF</a>,
+<a class="uref" href="https://queue.acm.org/detail.cfm?id=3487353">HTML</a>.
+This paper describes a crash-tolerance feature added to GNU DBM&rsquo;
+(<code class="code">gdbm</code>).
+</p></dd>
+</dl>
+
+<p>When Terence Kelly published his papers, his collaborators produced
+a prototype integration of PMA with <code class="command">gawk</code>.  That version used
+a (mandatory!) option <samp class="option">--persist=<var class="var">file</var></samp> to specify the file
+for storing the persistent heap. If this option is given to <code class="command">gawk</code>,
+it produces a fatal error message instructing the user to use the
+<code class="env">GAWK_PERSIST_FILE</code> environment variable instead. Except for this
+paragraph, that option is otherwise undocumented.
+</p>
+<p>The prototype only supported persistent data; it did not
+support persistent functions.
+</p>
+<p>As noted earlier, support for persistent memory is <em class="emph">experimental</em>.
+If it becomes burdensome,<a class="footnote" id="DOCF89" href="Persistent-Memory.html#FOOT89"><sup>89</sup></a> then the feature will be removed.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT89" href="Persistent-Memory.html#DOCF89">(89)</a></h5>
+<p>Meaning, there are too many
+bug reports, or too many strange differences in behavior from when
+<code class="command">gawk</code> is run normally.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Extension-Philosophy.html">Builtin Features versus Extensions</a>, Previous: <a href="Profiling.html">Profiling Your <code class="command">awk</code> Programs</a>, Up: <a href="Advanced-Features.html">Advanced Features of <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

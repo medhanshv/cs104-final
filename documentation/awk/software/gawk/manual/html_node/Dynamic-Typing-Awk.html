@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Dynamic Typing Awk (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Dynamic Typing Awk (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Dynamic Typing Awk (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Dynamic-Typing.html" rel="up" title="Dynamic Typing">
+<link href="Dynamic-Typing-Gawk.html" rel="next" title="Dynamic Typing Gawk">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Dynamic-Typing-Awk">
+<div class="nav-panel">
+<p>
+Next: <a href="Dynamic-Typing-Gawk.html" accesskey="n" rel="next">Dynamic Typing In <code class="command">gawk</code></a>, Up: <a href="Dynamic-Typing.html" accesskey="u" rel="up">Variable Typing Is Dynamic</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Dynamic-Typing-In-Standard-awk"><span>9.3.1 Dynamic Typing In Standard <code class="command">awk</code><a class="copiable-link" href="Dynamic-Typing-Awk.html#Dynamic-Typing-In-Standard-awk"> &para;</a></span></h4>
+
+<p>Let&rsquo;s first discuss standard <code class="command">awk</code>.
+Here is an annotated sample program:
+</p>
+<div class="example">
+<pre class="example-preformatted">function foo(a)
+{
+    a[1] = 1   # parameter is an array
+}
+
+BEGIN {
+    b = 1
+    foo(b)  # invalid: fatal type mismatch
+
+    foo(x)  # x uninitialized, becomes an array dynamically
+    x = 1   # now not allowed, runtime error
+}
+</pre></div>
+
+<p>In this example, the first call to <code class="code">foo()</code> generates
+a fatal error, so <code class="command">awk</code> will not report the second
+error. If you comment out that call, though, then <code class="command">awk</code>
+does report the second error.
+</p>
+<p>Here is a more extreme example:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+    funky(a)
+    if (A == 0)
+        print &quot;&lt;&quot; a &quot;&gt;&quot;
+    else
+        print a[1]
+}
+
+function funky(arr)
+{
+    if (A == 0)
+        arr = 1
+    else
+        arr[1] = 1
+}
+</pre></div>
+
+<p>Here, the function uses its parameter differently depending upon the
+value of the global variable <code class="code">A</code>. If <code class="code">A</code> is zero, the
+parameter <code class="code">arr</code> is treated as a scalar.  Otherwise it&rsquo;s treated
+as an array.
+</p>
+<p>There are two ways this program might behave. <code class="command">awk</code> could notice
+that in the main program, <code class="code">a</code> is subscripted, and so mark it as
+an array before the program even begins to run.  BWK <code class="code">awk</code>, <code class="code">mawk</code>,
+and possibly others do this:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">nawk -v A=0 -f funky.awk</kbd>
+error&rarr; nawk: can't assign to a; it's an array name.
+error&rarr;  source line number 11
+$ <kbd class="kbd">nawk -v A=1 -f funky.awk</kbd>
+-| 1
+</pre></div>
+
+<p>Or <code class="command">awk</code> could wait until runtime to set the type of <code class="code">a</code>.
+In this case, since <code class="code">a</code> was never used before being
+passed to the function, how the function uses it forces the type to
+be resolved to either scalar or array.  <code class="command">gawk</code>
+and the MKS <code class="command">awk</code> do this:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk -v A=0 -f funky.awk</kbd>
+-| &lt;&gt;
+$ <kbd class="kbd">gawk -v A=1 -f funky.awk </kbd>
+-| 1
+</pre></div>
+
+<p>POSIX does not specify the correct behavior, so be aware that different
+implementations work differently.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Dynamic-Typing-Gawk.html">Dynamic Typing In <code class="command">gawk</code></a>, Up: <a href="Dynamic-Typing.html">Variable Typing Is Dynamic</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Distribution contents (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Distribution contents (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Distribution contents (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Gawk-Distribution.html" rel="up" title="Gawk Distribution">
+<link href="Extracting.html" rel="prev" title="Extracting">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="appendixsubsec-level-extent" id="Distribution-contents">
+<div class="nav-panel">
+<p>
+Previous: <a href="Extracting.html" accesskey="p" rel="prev">Extracting the Distribution</a>, Up: <a href="Gawk-Distribution.html" accesskey="u" rel="up">The <code class="command">gawk</code> Distribution</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="appendixsubsec" id="Contents-of-the-gawk-Distribution"><span>B.1.3 Contents of the <code class="command">gawk</code> Distribution<a class="copiable-link" href="Distribution-contents.html#Contents-of-the-gawk-Distribution"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-gawk-distribution"></a>
+
+<p>The <code class="command">gawk</code> distribution has a number of C source files,
+documentation files,
+subdirectories, and files related to the configuration process
+(see <a class="pxref" href="Unix-Installation.html">Compiling and Installing <code class="command">gawk</code> on Unix-Like Systems</a>),
+as well as several subdirectories related to different non-Unix
+operating systems:
+</p>
+<dl class="table">
+<dt>Various &lsquo;<samp class="samp">.c</samp>&rsquo;, &lsquo;<samp class="samp">.y</samp>&rsquo;, and &lsquo;<samp class="samp">.h</samp>&rsquo; files</dt>
+<dd><p>These files contain the actual <code class="command">gawk</code> source code.
+</p></dd>
+</dl>
+
+<dl class="table">
+<dt><samp class="file">support/*</samp></dt>
+<dd><p>C header and source files for routines that <code class="command">gawk</code>
+uses, but that are not part of its core functionality.
+For example, argument parsing, regular expression matching,
+and random number generating routines are all kept here.
+</p>
+</dd>
+<dt><samp class="file">ABOUT-NLS</samp></dt>
+<dd><p>A file containing information about GNU <code class="command">gettext</code> and translations.
+</p>
+</dd>
+<dt><samp class="file">AUTHORS</samp></dt>
+<dd><p>A file with some information about the authorship of <code class="command">gawk</code>.
+It exists only to satisfy the pedants at the Free Software Foundation.
+</p>
+</dd>
+<dt><samp class="file">README</samp></dt>
+<dt><samp class="file">README_d/README.*</samp></dt>
+<dd><p>Descriptive files: <samp class="file">README</samp> for <code class="command">gawk</code> under Unix and the
+rest for the various hardware and software combinations.
+</p>
+</dd>
+<dt><samp class="file">INSTALL</samp></dt>
+<dd><p>A file providing an overview of the configuration and installation process.
+</p>
+</dd>
+<dt><samp class="file">ChangeLog</samp></dt>
+<dd><p>A detailed list of source code changes as bugs are fixed or improvements made.
+There are similar files in all of the subdirectories.
+</p>
+</dd>
+<dt><samp class="file">ChangeLog.0</samp></dt>
+<dt><samp class="file">ChangeLog.1</samp></dt>
+<dd><p>Older lists of source code changes.
+There are similar files in all of the subdirectories.
+</p>
+</dd>
+<dt><samp class="file">NEWS</samp></dt>
+<dd><p>A list of changes to <code class="command">gawk</code> since the last release or patch.
+There may be similar files in other subdirectories.
+</p>
+</dd>
+<dt><samp class="file">NEWS.0</samp></dt>
+<dt><samp class="file">NEWS.1</samp></dt>
+<dd><p>Older lists of changes to <code class="command">gawk</code>.
+There may be similar files in other subdirectories.
+</p>
+</dd>
+<dt><samp class="file">COPYING</samp></dt>
+<dd><p>The GNU General Public License.
+</p>
+</dd>
+<dt><samp class="file">POSIX.STD</samp></dt>
+<dd><p>A description of behaviors in the POSIX standard for <code class="command">awk</code> that
+are left undefined, or where <code class="command">gawk</code> may not comply fully, as well
+as a list of things that the POSIX standard should describe but does not.
+</p>
+</dd>
+<dt><a id="index-artificial-intelligence_002c-gawk-and"></a><span><samp class="file">doc/awkforai.txt</samp><a class="copiable-link" href="Distribution-contents.html#index-artificial-intelligence_002c-gawk-and"> &para;</a></span></dt>
+<dd><p>Pointers to the original draft of
+a short article describing why <code class="command">gawk</code> is a good language for
+artificial intelligence (AI) programming.
+</p>
+</dd>
+<dt><samp class="file">doc/bc_notes</samp></dt>
+<dd><p>A brief description of <code class="command">gawk</code>&rsquo;s &ldquo;byte code&rdquo; internals.
+</p>
+</dd>
+<dt><samp class="file">doc/README.card</samp></dt>
+<dt><samp class="file">doc/ad.block</samp></dt>
+<dt><samp class="file">doc/awkcard.in</samp></dt>
+<dt><samp class="file">doc/cardfonts</samp></dt>
+<dt><samp class="file">doc/colors</samp></dt>
+<dt><samp class="file">doc/macros</samp></dt>
+<dt><samp class="file">doc/no.colors</samp></dt>
+<dt><samp class="file">doc/setter.outline</samp></dt>
+<dd><p>The <code class="command">troff</code> source for a five-color <code class="command">awk</code> reference card.
+A modern version of <code class="command">troff</code> such as GNU <code class="command">troff</code> (<code class="command">groff</code>) is
+needed to produce the color version. See the file <samp class="file">README.card</samp>
+for instructions if you have an older <code class="command">troff</code>.
+</p>
+</dd>
+<dt><samp class="file">doc/gawk.1</samp></dt>
+<dd><p>The <code class="command">troff</code> source for a manual page describing <code class="command">gawk</code>.
+This is distributed for the convenience of Unix users.
+</p>
+</dd>
+<dt><a id="index-Texinfo-4"></a><span><samp class="file">doc/gawk.texi</samp><a class="copiable-link" href="Distribution-contents.html#index-Texinfo-4"> &para;</a></span></dt>
+<dd><p>The Texinfo source file for this Web page.
+It should be processed by
+<code class="command">texi2dvi</code> or <code class="command">texi2pdf</code>
+to produce a printed document, and
+by <code class="command">makeinfo</code> to produce an Info or HTML file.
+The <samp class="file">Makefile</samp> takes care of this processing and produces
+printable output via <code class="command">texi2dvi</code> or <code class="command">texi2pdf</code>.
+</p>
+</dd>
+<dt><samp class="file">doc/gawk.info</samp></dt>
+<dd><p>The generated Info file for this Web page.
+</p>
+</dd>
+<dt><samp class="file">doc/gawkinet.texi</samp></dt>
+<dd><p>The Texinfo source file for
+<cite class="cite">TCP/IP Internetworking with <code class="command">gawk</code></cite>.
+It should be processed with TeX
+(via <code class="command">texi2dvi</code> or <code class="command">texi2pdf</code>)
+to produce a printed document and
+with <code class="command">makeinfo</code> to produce an Info or HTML file.
+</p>
+</dd>
+<dt><samp class="file">doc/gawkinet.info</samp></dt>
+<dd><p>The generated Info file for
+<cite class="cite">TCP/IP Internetworking with <code class="command">gawk</code></cite>.
+</p>
+</dd>
+<dt><samp class="file">doc/gawkworkflow.texi</samp></dt>
+<dd><p>The Texinfo source file for
+<cite class="cite">Participating in <code class="command">gawk</code> Development</cite>.
+It should be processed with TeX
+(via <code class="command">texi2dvi</code> or <code class="command">texi2pdf</code>)
+to produce a printed document and
+with <code class="command">makeinfo</code> to produce an Info or HTML file.
+</p>
+</dd>
+<dt><samp class="file">doc/gawkworkflow.info</samp></dt>
+<dd><p>The generated Info file for
+<cite class="cite">Participating in <code class="command">gawk</code> Development</cite>.
+</p>
+</dd>
+<dt><samp class="file">doc/pm-gawk.texi</samp></dt>
+<dd><p>The Texinfo source file for
+<cite class="cite">Persistent-Memory <code class="command">gawk</code> User Manual</cite>.
+It should be processed with TeX
+(via <code class="command">texi2dvi</code> or <code class="command">texi2pdf</code>)
+to produce a printed document and
+with <code class="command">makeinfo</code> to produce an Info or HTML file.
+</p>
+</dd>
+<dt><samp class="file">doc/pm-gawk.info</samp></dt>
+<dd><p>The generated Info file for
+<cite class="cite">Persistent-Memory <code class="command">gawk</code> User Manual</cite>.
+</p>
+</dd>
+<dt><samp class="file">doc/pm-gawk.1</samp></dt>
+<dd><p>The <code class="command">troff</code> source for a manual page describing the
+persistent memory features presented in <a class="ref" href="Persistent-Memory.html">Preserving Data Between Runs</a>.
+</p>
+</dd>
+<dt><samp class="file">doc/igawk.1</samp></dt>
+<dd><p>The <code class="command">troff</code> source for a manual page describing the <code class="command">igawk</code>
+program presented in
+<a class="ref" href="Igawk-Program.html">An Easy Way to Use Library Functions</a>.
+(Since <code class="command">gawk</code> can do its own <code class="code">@include</code> processing,
+neither <code class="command">igawk</code> nor <samp class="file">igawk.1</samp> are installed.)
+</p>
+</dd>
+<dt><samp class="file">doc/it/*</samp></dt>
+<dd><p>Files for the Italian translation of this Web page, produced and
+contributed by Antonio Colombo and Marco Curreli.
+</p>
+</dd>
+<dt><samp class="file">doc/Makefile.in</samp></dt>
+<dd><p>The input file used during the configuration process to generate the
+actual <samp class="file">Makefile</samp> for creating the documentation.
+</p>
+</dd>
+<dt><samp class="file">Makefile.am</samp></dt>
+<dt><samp class="file">*/Makefile.am</samp></dt>
+<dd><p>Files used by the GNU Automake software for generating
+the <samp class="file">Makefile.in</samp> files used by Autoconf and
+<code class="command">configure</code>.
+</p>
+</dd>
+<dt><samp class="file">Makefile.in</samp></dt>
+<dt><samp class="file">aclocal.m4</samp></dt>
+<dt><samp class="file">build-aux/*</samp></dt>
+<dt><samp class="file">configh.in</samp></dt>
+<dt><samp class="file">configure.ac</samp></dt>
+<dt><samp class="file">configure</samp></dt>
+<dt><samp class="file">custom.h</samp></dt>
+<dt><samp class="file">missing_d/*</samp></dt>
+<dt><samp class="file">m4/*</samp></dt>
+<dd><p>These files and subdirectories are used when configuring and compiling
+<code class="command">gawk</code> for various Unix systems.  Most of them are explained
+in <a class="ref" href="Unix-Installation.html">Compiling and Installing <code class="command">gawk</code> on Unix-Like Systems</a>. The rest are there to support the main
+infrastructure.
+</p>
+</dd>
+<dt><samp class="file">po/*</samp></dt>
+<dd><p>The <samp class="file">po</samp> library contains message translations.
+</p>
+</dd>
+<dt><samp class="file">awklib/extract.awk</samp></dt>
+<dt><samp class="file">awklib/Makefile.am</samp></dt>
+<dt><samp class="file">awklib/Makefile.in</samp></dt>
+<dt><samp class="file">awklib/eg/*</samp></dt>
+<dd><p>The <samp class="file">awklib</samp> directory contains a copy of <samp class="file">extract.awk</samp>
+(see <a class="pxref" href="Extract-Program.html">Extracting Programs from Texinfo Source Files</a>),
+which can be used to extract the sample programs from the Texinfo
+source file for this Web page. It also contains a <samp class="file">Makefile.in</samp> file, which
+<code class="command">configure</code> uses to generate a <samp class="file">Makefile</samp>.
+<samp class="file">Makefile.am</samp> is used by GNU Automake to create <samp class="file">Makefile.in</samp>.
+The library functions from
+<a class="ref" href="Library-Functions.html">A Library of <code class="command">awk</code> Functions</a>,
+are included as ready-to-use files in the <code class="command">gawk</code> distribution.
+They are installed as part of the installation process.
+The rest of the programs in this Web page are available in appropriate
+subdirectories of <samp class="file">awklib/eg</samp>.
+</p>
+</dd>
+<dt><samp class="file">extension/*</samp></dt>
+<dd><p>The source code, manual pages, and infrastructure files for
+the sample extensions included with <code class="command">gawk</code>.
+See <a class="xref" href="Dynamic-Extensions.html">Writing Extensions for <code class="command">gawk</code></a>, for more information.
+</p>
+<a class="index-entry-id" id="index-AWKPATH-environment-variable-8"></a>
+<a class="index-entry-id" id="index-environment-variables-AWKPATH-8"></a>
+<a class="index-entry-id" id="index-AWKLIBPATH-environment-variable-7"></a>
+<a class="index-entry-id" id="index-environment-variables-AWKLIBPATH-7"></a>
+</dd>
+<dt><samp class="file">extras/*</samp></dt>
+<dd><p>Additional non-essential files.  Currently, this directory contains some shell
+startup files to be installed in <samp class="file">/etc/profile.d</samp> to aid in manipulating
+the <code class="env">AWKPATH</code> and <code class="env">AWKLIBPATH</code> environment variables.
+See <a class="xref" href="Shell-Startup-Files.html">Shell Startup Files</a>, for more information.
+</p>
+</dd>
+<dt><samp class="file">posix/*</samp></dt>
+<dd><p>Files needed for building <code class="command">gawk</code> on POSIX-compliant systems.
+</p>
+</dd>
+<dt><samp class="file">pc/*</samp></dt>
+<dd><p>Files needed for building <code class="command">gawk</code> under MS-Windows
+(see <a class="pxref" href="PC-Installation.html">Installation on MS-Windows</a> for details).
+</p>
+</dd>
+<dt><samp class="file">vms/*</samp></dt>
+<dd><p>Files needed for building <code class="command">gawk</code> under OpenVMS
+(see <a class="pxref" href="OpenVMS-Installation.html">Compiling and Installing <code class="command">gawk</code> on OpenVMS</a> for details).
+</p>
+</dd>
+<dt><samp class="file">test/*</samp></dt>
+<dd><p>A test suite for
+<code class="command">gawk</code>.  You can use &lsquo;<samp class="samp">make check</samp>&rsquo; from the top-level <code class="command">gawk</code>
+directory to run your version of <code class="command">gawk</code> against the test suite.
+If <code class="command">gawk</code> successfully passes &lsquo;<samp class="samp">make check</samp>&rsquo;, then you can
+be confident of a successful port.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Extracting.html">Extracting the Distribution</a>, Up: <a href="Gawk-Distribution.html">The <code class="command">gawk</code> Distribution</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>Interacting (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="Interacting (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="Interacting (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Using-Networking.html" rel="up" title="Using Networking">
+<link href="Setting-Up.html" rel="next" title="Setting Up">
+<link href="Troubleshooting.html" rel="prev" title="Troubleshooting">
+<style type="text/css">
+<!--
+div.example {margin-left: 3.2em}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Interacting">
+<div class="nav-panel">
+<p>
+Next: <a href="Setting-Up.html" accesskey="n" rel="next">Setting Up a Service</a>, Previous: <a href="Troubleshooting.html" accesskey="p" rel="prev">Troubleshooting Connection Problems</a>, Up: <a href="Using-Networking.html" accesskey="u" rel="up">Networking With <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Interacting-with-a-Network-Service">2.4 Interacting with a Network Service</h3>
+
+<p>The next program begins really interacting with a
+network service by printing something into the special file. It asks the
+so-called <code class="command">finger</code> service if a user of the machine is logged in. When
+testing this program, try to change the variable &lsquo;<samp class="samp">finger_server</samp>&rsquo;
+to some other machine name in your local network:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+  finger_server     = &quot;andrew.cmu.edu&quot;
+  finger_connection = &quot;/inet/tcp/0/&quot; finger_server &quot;/finger&quot;
+  print &quot;wnace&quot; |&amp; finger_connection
+  while ((finger_connection |&amp; getline) &gt; 0)
+    print $0
+  close(finger_connection)
+}
+</pre></div>
+
+<p>After telling the service on the machine which user to look for,
+the program repeatedly reads lines that come as a reply. When no more
+lines are available (because the service has closed the connection), the
+program also closes the connection. If you tried to replace &lsquo;<samp class="samp">finger_server</samp>&rsquo;
+with some other server name, the script probably reported being unable to
+open the connection, because most servers today no longer support this
+service.  Try replacing the login name of Professor Nace (<code class="code">wnace</code>)
+with another login name (like <code class="code">help</code>). You will receive a list of
+login names similar to the one you asked for. In the 1980s you could get
+a list of all users currently logged in by asking for an empty string (<code class="code">&quot;&quot;</code>).
+</p>
+<a class="index-entry-id" id="index-Linux-1"></a>
+<a class="index-entry-id" id="index-GNU_002fLinux-1"></a>
+<p>The final <code class="code">close()</code> call could be safely deleted from
+the above script, because the operating system closes any open connection
+by default when a script reaches the end of execution. But, in order to avoid
+portability problems, it is best to always close connections explicitly.
+With the Linux kernel,
+for example, proper closing results in flushing of buffers. Letting
+the close happen by default may result in discarding buffers.
+</p>
+<p>When looking at <samp class="file">/etc/services</samp> you may have noticed that the
+&lsquo;<samp class="samp">daytime</samp>&rsquo; service is also available with &lsquo;<samp class="samp">udp</samp>&rsquo;. In the earlier
+examples, change &lsquo;<samp class="samp">tcp</samp>&rsquo; to &lsquo;<samp class="samp">udp</samp>&rsquo; and try if the &lsquo;<samp class="samp">finger</samp>&rsquo; and &lsquo;<samp class="samp">daytime</samp>&rsquo;
+clients still work as expected. They probably will not respond because
+a wise administrator switched off these services.
+But if they do, you may see the expected day and time message.
+The program then hangs, because it waits for more lines to come from the
+service. However, they never do. This behavior is a consequence of the
+differences between TCP and UDP. When using UDP, neither party is
+automatically informed about the other closing the connection.
+Continuing to experiment this way reveals many other subtle
+differences between TCP and UDP. To avoid such trouble, you should always
+remember the advice Douglas E. Comer and David Stevens give in
+Volume III of their series <cite class="cite">Internetworking With TCP</cite>
+(page 14):
+</p>
+<a class="index-entry-id" id="index-TCP-_0028Transmission-Control-Protocol_0029-3"></a>
+<a class="index-entry-id" id="index-UDP-_0028User-Datagram-Protocol_0029-1"></a>
+<blockquote class="quotation">
+<p>When designing client-server applications, beginners are strongly
+advised to use TCP because it provides reliable, connection-oriented
+communication. Programs only use UDP if the application protocol handles
+reliability, the application requires hardware broadcast or multicast,
+or the application cannot tolerate virtual circuit overhead.
+</p></blockquote>
+
+<p>This advice is actually quite dated and we hesitated to repeat it here.
+But we left it in because we are still observing beginners running
+into this pitfall. While this advice has aged quite well, some other
+ideas from the 1980s have not. The &lsquo;<samp class="samp">finger</samp>&rsquo; service may still be
+available in Microsoft
+<a class="uref" href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/finger">Windows Server 2019</a>,
+but it turned out to be a never-ending cause of trouble. First of all,
+it is now obvious that a server should never reveal personal data about
+its users to anonymous client software that connects over the wild wild Internet.
+So every server on the Internet should reject &lsquo;<samp class="samp">finger</samp>&rsquo; requests
+(by disabling the port and by disabling the software serving this port).
+But things got even worse in 2020 when it turned out that even the client
+software (the &lsquo;<samp class="samp">finger</samp>&rsquo; command documented in the link above) is a
+security problem. A tool called
+<a class="uref" href="https://seclists.org/fulldisclosure/2020/Sep/30">DarkFinger</a>
+allows to leverage the Microsoft Windows &lsquo;<samp class="samp">finger.exe</samp>&rsquo; as a file downloader
+and help evade network security devices.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Setting-Up.html">Setting Up a Service</a>, Previous: <a href="Troubleshooting.html">Troubleshooting Connection Problems</a>, Up: <a href="Using-Networking.html">Networking With <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

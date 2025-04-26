@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Default Field Splitting (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Default Field Splitting (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Default Field Splitting (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Field-Separators.html" rel="up" title="Field Separators">
+<link href="Regexp-Field-Splitting.html" rel="next" title="Regexp Field Splitting">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Default-Field-Splitting">
+<div class="nav-panel">
+<p>
+Next: <a href="Regexp-Field-Splitting.html" accesskey="n" rel="next">Using Regular Expressions to Separate Fields</a>, Up: <a href="Field-Separators.html" accesskey="u" rel="up">Specifying How Fields Are Separated</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Whitespace-Normally-Separates-Fields"><span>4.5.1 Whitespace Normally Separates Fields<a class="copiable-link" href="Default-Field-Splitting.html#Whitespace-Normally-Separates-Fields"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-field-separator-whitespace-as"></a>
+<a class="index-entry-id" id="index-whitespace-as-field-separators"></a>
+<a class="index-entry-id" id="index-field-separator-FS-variable-and"></a>
+<a class="index-entry-id" id="index-separators-field-FS-variable-and"></a>
+<p>Fields are normally separated by whitespace sequences
+(spaces, TABs, and newlines), not by single spaces.  Two spaces in a row do not
+delimit an empty field.  The default value of the field separator <code class="code">FS</code>
+is a string containing a single space, <code class="code">&quot;&nbsp;&quot;</code><!-- /@w -->.  If <code class="command">awk</code>
+interpreted this value in the usual way, each space character would separate
+fields, so two spaces in a row would make an empty field between them.
+The reason this does not happen is that a single space as the value of
+<code class="code">FS</code> is a special case&mdash;it is taken to specify the default manner
+of delimiting fields.
+</p>
+<p>If <code class="code">FS</code> is any other single character, such as <code class="code">&quot;,&quot;</code>, then
+each occurrence of that character separates two fields.  Two consecutive
+occurrences delimit an empty field.  If the character occurs at the
+beginning or the end of the line, that too delimits an empty field.  The
+space character is the only single character that does not follow these
+rules.
+</p>
+</div>
+
+
+
+</body>
+</html>

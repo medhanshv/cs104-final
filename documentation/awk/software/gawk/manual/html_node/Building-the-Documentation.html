@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Building the Documentation (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Building the Documentation (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Building the Documentation (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Unix-Installation.html" rel="up" title="Unix Installation">
+<link href="Compiling-from-Git.html" rel="prev" title="Compiling from Git">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="appendixsubsec-level-extent" id="Building-the-Documentation">
+<div class="nav-panel">
+<p>
+Previous: <a href="Compiling-from-Git.html" accesskey="p" rel="prev">Compiling from Git</a>, Up: <a href="Unix-Installation.html" accesskey="u" rel="up">Compiling and Installing <code class="command">gawk</code> on Unix-Like Systems</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="appendixsubsec" id="Building-the-Documentation-1"><span>B.2.6 Building the Documentation<a class="copiable-link" href="Building-the-Documentation.html#Building-the-Documentation-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-documentation-building-Info-files"></a>
+<p>The generated Info documentation is included in the distribution
+<code class="command">tar</code> files and in the Git source code repository; you should
+not need to rebuild it. However, if it needs to be done, simply running
+<code class="command">make</code> will do it, assuming that you have a recent enough version
+of <code class="command">makeinfo</code> installed.
+</p>
+<a class="index-entry-id" id="index-documentation-building-PDF"></a>
+<p>If you wish to build the PDF version of the manuals, you will need
+to have TeX installed, and possibly additional packages that
+provide the necessary fonts and tools, such as <code class="command">dvi2pdf</code>
+and <code class="command">ps2pdf</code>.  You will also need GNU Troff (<code class="command">groff</code>)
+installed in order to format the reference card and the manual page
+(see <a class="pxref" href="Distribution-contents.html">Contents of the <code class="command">gawk</code> Distribution</a>).  Managing this process is beyond the
+scope of this Web page.
+</p>
+<p>Assuming you have all you need, then the following commands produce the
+PDF versions of the documentation:
+</p>
+<div class="example">
+<pre class="example-preformatted">cd doc
+make pdf
+</pre></div>
+
+<p>This creates PDF versions of all three Texinfo documents included
+in the distribution, as well as of the manual page and the reference card.
+</p>
+<a class="index-entry-id" id="index-documentation-building-HTML"></a>
+<p>Similarly, if you have a recent enough version of <code class="command">makeinfo</code>,
+you can make the HTML version of the manuals with:
+</p>
+<div class="example">
+<pre class="example-preformatted">cd doc
+make html
+</pre></div>
+
+<p>This creates HTML versions of all three Texinfo documents included
+in the distribution.
+</p>
+</div>
+
+
+
+</body>
+</html>

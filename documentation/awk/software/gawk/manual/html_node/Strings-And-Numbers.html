@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Strings And Numbers (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Strings And Numbers (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Strings And Numbers (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Conversion.html" rel="up" title="Conversion">
+<link href="Locale-influences-conversions.html" rel="next" title="Locale influences conversions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Strings-And-Numbers">
+<div class="nav-panel">
+<p>
+Next: <a href="Locale-influences-conversions.html" accesskey="n" rel="next">Locales Can Influence Conversion</a>, Up: <a href="Conversion.html" accesskey="u" rel="up">Conversion of Strings and Numbers</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="How-awk-Converts-Between-Strings-and-Numbers"><span>6.1.4.1 How <code class="command">awk</code> Converts Between Strings and Numbers<a class="copiable-link" href="Strings-And-Numbers.html#How-awk-Converts-Between-Strings-and-Numbers"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-converting-string-to-numbers"></a>
+<a class="index-entry-id" id="index-strings-converting"></a>
+<a class="index-entry-id" id="index-numbers-converting"></a>
+<a class="index-entry-id" id="index-converting-numbers-to-strings"></a>
+<p>Strings are converted to numbers and numbers are converted to strings, if the context
+of the <code class="command">awk</code> program demands it.  For example, if the value of
+either <code class="code">foo</code> or <code class="code">bar</code> in the expression &lsquo;<samp class="samp">foo + bar</samp>&rsquo;
+happens to be a string, it is converted to a number before the addition
+is performed.  If numeric values appear in string concatenation, they
+are converted to strings.  Consider the following:
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">two = 2; three = 3
+print (two three) + 4
+</pre></div></div>
+
+<p>This prints the (numeric) value 27.  The numeric values of
+the variables <code class="code">two</code> and <code class="code">three</code> are converted to strings and
+concatenated together.  The resulting string is converted back to the
+number 23, to which 4 is then added.
+</p>
+<a class="index-entry-id" id="index-null-strings-converting-numbers-to-strings"></a>
+<a class="index-entry-id" id="index-type-conversion"></a>
+<p>If, for some reason, you need to force a number to be converted to a
+string, concatenate that number with the empty string, <code class="code">&quot;&quot;</code>.
+To force a string to be converted to a number, add zero to that string.
+A string is converted to a number by interpreting any numeric prefix
+of the string as numerals:
+<code class="code">&quot;2.5&quot;</code> converts to 2.5, <code class="code">&quot;1e3&quot;</code> converts to 1,000, and <code class="code">&quot;25fix&quot;</code>
+has a numeric value of 25.
+Strings that can&rsquo;t be interpreted as valid numbers convert to zero.
+</p>
+<a class="index-entry-id" id="index-CONVFMT-variable"></a>
+<p>The exact manner in which numbers are converted into strings is controlled
+by the <code class="command">awk</code> predefined variable <code class="code">CONVFMT</code> (see <a class="pxref" href="Built_002din-Variables.html">Predefined Variables</a>).
+Numbers are converted using the <code class="code">sprintf()</code> function
+with <code class="code">CONVFMT</code> as the format
+specifier
+(see <a class="pxref" href="String-Functions.html">String-Manipulation Functions</a>).
+</p>
+<p><code class="code">CONVFMT</code>&rsquo;s default value is <code class="code">&quot;%.6g&quot;</code>, which creates a value with
+at most six significant digits.  For some applications, you might want to
+change it to specify more precision.
+On most modern machines,
+17 digits is usually enough to capture a floating-point number&rsquo;s
+value exactly.<a class="footnote" id="DOCF34" href="Strings-And-Numbers.html#FOOT34"><sup>34</sup></a>
+</p>
+<a class="index-entry-id" id="index-dark-corner-CONVFMT-variable"></a>
+<p>Strange results can occur if you set <code class="code">CONVFMT</code> to a string that doesn&rsquo;t
+tell <code class="code">sprintf()</code> how to format floating-point numbers in a useful way.
+For example, if you forget the &lsquo;<samp class="samp">%</samp>&rsquo; in the format, <code class="command">awk</code> converts
+all numbers to the same constant string.
+</p>
+<p>As a special case, if a number is an integer, then the result of converting
+it to a string is <em class="emph">always</em> an integer, no matter what the value of
+<code class="code">CONVFMT</code> may be.  Given the following code fragment:
+</p>
+<div class="example">
+<pre class="example-preformatted">CONVFMT = &quot;%2.2f&quot;
+a = 12
+b = a &quot;&quot;
+</pre></div>
+
+<p><code class="code">b</code> has the value <code class="code">&quot;12&quot;</code>, not <code class="code">&quot;12.00&quot;</code>.
+(d.c.)
+</p>
+<a class="index-entry-id" id="index-sidebar-Pre_002dPOSIX-awk-Used-OFMT-for-String-Conversion"></a>
+<table class="cartouche" border="1"><tr><th>
+Pre-POSIX <code class="command">awk</code> Used <code class="code">OFMT</code> for String Conversion</th></tr><tr><td>
+<a class="index-entry-id" id="index-POSIX-awk-OFMT-variable-and-1"></a>
+<a class="index-entry-id" id="index-OFMT-variable-1"></a>
+<a class="index-entry-id" id="index-portability-new-awk-vs_002e-old-awk"></a>
+<a class="index-entry-id" id="index-awk-new-vs_002e-old-OFMT-variable"></a>
+<p>Prior to the POSIX standard, <code class="command">awk</code> used the value
+of <code class="code">OFMT</code> for converting numbers to strings.  <code class="code">OFMT</code>
+specifies the output format to use when printing numbers with <code class="code">print</code>.
+<code class="code">CONVFMT</code> was introduced in order to separate the semantics of
+conversion from the semantics of printing.  Both <code class="code">CONVFMT</code> and
+<code class="code">OFMT</code> have the same default value: <code class="code">&quot;%.6g&quot;</code>.  In the vast majority
+of cases, old <code class="command">awk</code> programs do not change their behavior.
+See <a class="xref" href="Print.html">The <code class="code">print</code> Statement</a> for more information on the <code class="code">print</code> statement.
+</p></td></tr></table>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT34" href="Strings-And-Numbers.html#DOCF34">(34)</a></h5>
+<p>Pathological cases can require up to
+752 digits (!), but we doubt that you need to worry about this.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Locale-influences-conversions.html">Locales Can Influence Conversion</a>, Up: <a href="Conversion.html">Conversion of Strings and Numbers</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

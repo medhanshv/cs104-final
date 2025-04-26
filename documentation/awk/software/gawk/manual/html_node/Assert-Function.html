@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Assert Function (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Assert Function (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Assert Function (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="General-Functions.html" rel="up" title="General Functions">
+<link href="Round-Function.html" rel="next" title="Round Function">
+<link href="Strtonum-Function.html" rel="prev" title="Strtonum Function">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Assert-Function">
+<div class="nav-panel">
+<p>
+Next: <a href="Round-Function.html" accesskey="n" rel="next">Rounding Numbers</a>, Previous: <a href="Strtonum-Function.html" accesskey="p" rel="prev">Converting Strings to Numbers</a>, Up: <a href="General-Functions.html" accesskey="u" rel="up">General Programming</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Assertions"><span>10.2.2 Assertions<a class="copiable-link" href="Assert-Function.html#Assertions"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-assertions"></a>
+<a class="index-entry-id" id="index-assert_0028_0029-function-_0028C-library_0029"></a>
+<a class="index-entry-id" id="index-C-library-functions-assert_0028_0029"></a>
+<a class="index-entry-id" id="index-libraries-of-awk-functions-assertions"></a>
+<a class="index-entry-id" id="index-functions-library-assertions"></a>
+<a class="index-entry-id" id="index-awk-programs-lengthy-assertions"></a>
+<p>When writing large programs, it is often useful to know
+that a condition or set of conditions is true.  Before proceeding with a
+particular computation, you make a statement about what you believe to be
+the case.  Such a statement is known as an
+<em class="dfn">assertion</em>.  The C language provides an <code class="code">&lt;assert.h&gt;</code> header file
+and corresponding <code class="code">assert()</code> macro that a programmer can use to make
+assertions.  If an assertion fails, the <code class="code">assert()</code> macro arranges to
+print a diagnostic message describing the condition that should have
+been true but was not, and then it kills the program.  In C, using
+<code class="code">assert()</code> looks this:
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">#include &lt;assert.h&gt;
+
+int myfunc(int a, double b)
+{
+     assert(a &lt;= 5 &amp;&amp; b &gt;= 17.1);
+     ...
+}
+</pre></div></div>
+
+<p>If the assertion fails, the program prints a message similar to this:
+</p>
+<div class="example">
+<pre class="example-preformatted">prog.c:5: assertion failed: a &lt;= 5 &amp;&amp; b &gt;= 17.1
+</pre></div>
+
+<a class="index-entry-id" id="index-assert_0028_0029-user_002ddefined-function"></a>
+<a class="index-entry-id" id="index-user_002ddefined-function-assert_0028_0029"></a>
+<p>The C language makes it possible to turn the condition into a string for use
+in printing the diagnostic message.  This is not possible in <code class="command">awk</code>, so
+this <code class="code">assert()</code> function also requires a string version of the condition
+that is being tested.
+Following is the function:
+</p>
+<div class="example">
+<pre class="example-preformatted"># assert --- assert that a condition is true. Otherwise, exit.
+
+function assert(condition, string)
+{
+    if (! condition) {
+        printf(&quot;%s:%d: assertion failed: %s\n&quot;,
+            FILENAME, FNR, string) &gt; &quot;/dev/stderr&quot;
+        _assert_exit = 1
+        exit 1
+    }
+}
+
+</pre><div class="group"><pre class="example-preformatted">END {
+    if (_assert_exit)
+        exit 1
+}
+</pre></div></div>
+
+<p>The <code class="code">assert()</code> function tests the <code class="code">condition</code> parameter. If it
+is false, it prints a message to standard error, using the <code class="code">string</code>
+parameter to describe the failed condition.  It then sets the variable
+<code class="code">_assert_exit</code> to one and executes the <code class="code">exit</code> statement.
+The <code class="code">exit</code> statement jumps to the <code class="code">END</code> rule. If the <code class="code">END</code>
+rule finds <code class="code">_assert_exit</code> to be true, it exits immediately.
+</p>
+<p>The purpose of the test in the <code class="code">END</code> rule is to
+keep any other <code class="code">END</code> rules from running.  When an assertion fails, the
+program should exit immediately.
+If no assertions fail, then <code class="code">_assert_exit</code> is still
+false when the <code class="code">END</code> rule is run normally, and the rest of the
+program&rsquo;s <code class="code">END</code> rules execute.
+For all of this to work correctly, <samp class="file">assert.awk</samp> must be the
+first source file read by <code class="command">awk</code>.
+The function can be used in a program in the following way:
+</p>
+<div class="example">
+<pre class="example-preformatted">function myfunc(a, b)
+{
+     assert(a &lt;= 5 &amp;&amp; b &gt;= 17.1, &quot;a &lt;= 5 &amp;&amp; b &gt;= 17.1&quot;)
+     ...
+}
+</pre></div>
+
+<p>If the assertion fails, you see a message similar to the following:
+</p>
+<div class="example">
+<pre class="example-preformatted">mydata:1357: assertion failed: a &lt;= 5 &amp;&amp; b &gt;= 17.1
+</pre></div>
+
+<a class="index-entry-id" id="index-END-pattern-assert_0028_0029-user_002ddefined-function-and"></a>
+<p>There is a small problem with this version of <code class="code">assert()</code>.
+An <code class="code">END</code> rule is automatically added
+to the program calling <code class="code">assert()</code>.  Normally, if a program consists
+of just a <code class="code">BEGIN</code> rule, the input files and/or standard input are
+not read. However, now that the program has an <code class="code">END</code> rule, <code class="command">awk</code>
+attempts to read the input data files or standard input
+(see <a class="pxref" href="Using-BEGIN_002fEND.html">Startup and Cleanup Actions</a>),
+most likely causing the program to hang as it waits for input.
+</p>
+<a class="index-entry-id" id="index-BEGIN-pattern-assert_0028_0029-user_002ddefined-function-and"></a>
+<p>There is a simple workaround to this:
+make sure that such a <code class="code">BEGIN</code> rule always ends
+with an <code class="code">exit</code> statement.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Round-Function.html">Rounding Numbers</a>, Previous: <a href="Strtonum-Function.html">Converting Strings to Numbers</a>, Up: <a href="General-Functions.html">General Programming</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

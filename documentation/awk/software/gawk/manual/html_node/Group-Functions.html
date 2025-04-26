@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Group Functions (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Group Functions (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Group Functions (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Library-Functions.html" rel="up" title="Library Functions">
+<link href="Walking-Arrays.html" rel="next" title="Walking Arrays">
+<link href="Passwd-Functions.html" rel="prev" title="Passwd Functions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Group-Functions">
+<div class="nav-panel">
+<p>
+Next: <a href="Walking-Arrays.html" accesskey="n" rel="next">Traversing Arrays of Arrays</a>, Previous: <a href="Passwd-Functions.html" accesskey="p" rel="prev">Reading the User Database</a>, Up: <a href="Library-Functions.html" accesskey="u" rel="up">A Library of <code class="command">awk</code> Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Reading-the-Group-Database"><span>10.6 Reading the Group Database<a class="copiable-link" href="Group-Functions.html#Reading-the-Group-Database"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-libraries-of-awk-functions-group-database_002c-reading"></a>
+<a class="index-entry-id" id="index-functions-library-group-database_002c-reading"></a>
+<a class="index-entry-id" id="index-group-database_002c-reading"></a>
+<a class="index-entry-id" id="index-database-group_002c-reading"></a>
+<a class="index-entry-id" id="index-PROCINFO-array-group-membership-and"></a>
+<a class="index-entry-id" id="index-getgrent_0028_0029-function-_0028C-library_0029"></a>
+<a class="index-entry-id" id="index-C-library-functions-getgrent_0028_0029"></a>
+<a class="index-entry-id" id="index-getgrent_0028_0029-user_002ddefined-function"></a>
+<a class="index-entry-id" id="index-user_002ddefined-function-getgrent_0028_0029"></a>
+<a class="index-entry-id" id="index-groups_002c-information-about"></a>
+<a class="index-entry-id" id="index-account-information-1"></a>
+<a class="index-entry-id" id="index-group-file"></a>
+<a class="index-entry-id" id="index-files-group"></a>
+<p>Much of the discussion presented in
+<a class="ref" href="Passwd-Functions.html">Reading the User Database</a>
+applies to the group database as well.  Although there has traditionally
+been a well-known file (<samp class="file">/etc/group</samp>) in a well-known format, the POSIX
+standard only provides a set of C library routines
+(<code class="code">&lt;grp.h&gt;</code> and <code class="code">getgrent()</code>)
+for accessing the information.
+Even though this file may exist, it may not have
+complete information.  Therefore, as with the user database, it is necessary
+to have a small C program that generates the group database as its output.
+<code class="command">grcat</code>, a C program that &ldquo;cats&rdquo; the group database,
+is as follows:
+</p>
+<a class="index-entry-id" id="index-grcat-program"></a>
+<div class="example">
+<pre class="example-preformatted">/*
+ * grcat.c
+ *
+ * Generate a printable version of the group database.
+ */
+#include &lt;stdio.h&gt;
+#include &lt;grp.h&gt;
+
+int
+main(int argc, char **argv)
+{
+    struct group *g;
+    int i;
+
+    while ((g = getgrent()) != NULL) {
+        printf(&quot;%s:%s:%ld:&quot;, g-&gt;gr_name, g-&gt;gr_passwd,
+                                     (long) g-&gt;gr_gid);
+        for (i = 0; g-&gt;gr_mem[i] != NULL; i++) {
+            printf(&quot;%s&quot;, g-&gt;gr_mem[i]);
+</pre><div class="group"><pre class="example-preformatted">            if (g-&gt;gr_mem[i+1] != NULL)
+                putchar(',');
+        }
+</pre></div><pre class="example-preformatted">        putchar('\n');
+    }
+    endgrent();
+    return 0;
+}
+</pre></div>
+
+<p>Each line in the group database represents one group.  The fields are
+separated with colons and represent the following information:
+</p>
+<dl class="table">
+<dt>Group Name</dt>
+<dd><p>The group&rsquo;s name.
+</p>
+</dd>
+<dt>Group Password</dt>
+<dd><p>The group&rsquo;s encrypted password. In practice, this field is never used;
+it is usually empty or set to &lsquo;<samp class="samp">*</samp>&rsquo;.
+</p>
+</dd>
+<dt>Group ID Number</dt>
+<dd><p>The group&rsquo;s numeric group ID number;
+the association of name to number must be unique within the file.
+(On some systems it&rsquo;s a C <code class="code">long</code>, and not an <code class="code">int</code>.  Thus,
+we cast it to <code class="code">long</code> for all cases.)
+</p>
+</dd>
+<dt>Group Member List</dt>
+<dd><p>A comma-separated list of usernames.  These users are members of the group.
+Modern Unix systems allow users to be members of several groups
+simultaneously.  If your system does, then there are elements
+<code class="code">&quot;group1&quot;</code> through <code class="code">&quot;group<var class="var">N</var>&quot;</code> in <code class="code">PROCINFO</code>
+for those group ID numbers.
+(Note that <code class="code">PROCINFO</code> is a <code class="command">gawk</code> extension;
+see <a class="pxref" href="Built_002din-Variables.html">Predefined Variables</a>.)
+</p></dd>
+</dl>
+
+<p>Here is what running <code class="command">grcat</code> might produce:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">grcat</kbd>
+-| wheel:*:0:arnold
+-| nogroup:*:65534:
+-| daemon:*:1:
+-| kmem:*:2:
+-| staff:*:10:arnold,miriam,andy
+-| other:*:20:
+...
+</pre></div>
+
+<p>Here are the functions for obtaining information from the group database.
+There are several, modeled after the C library functions of the same names:
+</p>
+<a class="index-entry-id" id="index-getline-function-_005fgr_005finit_0028_0029-user_002ddefined-function"></a>
+<a class="index-entry-id" id="index-_005fgr_005finit_0028_0029-user_002ddefined-function"></a>
+<a class="index-entry-id" id="index-user_002ddefined-function-_005fgr_005finit_0028_0029"></a>
+<div class="example">
+<pre class="example-preformatted"># group.awk --- functions for dealing with the group file
+
+BEGIN {
+    # Change to suit your system
+    _gr_awklib = &quot;/usr/local/libexec/awk/&quot;
+}
+
+function _gr_init(    oldfs, oldrs, olddol0, grcat,
+                             using_fw, using_fpat, n, a, i)
+{
+    if (_gr_inited)
+        return
+
+    oldfs = FS
+    oldrs = RS
+    olddol0 = $0
+    using_fw = (PROCINFO[&quot;FS&quot;] == &quot;FIELDWIDTHS&quot;)
+    using_fpat = (PROCINFO[&quot;FS&quot;] == &quot;FPAT&quot;)
+    FS = &quot;:&quot;
+    RS = &quot;\n&quot;
+
+    grcat = _gr_awklib &quot;grcat&quot;
+    while ((grcat | getline) &gt; 0) {
+        if ($1 in _gr_byname)
+            _gr_byname[$1] = _gr_byname[$1] &quot;,&quot; $4
+        else
+            _gr_byname[$1] = $0
+        if ($3 in _gr_bygid)
+            _gr_bygid[$3] = _gr_bygid[$3] &quot;,&quot; $4
+        else
+            _gr_bygid[$3] = $0
+
+        n = split($4, a, &quot;[ \t]*,[ \t]*&quot;)
+        for (i = 1; i &lt;= n; i++)
+            if (a[i] in _gr_groupsbyuser)
+                _gr_groupsbyuser[a[i]] = _gr_groupsbyuser[a[i]] &quot; &quot; $1
+            else
+                _gr_groupsbyuser[a[i]] = $1
+
+        _gr_bycount[++_gr_count] = $0
+    }
+    close(grcat)
+    _gr_count = 0
+    _gr_inited++
+    FS = oldfs
+    if (using_fw)
+        FIELDWIDTHS = FIELDWIDTHS
+    else if (using_fpat)
+        FPAT = FPAT
+    RS = oldrs
+    $0 = olddol0
+}
+</pre></div>
+
+<p>The <code class="code">BEGIN</code> rule sets a private variable to the directory where
+<code class="command">grcat</code> is stored.  Because it is used to help out an <code class="command">awk</code> library
+routine, we have chosen to put it in <samp class="file">/usr/local/libexec/awk</samp>.  You might
+want it to be in a different directory on your system.
+</p>
+<p>These routines follow the same general outline as the user database routines
+(see <a class="pxref" href="Passwd-Functions.html">Reading the User Database</a>).
+The <code class="code">_gr_inited<!-- /@w --></code> variable is used to
+ensure that the database is scanned no more than once.
+The <code class="code">_gr_init()<!-- /@w --></code> function first saves <code class="code">FS</code>,
+<code class="code">RS</code>, and
+<code class="code">$0</code>, and then sets <code class="code">FS</code> and <code class="code">RS</code> to the correct values for
+scanning the group information.
+It also takes care to note whether <code class="code">FIELDWIDTHS</code> or <code class="code">FPAT</code>
+is being used, and to restore the appropriate field-splitting mechanism.
+</p>
+<p>The group information is stored in several associative arrays.
+The arrays are indexed by group name (<code class="code">_gr_byname<!-- /@w --></code>), by group ID number
+(<code class="code">_gr_bygid<!-- /@w --></code>), and by position in the database (<code class="code">_gr_bycount<!-- /@w --></code>).
+There is an additional array indexed by username (<code class="code">_gr_groupsbyuser<!-- /@w --></code>),
+which is a space-separated list of groups to which each user belongs.
+</p>
+<p>Unlike in the user database, it is possible to have multiple records in the
+database for the same group.  This is common when a group has a large number
+of members.  A pair of such entries might look like the following:
+</p>
+<div class="example">
+<pre class="example-preformatted">tvpeople:*:101:johnny,jay,arsenio
+tvpeople:*:101:david,conan,tom,joan
+</pre></div>
+
+<p>For this reason, <code class="code">_gr_init()</code> looks to see if a group name or
+group ID number is already seen.  If so, the usernames are
+simply concatenated onto the previous list of users.<a class="footnote" id="DOCF77" href="Group-Functions.html#FOOT77"><sup>77</sup></a>
+</p>
+<p>Finally, <code class="code">_gr_init()</code> closes the pipeline to <code class="command">grcat</code>, restores
+<code class="code">FS</code> (and <code class="code">FIELDWIDTHS</code> or <code class="code">FPAT</code>, if necessary), <code class="code">RS</code>, and <code class="code">$0</code>,
+initializes <code class="code">_gr_count</code> to zero
+(it is used later), and makes <code class="code">_gr_inited</code> nonzero.
+</p>
+<a class="index-entry-id" id="index-getgrnam_0028_0029-function-_0028C-library_0029"></a>
+<a class="index-entry-id" id="index-C-library-functions-getgrnam_0028_0029"></a>
+<p>The <code class="code">getgrnam()</code> function takes a group name as its argument, and if that
+group exists, it is returned.
+Otherwise, it
+relies on the array reference to a nonexistent
+element to create the element with the null string as its value:
+</p>
+<a class="index-entry-id" id="index-getgrnam_0028_0029-user_002ddefined-function"></a>
+<a class="index-entry-id" id="index-user_002ddefined-function-getgrnam_0028_0029"></a>
+<div class="example">
+<pre class="example-preformatted">function getgrnam(group)
+{
+    _gr_init()
+    return _gr_byname[group]
+}
+</pre></div>
+
+<a class="index-entry-id" id="index-getgrgid_0028_0029-function-_0028C-library_0029"></a>
+<a class="index-entry-id" id="index-C-library-functions-getgrgid_0028_0029"></a>
+<p>The <code class="code">getgrgid()</code> function is similar; it takes a numeric group ID and
+looks up the information associated with that group ID:
+</p>
+<a class="index-entry-id" id="index-getgrgid_0028_0029-user_002ddefined-function"></a>
+<a class="index-entry-id" id="index-user_002ddefined-function-getgrgid_0028_0029"></a>
+<div class="example">
+<pre class="example-preformatted">function getgrgid(gid)
+{
+    _gr_init()
+    return _gr_bygid[gid]
+}
+</pre></div>
+
+<a class="index-entry-id" id="index-getgruser_0028_0029-function-_0028C-library_0029"></a>
+<a class="index-entry-id" id="index-C-library-functions-getgruser_0028_0029"></a>
+<p>The <code class="code">getgruser()</code> function does not have a C counterpart. It takes a
+username and returns the list of groups that have the user as a member:
+</p>
+<a class="index-entry-id" id="index-getgruser_0028_0029-user_002ddefined-function"></a>
+<a class="index-entry-id" id="index-user_002ddefined-function-getgruser_0028_0029"></a>
+<div class="example">
+<pre class="example-preformatted">function getgruser(user)
+{
+    _gr_init()
+    return _gr_groupsbyuser[user]
+}
+</pre></div>
+
+<a class="index-entry-id" id="index-getgrent_0028_0029-function-_0028C-library_0029-1"></a>
+<a class="index-entry-id" id="index-C-library-functions-getgrent_0028_0029-1"></a>
+<p>The <code class="code">getgrent()</code> function steps through the database one entry at a time.
+It uses <code class="code">_gr_count</code> to track its position in the list:
+</p>
+<a class="index-entry-id" id="index-getgrent_0028_0029-user_002ddefined-function-1"></a>
+<a class="index-entry-id" id="index-user_002ddefined-function-getgrent_0028_0029-1"></a>
+<div class="example">
+<pre class="example-preformatted">function getgrent()
+{
+    _gr_init()
+    if (++_gr_count in _gr_bycount)
+        return _gr_bycount[_gr_count]
+</pre><div class="group"><pre class="example-preformatted">    return &quot;&quot;
+}
+</pre></div></div>
+
+<a class="index-entry-id" id="index-endgrent_0028_0029-function-_0028C-library_0029"></a>
+<a class="index-entry-id" id="index-C-library-functions-endgrent_0028_0029"></a>
+<p>The <code class="code">endgrent()</code> function resets <code class="code">_gr_count</code> to zero so that <code class="code">getgrent()</code> can
+start over again:
+</p>
+<a class="index-entry-id" id="index-endgrent_0028_0029-user_002ddefined-function"></a>
+<a class="index-entry-id" id="index-user_002ddefined-function-endgrent_0028_0029"></a>
+<div class="example">
+<pre class="example-preformatted">function endgrent()
+{
+    _gr_count = 0
+}
+</pre></div>
+
+<p>As with the user database routines, each function calls <code class="code">_gr_init()</code> to
+initialize the arrays.  Doing so only incurs the extra overhead of running
+<code class="command">grcat</code> if these functions are used (as opposed to moving the body of
+<code class="code">_gr_init()</code> into a <code class="code">BEGIN</code> rule).
+</p>
+<p>Most of the work is in scanning the database and building the various
+associative arrays.  The functions that the user calls are themselves very
+simple, relying on <code class="command">awk</code>&rsquo;s associative arrays to do work.
+</p>
+<p>The <code class="command">id</code> program in <a class="ref" href="Id-Program.html">Printing Out User Information</a>
+uses these functions.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT77" href="Group-Functions.html#DOCF77">(77)</a></h5>
+<p>There is a
+subtle problem with the code just presented.  Suppose that
+the first time there were no names. This code adds the names with
+a leading comma. It also doesn&rsquo;t check that there is a <code class="code">$4</code>.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Walking-Arrays.html">Traversing Arrays of Arrays</a>, Previous: <a href="Passwd-Functions.html">Reading the User Database</a>, Up: <a href="Library-Functions.html">A Library of <code class="command">awk</code> Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Uninitialized Subscripts (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Uninitialized Subscripts (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Uninitialized Subscripts (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Arrays.html" rel="up" title="Arrays">
+<link href="Delete.html" rel="next" title="Delete">
+<link href="Numeric-Array-Subscripts.html" rel="prev" title="Numeric Array Subscripts">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Uninitialized-Subscripts">
+<div class="nav-panel">
+<p>
+Next: <a href="Delete.html" accesskey="n" rel="next">The <code class="code">delete</code> Statement</a>, Previous: <a href="Numeric-Array-Subscripts.html" accesskey="p" rel="prev">Using Numbers to Subscript Arrays</a>, Up: <a href="Arrays.html" accesskey="u" rel="up">Arrays in <code class="command">awk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Using-Uninitialized-Variables-as-Subscripts"><span>8.3 Using Uninitialized Variables as Subscripts<a class="copiable-link" href="Uninitialized-Subscripts.html#Using-Uninitialized-Variables-as-Subscripts"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-variables-uninitialized_002c-as-array-subscripts"></a>
+<a class="index-entry-id" id="index-uninitialized-variables_002c-as-array-subscripts"></a>
+<a class="index-entry-id" id="index-subscripts-in-arrays-uninitialized-variables-as"></a>
+<a class="index-entry-id" id="index-arrays-subscripts_002c-uninitialized-variables-as"></a>
+<p>Suppose it&rsquo;s necessary to write a program
+to print the input data in reverse order.
+A reasonable attempt to do so (with some test
+data) might look like this:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">echo 'line 1</kbd>
+&gt; <kbd class="kbd">line 2</kbd>
+&gt; <kbd class="kbd">line 3' | awk '{ l[lines] = $0; ++lines }</kbd>
+&gt; <kbd class="kbd">END {</kbd>
+&gt;     <kbd class="kbd">for (i = lines - 1; i &gt;= 0; i--)</kbd>
+&gt;        <kbd class="kbd">print l[i]</kbd>
+&gt; <kbd class="kbd">}'</kbd>
+-| line 3
+-| line 2
+</pre></div>
+
+<p>Unfortunately, the very first line of input data did not appear in the
+output!
+</p>
+<p>Upon first glance, we would think that this program should have worked.
+The variable <code class="code">lines</code>
+is uninitialized, and uninitialized variables have the numeric value zero.
+So, <code class="command">awk</code> should have printed the value of <code class="code">l[0]</code>.
+</p>
+<p>The issue here is that subscripts for <code class="command">awk</code> arrays are <em class="emph">always</em>
+strings. Uninitialized variables, when used as strings, have the
+value <code class="code">&quot;&quot;</code>, not zero.  Thus, &lsquo;<samp class="samp">line 1</samp>&rsquo; ends up stored in
+<code class="code">l[&quot;&quot;]</code>.
+The following version of the program works correctly:
+</p>
+<div class="example">
+<pre class="example-preformatted">{ l[lines++] = $0 }
+END {
+    for (i = lines - 1; i &gt;= 0; i--)
+       print l[i]
+}
+</pre></div>
+
+<p>Here, the &lsquo;<samp class="samp">++</samp>&rsquo; forces <code class="code">lines</code> to be numeric, thus making
+the &ldquo;old value&rdquo; numeric zero. This is then converted to <code class="code">&quot;0&quot;</code>
+as the array subscript.
+</p>
+<a class="index-entry-id" id="index-array-subscripts-null-string-as"></a>
+<a class="index-entry-id" id="index-null-strings-as-array-subscripts"></a>
+<a class="index-entry-id" id="index-dark-corner-array-subscripts"></a>
+<a class="index-entry-id" id="index-lint-checking-array-subscripts"></a>
+<p>Even though it is somewhat unusual, the null string
+(<code class="code">&quot;&quot;</code>) is a valid array subscript.
+(d.c.)
+<code class="command">gawk</code> warns about the use of the null string as a subscript
+if <samp class="option">--lint</samp> is provided
+on the command line (see <a class="pxref" href="Options.html">Command-Line Options</a>).
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Delete.html">The <code class="code">delete</code> Statement</a>, Previous: <a href="Numeric-Array-Subscripts.html">Using Numbers to Subscript Arrays</a>, Up: <a href="Arrays.html">Arrays in <code class="command">awk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

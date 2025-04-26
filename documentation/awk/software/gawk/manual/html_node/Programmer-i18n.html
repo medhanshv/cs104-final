@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Programmer i18n (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Programmer i18n (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Programmer i18n (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Internationalization.html" rel="up" title="Internationalization">
+<link href="Translator-i18n.html" rel="next" title="Translator i18n">
+<link href="Explaining-gettext.html" rel="prev" title="Explaining gettext">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Programmer-i18n">
+<div class="nav-panel">
+<p>
+Next: <a href="Translator-i18n.html" accesskey="n" rel="next">Translating <code class="command">awk</code> Programs</a>, Previous: <a href="Explaining-gettext.html" accesskey="p" rel="prev">GNU <code class="command">gettext</code></a>, Up: <a href="Internationalization.html" accesskey="u" rel="up">Internationalization with <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Internationalizing-awk-Programs"><span>13.3 Internationalizing <code class="command">awk</code> Programs<a class="copiable-link" href="Programmer-i18n.html#Internationalizing-awk-Programs"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-awk-programs-internationalizing-1"></a>
+
+<p><code class="command">gawk</code> provides the following variables for
+internationalization:
+</p>
+<dl class="table">
+<dt><a id="index-TEXTDOMAIN-variable-1"></a><span><code class="code">TEXTDOMAIN</code><a class="copiable-link" href="Programmer-i18n.html#index-TEXTDOMAIN-variable-1"> &para;</a></span></dt>
+<dd><p>This variable indicates the application&rsquo;s text domain.
+For compatibility with GNU <code class="command">gettext</code>, the default
+value is <code class="code">&quot;messages&quot;</code>.
+</p>
+<a class="index-entry-id" id="index-internationalization-localization-marked-strings"></a>
+<a class="index-entry-id" id="index-strings-for-localization"></a>
+</dd>
+<dt><code class="code">_&quot;your message here&quot;</code></dt>
+<dd><p>String constants marked with a leading underscore
+are candidates for translation at runtime.
+String constants without a leading underscore are not translated.
+</p></dd>
+</dl>
+
+<p><code class="command">gawk</code> provides the following functions for
+internationalization:
+</p>
+<dl class="table">
+<dt><a id="index-dcgettext_0028_0029-function-_0028gawk_0029-1"></a><span><code class="code"><code class="code">dcgettext(<var class="var">string</var></code> [<code class="code">,</code> <var class="var">domain</var> [<code class="code">,</code> <var class="var">category</var>]]<code class="code">)</code></code><a class="copiable-link" href="Programmer-i18n.html#index-dcgettext_0028_0029-function-_0028gawk_0029-1"> &para;</a></span></dt>
+<dd><p>Return the translation of <var class="var">string</var> in
+text domain <var class="var">domain</var> for locale category <var class="var">category</var>.
+The default value for <var class="var">domain</var> is the current value of <code class="code">TEXTDOMAIN</code>.
+The default value for <var class="var">category</var> is <code class="code">&quot;LC_MESSAGES&quot;</code>.
+</p>
+<p>If you supply a value for <var class="var">category</var>, it must be a string equal to
+one of the known locale categories described in
+the previous section.
+You must also supply a text domain.  Use <code class="code">TEXTDOMAIN</code> if
+you want to use the current domain.
+</p>
+<blockquote class="quotation">
+<p><b class="b">CAUTION:</b> The order of arguments to the <code class="command">awk</code> version
+of the <code class="code">dcgettext()</code> function is purposely different from the order for
+the C version.  The <code class="command">awk</code> version&rsquo;s order was
+chosen to be simple and to allow for reasonable <code class="command">awk</code>-style
+default arguments.
+</p></blockquote>
+
+</dd>
+<dt><a id="index-dcngettext_0028_0029-function-_0028gawk_0029-1"></a><span><code class="code"><code class="code">dcngettext(<var class="var">string1</var>, <var class="var">string2</var>, <var class="var">number</var></code> [<code class="code">,</code> <var class="var">domain</var> [<code class="code">,</code> <var class="var">category</var>]]<code class="code">)</code></code><a class="copiable-link" href="Programmer-i18n.html#index-dcngettext_0028_0029-function-_0028gawk_0029-1"> &para;</a></span></dt>
+<dd><p>Return the plural form used for <var class="var">number</var> of the
+translation of <var class="var">string1</var> and <var class="var">string2</var> in text domain
+<var class="var">domain</var> for locale category <var class="var">category</var>. <var class="var">string1</var> is the
+English singular variant of a message, and <var class="var">string2</var> is the English plural
+variant of the same message.
+The default value for <var class="var">domain</var> is the current value of <code class="code">TEXTDOMAIN</code>.
+The default value for <var class="var">category</var> is <code class="code">&quot;LC_MESSAGES&quot;</code>.
+</p>
+<p>The same remarks about argument order as for the <code class="code">dcgettext()</code> function apply.
+</p>
+<a class="index-entry-id" id="index-_002egmo-files-specifying-directory-of-1"></a>
+<a class="index-entry-id" id="index-files-_002egmo-specifying-directory-of-1"></a>
+<a class="index-entry-id" id="index-message-object-files-specifying-directory-of-1"></a>
+<a class="index-entry-id" id="index-files-message-object-specifying-directory-of-1"></a>
+</dd>
+<dt><a id="index-bindtextdomain_0028_0029-function-_0028gawk_0029-1"></a><span><code class="code"><code class="code">bindtextdomain(<var class="var">directory</var></code> [<code class="code">,</code> <var class="var">domain</var> ]<code class="code">)</code></code><a class="copiable-link" href="Programmer-i18n.html#index-bindtextdomain_0028_0029-function-_0028gawk_0029-1"> &para;</a></span></dt>
+<dd><p>Change the directory in which
+<code class="command">gettext</code> looks for <samp class="file">.gmo</samp> files, in case they
+will not or cannot be placed in the standard locations
+(e.g., during testing).
+Return the directory in which <var class="var">domain</var> is &ldquo;bound.&rdquo;
+</p>
+<p>The default <var class="var">domain</var> is the value of <code class="code">TEXTDOMAIN</code>.
+If <var class="var">directory</var> is the null string (<code class="code">&quot;&quot;</code>), then
+<code class="code">bindtextdomain()</code> returns the current binding for the
+given <var class="var">domain</var>.
+</p></dd>
+</dl>
+
+<p>To use these facilities in your <code class="command">awk</code> program, follow these steps:
+</p>
+<ol class="enumerate">
+<li><a class="index-entry-id" id="index-BEGIN-pattern-TEXTDOMAIN-variable-and"></a>
+<a class="index-entry-id" id="index-TEXTDOMAIN-variable-BEGIN-pattern-and"></a>
+</li><li> Set the variable <code class="code">TEXTDOMAIN</code> to the text domain of
+your program.  This is best done in a <code class="code">BEGIN</code> rule
+(see <a class="pxref" href="BEGIN_002fEND.html">The <code class="code">BEGIN</code> and <code class="code">END</code> Special Patterns</a>),
+or it can also be done via the <samp class="option">-v</samp> command-line
+option (see <a class="pxref" href="Options.html">Command-Line Options</a>):
+
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+    TEXTDOMAIN = &quot;guide&quot;
+    ...
+}
+</pre></div>
+
+<a class="index-entry-id" id="index-_005f-_0028underscore_0029-translatable-strings"></a>
+<a class="index-entry-id" id="index-underscore-_0028_005f_0029-translatable-strings"></a>
+</li><li> Mark all translatable strings with a leading underscore (&lsquo;<samp class="samp">_</samp>&rsquo;)
+character.  It <em class="emph">must</em> be adjacent to the opening
+double quote of the string.  For example:
+
+<div class="example">
+<pre class="example-preformatted">print _&quot;hello, world&quot;
+x = _&quot;you goofed&quot;
+printf(_&quot;Number of users is %d\n&quot;, nusers)
+</pre></div>
+
+</li><li> If you are creating strings dynamically, you can
+still translate them, using the <code class="code">dcgettext()</code>
+built-in function:<a class="footnote" id="DOCF92" href="Programmer-i18n.html#FOOT92"><sup>92</sup></a>
+
+<div class="example">
+<pre class="example-preformatted">if (groggy)
+    message = dcgettext(&quot;%d customers disturbing me\n&quot;, &quot;adminprog&quot;)
+else
+    message = dcgettext(&quot;enjoying %d customers\n&quot;, &quot;adminprog&quot;)
+printf(message, ncustomers)
+</pre></div>
+
+<p>Here, the call to <code class="code">dcgettext()</code> supplies a different
+text domain (<code class="code">&quot;adminprog&quot;</code>) in which to find the
+message, but it uses the default <code class="code">&quot;LC_MESSAGES&quot;</code> category.
+</p>
+<p>The previous example only works if <code class="code">ncustomers</code> is greater than one.
+This example would be better done with <code class="code">dcngettext()</code>:
+</p>
+<div class="example">
+<pre class="example-preformatted">if (groggy)
+    message = dcngettext(&quot;%d customer disturbing me\n&quot;,
+                         &quot;%d customers disturbing me\n&quot;,
+                         ncustomers, &quot;adminprog&quot;)
+else
+    message = dcngettext(&quot;enjoying %d customer\n&quot;,
+                         &quot;enjoying %d customers\n&quot;,
+                         ncustomers, &quot;adminprog&quot;)
+printf(message, ncustomers)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-LC_005fMESSAGES-locale-category-bindtextdomain_0028_0029-function-_0028gawk_0029"></a>
+</li><li> During development, you might want to put the <samp class="file">.gmo</samp>
+file in a private directory for testing.  This is done
+with the <code class="code">bindtextdomain()</code> built-in function:
+
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+   TEXTDOMAIN = &quot;guide&quot;   # our text domain
+   if (Testing) {
+       # where to find our files
+       bindtextdomain(&quot;testdir&quot;)
+       # joe is in charge of adminprog
+       bindtextdomain(&quot;../joe/testdir&quot;, &quot;adminprog&quot;)
+   }
+   ...
+}
+</pre></div>
+
+</li></ol>
+
+<p>See <a class="xref" href="I18N-Example.html">A Simple Internationalization Example</a>
+for an example program showing the steps to create
+and use translations from <code class="command">awk</code>.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT92" href="Programmer-i18n.html#DOCF92">(92)</a></h5>
+<p>Thanks to Bruno Haible for this
+example.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Translator-i18n.html">Translating <code class="command">awk</code> Programs</a>, Previous: <a href="Explaining-gettext.html">GNU <code class="command">gettext</code></a>, Up: <a href="Internationalization.html">Internationalization with <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

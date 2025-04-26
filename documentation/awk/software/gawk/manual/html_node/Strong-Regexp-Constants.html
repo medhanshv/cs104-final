@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Strong Regexp Constants (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Strong Regexp Constants (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Strong Regexp Constants (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Using-Constant-Regexps.html" rel="up" title="Using Constant Regexps">
+<link href="Standard-Regexp-Constants.html" rel="prev" title="Standard Regexp Constants">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Strong-Regexp-Constants">
+<div class="nav-panel">
+<p>
+Previous: <a href="Standard-Regexp-Constants.html" accesskey="p" rel="prev">Standard Regular Expression Constants</a>, Up: <a href="Using-Constant-Regexps.html" accesskey="u" rel="up">Using Regular Expression Constants</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Strongly-Typed-Regexp-Constants"><span>6.1.2.2 Strongly Typed Regexp Constants<a class="copiable-link" href="Strong-Regexp-Constants.html#Strongly-Typed-Regexp-Constants"> &para;</a></span></h4>
+
+<p>This section describes a <code class="command">gawk</code>-specific feature.
+</p>
+<p>As we saw in the previous section,
+regexp constants (<code class="code">/&hellip;/</code>) hold a strange position in the
+<code class="command">awk</code> language. In most contexts, they act like an expression:
+&lsquo;<samp class="samp">$0 ~ /&hellip;/</samp>&rsquo;. In other contexts, they denote only a regexp to
+be matched. In no case are they really a &ldquo;first class citizen&rdquo; of the
+language. That is, you cannot define a scalar variable whose type is
+&ldquo;regexp&rdquo; in the same sense that you can define a variable to be a
+number or a string:
+</p>
+<div class="example">
+<pre class="example-preformatted">num = 42        <i class="i">Numeric variable</i>
+str = &quot;hi&quot;      <i class="i">String variable</i>
+re = /foo/      <i class="i">Wrong!</i> re <i class="i">is the result of</i> $0 ~ /foo/
+</pre></div>
+
+<p>For a number of more advanced use cases,
+it would be nice to have regexp constants that
+are <em class="dfn">strongly typed</em>; in other words, that denote a regexp useful
+for matching, and not an expression.
+</p>
+<a class="index-entry-id" id="index-values-regexp"></a>
+<p><code class="command">gawk</code> provides this feature.  A strongly typed regexp constant
+looks almost like a regular regexp constant, except that it is preceded
+by an &lsquo;<samp class="samp">@</samp>&rsquo; sign:
+</p>
+<div class="example">
+<pre class="example-preformatted">re = @/foo/     <i class="i">Regexp variable</i>
+</pre></div>
+
+<p>Strongly typed regexp constants <em class="emph">cannot</em> be used everywhere that a
+regular regexp constant can, because this would make the language even more
+confusing.  Instead, you may use them only in certain contexts:
+</p>
+<ul class="itemize mark-bullet">
+<li>On the righthand side of the &lsquo;<samp class="samp">~</samp>&rsquo; and &lsquo;<samp class="samp">!~</samp>&rsquo; operators: &lsquo;<samp class="samp">some_var ~ @/foo/</samp>&rsquo;
+(see <a class="pxref" href="Regexp-Usage.html">How to Use Regular Expressions</a>).
+
+</li><li>In the <code class="code">case</code> part of a <code class="code">switch</code> statement
+(see <a class="pxref" href="Switch-Statement.html">The <code class="code">switch</code> Statement</a>).
+
+</li><li>As an argument to one of the built-in functions that accept regexp constants:
+<code class="code">gensub()</code>,
+<code class="code">gsub()</code>,
+<code class="code">match()</code>,
+<code class="code">patsplit()</code>,
+<code class="code">split()</code>,
+and
+<code class="code">sub()</code>
+(see <a class="pxref" href="String-Functions.html">String-Manipulation Functions</a>).
+
+</li><li>As a parameter in a call to a user-defined function
+(see <a class="pxref" href="User_002ddefined.html">User-Defined Functions</a>).
+
+</li><li>As the return value of a user-defined function.
+
+</li><li>On the righthand side of an assignment to a variable: &lsquo;<samp class="samp">some_var = @/foo/</samp>&rsquo;.
+In this case, the type of <code class="code">some_var</code> is regexp. Additionally, <code class="code">some_var</code>
+can be used with &lsquo;<samp class="samp">~</samp>&rsquo; and &lsquo;<samp class="samp">!~</samp>&rsquo;, passed to one of the built-in functions
+listed above, or passed as a parameter to a user-defined function.
+</li></ul>
+
+<p>You may use the <samp class="option">-v</samp> option (see <a class="pxref" href="Options.html">Command-Line Options</a>) to assign a
+strongly-typed regexp constant to a variable on the command line, like so:
+</p>
+<div class="example">
+<pre class="example-preformatted">gawk -v pattern='@/something(interesting)+/' ...
+</pre></div>
+
+<p>You may also make such assignments as regular command-line arguments
+(see <a class="pxref" href="Other-Arguments.html">Other Command-Line Arguments</a>).
+</p>
+<p>You may use the <code class="code">typeof()</code> built-in function
+(see <a class="pxref" href="Type-Functions.html">Getting Type Information</a>)
+to determine if a variable or function parameter is
+a regexp variable.
+</p>
+<p>The true power of this feature comes from the ability to create variables that
+have regexp type. Such variables can be passed on to user-defined functions,
+without the confusing aspects of computed regular expressions created from
+strings or string constants. They may also be passed through indirect function
+calls (see <a class="pxref" href="Indirect-Calls.html">Indirect Function Calls</a>)
+and on to the built-in functions that accept regexp constants.
+</p>
+<p>When used in numeric conversions, strongly typed regexp variables convert
+to zero. When used in string conversions, they convert to the string
+value of the original regexp text.
+</p>
+<p>There is an additional, interesting corner case. When used as the third
+argument to <code class="code">sub()</code> or <code class="code">gsub()</code>, they retain their type.  Thus,
+if you have something like this:
+</p>
+<div class="example">
+<pre class="example-preformatted">re = @/don't panic/
+sub(/don't/, &quot;do&quot;, re)
+print typeof(re), re
+</pre></div>
+
+<p>then <code class="code">re</code> retains its type, but now attempts to match the string
+&lsquo;<samp class="samp">do panic</samp>&rsquo;.  This provides a (very indirect) way to create regexp-typed
+variables at runtime.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Standard-Regexp-Constants.html">Standard Regular Expression Constants</a>, Up: <a href="Using-Constant-Regexps.html">Using Regular Expression Constants</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

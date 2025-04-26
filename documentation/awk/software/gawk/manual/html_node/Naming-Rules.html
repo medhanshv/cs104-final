@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Naming Rules (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Naming Rules (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Naming Rules (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Namespaces.html" rel="up" title="Namespaces">
+<link href="Internal-Name-Management.html" rel="next" title="Internal Name Management">
+<link href="Changing-The-Namespace.html" rel="prev" title="Changing The Namespace">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Naming-Rules">
+<div class="nav-panel">
+<p>
+Next: <a href="Internal-Name-Management.html" accesskey="n" rel="next">Internal Name Management</a>, Previous: <a href="Changing-The-Namespace.html" accesskey="p" rel="prev">Changing The Namespace</a>, Up: <a href="Namespaces.html" accesskey="u" rel="up">Namespaces in <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Namespace-and-Component-Naming-Rules"><span>15.5 Namespace and Component Naming Rules<a class="copiable-link" href="Naming-Rules.html#Namespace-and-Component-Naming-Rules"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-naming-rules_002c-namespace-and-component-names"></a>
+<a class="index-entry-id" id="index-namespaces-naming-rules"></a>
+<a class="index-entry-id" id="index-component-name-naming-rules"></a>
+<p>A number of rules apply to the namespace and component names, as follows.
+</p>
+<ul class="itemize mark-bullet">
+<li>It is a syntax error to use qualified names for function parameter names.
+
+</li><li>It is a syntax error to use any standard <code class="command">awk</code> reserved word (such
+as <code class="code">if</code> or <code class="code">for</code>), or the name of any standard built-in function
+(such as <code class="code">sin()</code> or <code class="code">gsub()</code>) as either part of a qualified name.
+Thus, the following produces a syntax error:
+
+<div class="example">
+<pre class="example-preformatted">@namespace &quot;example&quot;
+
+function gsub(str, pat, result) { ... }
+</pre></div>
+
+</li><li>Outside the <code class="code">awk</code> namespace, the names of the additional <code class="command">gawk</code>
+built-in functions (such as <code class="code">gensub()</code> or <code class="code">strftime()</code>) <em class="emph">may</em>
+be used as component names (see <a class="pxref" href="POSIX_002fGNU.html#Gawk-Extension-Functions">Gawk Extension Functions</a>).
+The same set of names may be used as namespace
+names, although this has the potential to be confusing.
+
+</li><li>The additional <code class="command">gawk</code> built-in functions may still be called
+from outside the <code class="code">awk</code> namespace by qualifying them. For example,
+<code class="code">awk::systime()</code>.  Here is a somewhat silly example demonstrating
+this rule and the previous one:
+
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+    print &quot;in awk namespace, systime() =&quot;, systime()
+}
+
+@namespace &quot;testing&quot;
+
+function systime()
+{
+    print &quot;in testing namespace, systime() =&quot;, awk::systime()
+}
+
+BEGIN {
+    systime()
+}
+</pre></div>
+
+
+<p>When run, it produces output like this:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk -f systime.awk</kbd>
+-| in awk namespace, systime() = 1500488503
+-| in testing namespace, systime() = 1500488503
+</pre></div>
+
+</li><li><code class="command">gawk</code> pre-defined variable names may be used:
+<code class="code">NF::NR</code> is valid, if possibly not all that useful.
+</li></ul>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Internal-Name-Management.html">Internal Name Management</a>, Previous: <a href="Changing-The-Namespace.html">Changing The Namespace</a>, Up: <a href="Namespaces.html">Namespaces in <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

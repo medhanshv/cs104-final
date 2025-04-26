@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Debugger Info (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Debugger Info (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Debugger Info (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="List-of-Debugger-Commands.html" rel="up" title="List of Debugger Commands">
+<link href="Miscellaneous-Debugger-Commands.html" rel="next" title="Miscellaneous Debugger Commands">
+<link href="Execution-Stack.html" rel="prev" title="Execution Stack">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Debugger-Info">
+<div class="nav-panel">
+<p>
+Next: <a href="Miscellaneous-Debugger-Commands.html" accesskey="n" rel="next">Miscellaneous Commands</a>, Previous: <a href="Execution-Stack.html" accesskey="p" rel="prev">Working with the Stack</a>, Up: <a href="List-of-Debugger-Commands.html" accesskey="u" rel="up">Main Debugger Commands</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Obtaining-Information-About-the-Program-and-the-Debugger-State"><span>14.3.5 Obtaining Information About the Program and the Debugger State<a class="copiable-link" href="Debugger-Info.html#Obtaining-Information-About-the-Program-and-the-Debugger-State"> &para;</a></span></h4>
+
+<p>Besides looking at the values of variables, there is often a need to get
+other sorts of information about the state of your program and of the
+debugging environment itself.  The <code class="command">gawk</code> debugger has one command that
+provides this information, appropriately called <code class="code">info</code>.  <code class="code">info</code>
+is used with one of a number of arguments that tell it exactly what
+you want to know:
+</p>
+<dl class="table">
+<dd><a class="index-entry-id" id="index-debugger-commands-i-_0028info_0029"></a>
+<a class="index-entry-id" id="index-debugger-commands-info"></a>
+</dd>
+<dt><a class="index-entry-id" id="index-i-debugger-command-_0028alias-for-info_0029"></a>
+<a id="index-info-debugger-command"></a><span><code class="code">info</code> <var class="var">what</var><a class="copiable-link" href="Debugger-Info.html#index-info-debugger-command"> &para;</a></span></dt>
+<dt><code class="code">i</code> <var class="var">what</var></dt>
+<dd><p>The value for <var class="var">what</var> should be one of the following:
+</p>
+<dl class="table">
+<dt><a id="index-show-in-debugger-function-arguments"></a><span><code class="code">args</code><a class="copiable-link" href="Debugger-Info.html#index-show-in-debugger-function-arguments"> &para;</a></span></dt>
+<dd><a class="index-entry-id" id="index-function-arguments_002c-show-in-debugger"></a>
+<p>List arguments of the selected frame.
+</p>
+</dd>
+<dt><a id="index-show-in-debugger-breakpoints"></a><span><code class="code">break</code><a class="copiable-link" href="Debugger-Info.html#index-show-in-debugger-breakpoints"> &para;</a></span></dt>
+<dd><a class="index-entry-id" id="index-breakpoint-show-all-in-debugger"></a>
+<p>List all currently set breakpoints.
+</p>
+</dd>
+<dt><a id="index-automatic-displays_002c-in-debugger"></a><span><code class="code">display</code><a class="copiable-link" href="Debugger-Info.html#index-automatic-displays_002c-in-debugger"> &para;</a></span></dt>
+<dd><p>List all items in the automatic display list.
+</p>
+</dd>
+<dt><a id="index-describe-call-stack-frame_002c-in-debugger"></a><span><code class="code">frame</code><a class="copiable-link" href="Debugger-Info.html#index-describe-call-stack-frame_002c-in-debugger"> &para;</a></span></dt>
+<dd><p>Give a description of the selected stack frame.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-function-definitions_002c-list-in-debugger"></a>
+<a id="index-list-function-definitions_002c-in-debugger"></a><span><code class="code">functions</code><a class="copiable-link" href="Debugger-Info.html#index-list-function-definitions_002c-in-debugger"> &para;</a></span></dt>
+<dd><p>List all function definitions including source file names and
+line numbers.
+</p>
+</dd>
+<dt><a id="index-show-in-debugger-local-variables"></a><span><code class="code">locals</code><a class="copiable-link" href="Debugger-Info.html#index-show-in-debugger-local-variables"> &para;</a></span></dt>
+<dd><a class="index-entry-id" id="index-local-variables-show-in-debugger"></a>
+<p>List local variables of the selected frame.
+</p>
+</dd>
+<dt><a id="index-show-in-debugger-name-of-current-source-file"></a><span><code class="code">source</code><a class="copiable-link" href="Debugger-Info.html#index-show-in-debugger-name-of-current-source-file"> &para;</a></span></dt>
+<dd><a class="index-entry-id" id="index-current-source-file_002c-show-in-debugger"></a>
+<a class="index-entry-id" id="index-source-file_002c-show-in-debugger"></a>
+<p>Print the name of the current source file. Each time the program stops, the
+current source file is the file containing the current instruction.
+When the debugger first starts, the current source file is the first file
+included via the <samp class="option">-f</samp> option. The
+&lsquo;<samp class="samp">list <var class="var">filename</var>:<var class="var">lineno</var></samp>&rsquo; command can
+be used at any time to change the current source.
+</p>
+</dd>
+<dt><a id="index-show-in-debugger-all-source-files"></a><span><code class="code">sources</code><a class="copiable-link" href="Debugger-Info.html#index-show-in-debugger-all-source-files"> &para;</a></span></dt>
+<dd><a class="index-entry-id" id="index-all-source-files_002c-show-in-debugger"></a>
+<p>List all program sources.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-global-variables_002c-show-in-debugger"></a>
+<a id="index-list-all-global-variables_002c-in-debugger"></a><span><code class="code">variables</code><a class="copiable-link" href="Debugger-Info.html#index-list-all-global-variables_002c-in-debugger"> &para;</a></span></dt>
+<dd><p>List all global variables.
+</p>
+</dd>
+<dt><a id="index-show-in-debugger-watchpoints"></a><span><code class="code">watch</code><a class="copiable-link" href="Debugger-Info.html#index-show-in-debugger-watchpoints"> &para;</a></span></dt>
+<dd><a class="index-entry-id" id="index-watchpoints_002c-show-in-debugger"></a>
+<p>List all items in the watch list.
+</p></dd>
+</dl>
+</dd>
+</dl>
+
+<p>Additional commands give you control over the debugger, the ability to
+save the debugger&rsquo;s state, and the ability to run debugger commands
+from a file.  The commands are:
+</p>
+<dl class="table">
+<dd><a class="index-entry-id" id="index-debugger-commands-o-_0028option_0029"></a>
+<a class="index-entry-id" id="index-debugger-commands-option"></a>
+<a class="index-entry-id" id="index-option-debugger-command"></a>
+<a class="index-entry-id" id="index-o-debugger-command-_0028alias-for-option_0029"></a>
+<a class="index-entry-id" id="index-display-debugger-options"></a>
+<a class="index-entry-id" id="index-debugger-options"></a>
+</dd>
+<dt><code class="code">option</code> [<var class="var">name</var>[<code class="code">=</code><var class="var">value</var>]]</dt>
+<dt><code class="code">o</code> [<var class="var">name</var>[<code class="code">=</code><var class="var">value</var>]]</dt>
+<dd><p>Without an argument, display the available debugger options
+and their current values. &lsquo;<samp class="samp">option <var class="var">name</var></samp>&rsquo; shows the current
+value of the named option. &lsquo;<samp class="samp">option <var class="var">name</var>=<var class="var">value</var></samp>&rsquo; assigns
+a new value to the named option.
+The available options are:
+</p>
+<dl class="table">
+<dt><a id="index-debugger-history-size"></a><span><code class="code">history_size</code><a class="copiable-link" href="Debugger-Info.html#index-debugger-history-size"> &para;</a></span></dt>
+<dd><p>Set the maximum number of lines to keep in the history file
+<samp class="file">./.gawk_history</samp>.  The default is 100.
+</p>
+</dd>
+<dt><a id="index-debugger-default-list-amount"></a><span><code class="code">listsize</code><a class="copiable-link" href="Debugger-Info.html#index-debugger-default-list-amount"> &para;</a></span></dt>
+<dd><p>Specify the number of lines that <code class="code">list</code> prints. The default is 15.
+</p>
+</dd>
+<dt><a id="index-redirect-gawk-output_002c-in-debugger"></a><span><code class="code">outfile</code><a class="copiable-link" href="Debugger-Info.html#index-redirect-gawk-output_002c-in-debugger"> &para;</a></span></dt>
+<dd><p>Send <code class="command">gawk</code> output to a file; debugger output still goes
+to standard output. An empty string (<code class="code">&quot;&quot;</code>) resets output to
+standard output.
+</p>
+</dd>
+<dt><a id="index-debugger-prompt-1"></a><span><code class="code">prompt</code><a class="copiable-link" href="Debugger-Info.html#index-debugger-prompt-1"> &para;</a></span></dt>
+<dd><p>Change the debugger prompt. The default is &lsquo;<samp class="samp">gawk&gt;&nbsp;<!-- /@w --></samp>&rsquo;.
+</p>
+</dd>
+<dt><a id="index-debugger-history-file"></a><span><code class="code">save_history</code> [<code class="code">on</code> | <code class="code">off</code>]<a class="copiable-link" href="Debugger-Info.html#index-debugger-history-file"> &para;</a></span></dt>
+<dd><p>Save command history to file <samp class="file">./.gawk_history</samp>.
+The default is <code class="code">on</code>.
+</p>
+</dd>
+<dt><a id="index-save-debugger-options"></a><span><code class="code">save_options</code> [<code class="code">on</code> | <code class="code">off</code>]<a class="copiable-link" href="Debugger-Info.html#index-save-debugger-options"> &para;</a></span></dt>
+<dd><p>Save current options to file <samp class="file">./.gawkrc</samp> upon exit.
+The default is <code class="code">on</code>.
+Options are read back into the next session upon startup.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-debugger-instruction-tracing"></a>
+<a id="index-instruction-tracing_002c-in-debugger"></a><span><code class="code">trace</code> [<code class="code">on</code> | <code class="code">off</code>]<a class="copiable-link" href="Debugger-Info.html#index-instruction-tracing_002c-in-debugger"> &para;</a></span></dt>
+<dd><p>Turn instruction tracing on or off. The default is <code class="code">off</code>.
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-debugger-save-commands-to-a-file"></a>
+</dd>
+<dt><code class="code">save</code> <var class="var">filename</var></dt>
+<dd><p>Save the commands from the current session to the given file name,
+so that they can be replayed using the <code class="command">source</code> command.
+</p>
+</dd>
+<dt><a id="index-debugger-read-commands-from-a-file"></a><span><code class="code">source</code> <var class="var">filename</var><a class="copiable-link" href="Debugger-Info.html#index-debugger-read-commands-from-a-file"> &para;</a></span></dt>
+<dd><p>Run command(s) from a file; an error in any command does not
+terminate execution of subsequent commands. Comments (lines starting
+with &lsquo;<samp class="samp">#</samp>&rsquo;) are allowed in a command file.
+Empty lines are ignored; they do <em class="emph">not</em>
+repeat the last command.
+You can&rsquo;t restart the program by having more than one <code class="code">run</code>
+command in the file. Also, the list of commands may include additional
+<code class="code">source</code> commands; however, the <code class="command">gawk</code> debugger will not source the
+same file more than once in order to avoid infinite recursion.
+</p>
+<p>In addition to, or instead of, the <code class="code">source</code> command, you can use
+the <samp class="option">-D <var class="var">file</var></samp> or <samp class="option">--debug=<var class="var">file</var></samp> command-line
+options to execute commands from a file non-interactively
+(see <a class="pxref" href="Options.html">Command-Line Options</a>).
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Miscellaneous-Debugger-Commands.html">Miscellaneous Commands</a>, Previous: <a href="Execution-Stack.html">Working with the Stack</a>, Up: <a href="List-of-Debugger-Commands.html">Main Debugger Commands</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

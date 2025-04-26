@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>REMCONF (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="REMCONF (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="REMCONF (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Some-Applications-and-Techniques.html" rel="up" title="Some Applications and Techniques">
+<link href="URLCHK.html" rel="next" title="URLCHK">
+<link href="GETURL.html" rel="prev" title="GETURL">
+<style type="text/css">
+<!--
+div.example {margin-left: 3.2em}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="REMCONF">
+<div class="nav-panel">
+<p>
+Next: <a href="URLCHK.html" accesskey="n" rel="next">URLCHK: Look for Changed Web Pages</a>, Previous: <a href="GETURL.html" accesskey="p" rel="prev">GETURL: Retrieving Web Pages</a>, Up: <a href="Some-Applications-and-Techniques.html" accesskey="u" rel="up">Some Applications and Techniques</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="REMCONF_003a-Remote-Configuration-of-Embedded-Systems">3.3 REMCONF: Remote Configuration of Embedded Systems</h3>
+<a class="index-entry-id" id="index-REMCONF-program"></a>
+<a class="index-entry-id" id="index-Linux-2"></a>
+<a class="index-entry-id" id="index-GNU_002fLinux-2"></a>
+<a class="index-entry-id" id="index-Yahoo_0021"></a>
+<p>Today, you often find powerful processors in embedded systems.  Dedicated
+network routers and controllers for all kinds of machinery are examples
+of embedded systems. Processors like the Intel 80x86 or the AMD Elan are
+able to run multitasking operating systems, such as XINU or GNU/Linux
+in embedded PCs.  These systems are small and usually do not have
+a keyboard or a display.  Therefore it is difficult to set up their
+configuration. There are several widespread ways to set them up:
+</p>
+<ul class="itemize mark-bullet">
+<li>DIP switches
+
+</li><li>Read Only Memories such as EPROMs
+
+</li><li>Serial lines or some kind of keyboard
+
+</li><li>Network connections via <code class="command">telnet</code> or SNMP
+
+</li><li>HTTP connections with HTML GUIs
+</li></ul>
+
+<p>In this section, we look at a solution that uses HTTP connections
+to control variables of an embedded system that are stored in a file.
+Since embedded systems have tight limits on resources like memory,
+it is difficult to employ advanced techniques such as SNMP and HTTP
+servers. <code class="command">gawk</code> fits in quite nicely with its single executable
+which needs just a short script to start working.
+The following program stores the variables in a file, and a concurrent
+process in the embedded system may read the file. The program uses the
+site-independent part of the simple web server that we developed in
+<a class="ref" href="Interacting-Service.html">A Web Service with Interaction</a>.
+As mentioned there, all we have to do is to write two new procedures
+<code class="code">SetUpServer()</code> and <code class="code">HandleGET()</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">function SetUpServer() {
+  TopHeader = &quot;&lt;HTML&gt;&lt;title&gt;Remote Configuration&lt;/title&gt;&quot;
+  TopDoc = &quot;&lt;BODY&gt;\
+    &lt;h2&gt;Please choose one of the following actions:&lt;/h2&gt;\
+    &lt;UL&gt;\
+      &lt;LI&gt;&lt;A HREF=&quot; MyPrefix &quot;/AboutServer&gt;About this server&lt;/A&gt;&lt;/LI&gt;\
+      &lt;LI&gt;&lt;A HREF=&quot; MyPrefix &quot;/ReadConfig&gt;Read Configuration&lt;/A&gt;&lt;/LI&gt;\
+      &lt;LI&gt;&lt;A HREF=&quot; MyPrefix &quot;/CheckConfig&gt;Check Configuration&lt;/A&gt;&lt;/LI&gt;\
+      &lt;LI&gt;&lt;A HREF=&quot; MyPrefix &quot;/ChangeConfig&gt;Change Configuration&lt;/A&gt;&lt;/LI&gt;\
+      &lt;LI&gt;&lt;A HREF=&quot; MyPrefix &quot;/SaveConfig&gt;Save Configuration&lt;/A&gt;&lt;/LI&gt;\
+    &lt;/UL&gt;&quot;
+  TopFooter  = &quot;&lt;/BODY&gt;&lt;/HTML&gt;&quot;
+  if (ConfigFile == &quot;&quot;) ConfigFile = &quot;config.asc&quot;
+}
+</pre></div>
+
+<p>The function <code class="code">SetUpServer()</code> initializes the top level HTML texts
+as usual. It also initializes the name of the file that contains the
+configuration parameters and their values. In case the user supplies
+a name from the command line, that name is used. The file is expected to
+contain one parameter per line, with the name of the parameter in
+column one and the value in column two.
+</p>
+<p>The function <code class="code">HandleGET()</code> reflects the structure of the menu
+tree as usual. The first menu choice tells the user what this is all
+about. The second choice reads the configuration file line by line
+and stores the parameters and their values. Notice that the record
+separator for this file is <code class="code">&quot;\n&quot;</code>, in contrast to the record separator
+for HTTP. The third menu choice builds an HTML table to show
+the contents of the configuration file just read. The fourth choice
+does the real work of changing parameters, and the last one just saves
+the configuration into a file:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">function HandleGET() {
+  if (MENU[2] == &quot;AboutServer&quot;) {
+    Document  = &quot;This is a GUI for remote configuration of an\
+      embedded system. It is is implemented as one GAWK script.&quot;
+  } else if (MENU[2] == &quot;ReadConfig&quot;) {
+    RS = &quot;\n&quot;
+    while ((getline &lt; ConfigFile) &gt; 0)
+       config[$1] = $2;
+    close(ConfigFile)
+    RS = &quot;\r\n&quot;
+    Document = &quot;Configuration has been read.&quot;
+  } else if (MENU[2] == &quot;CheckConfig&quot;) {
+    Document = &quot;&lt;TABLE BORDER=1 CELLPADDING=5&gt;&quot;
+    for (i in config)
+      Document = Document &quot;&lt;TR&gt;&lt;TD&gt;&quot; i &quot;&lt;/TD&gt;&quot; \
+        &quot;&lt;TD&gt;&quot; config[i] &quot;&lt;/TD&gt;&lt;/TR&gt;&quot;
+    Document = Document &quot;&lt;/TABLE&gt;&quot;
+  } else if (MENU[2] == &quot;ChangeConfig&quot;) {
+    if (&quot;Param&quot; in GETARG) {            # any parameter to set?
+      if (GETARG[&quot;Param&quot;] in config) {  # is  parameter valid?
+        config[GETARG[&quot;Param&quot;]] = GETARG[&quot;Value&quot;]
+        Document = (GETARG[&quot;Param&quot;] &quot; = &quot; GETARG[&quot;Value&quot;] &quot;.&quot;)
+      } else {
+        Document = &quot;Parameter &lt;b&gt;&quot; GETARG[&quot;Param&quot;] &quot;&lt;/b&gt; is invalid.&quot;
+      }
+    } else {
+      Document = &quot;&lt;FORM method=GET&gt;&lt;h4&gt;Change one parameter&lt;/h4&gt;\
+        &lt;TABLE BORDER CELLPADDING=5&gt;\
+        &lt;TR&gt;&lt;TD&gt;Parameter&lt;/TD&gt;&lt;TD&gt;Value&lt;/TD&gt;&lt;/TR&gt;\
+        &lt;TR&gt;&lt;TD&gt;&lt;input type=text name=Param value=\&quot;\&quot; size=20&gt;&lt;/TD&gt;\
+            &lt;TD&gt;&lt;input type=text name=Value value=\&quot;\&quot; size=40&gt;&lt;/TD&gt;\
+        &lt;/TR&gt;&lt;/TABLE&gt;&lt;input type=submit value=\&quot;Set\&quot;&gt;&lt;/FORM&gt;&quot;
+    }
+  } else if (MENU[2] == &quot;SaveConfig&quot;) {
+    for (i in config)
+      printf(&quot;%s %s\n&quot;, i, config[i]) &gt; ConfigFile
+    close(ConfigFile)
+    Document = &quot;Configuration has been saved.&quot;
+  }
+}
+</pre></div>
+
+<a class="index-entry-id" id="index-MiniSQL"></a>
+<p>We could also view the configuration file as a database. From this
+point of view, the previous program acts like a primitive database server.
+Real SQL database systems also make a service available by providing
+a TCP port that clients can connect to. But the application level protocols
+they use are usually proprietary and also change from time to time.
+This is also true for the protocol that
+MiniSQL uses.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="URLCHK.html">URLCHK: Look for Changed Web Pages</a>, Previous: <a href="GETURL.html">GETURL: Retrieving Web Pages</a>, Up: <a href="Some-Applications-and-Techniques.html">Some Applications and Techniques</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>STOXPRED (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="STOXPRED (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="STOXPRED (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Some-Applications-and-Techniques.html" rel="up" title="Some Applications and Techniques">
+<link href="PROTBASE.html" rel="next" title="PROTBASE">
+<link href="MOBAGWHO.html" rel="prev" title="MOBAGWHO">
+<style type="text/css">
+<!--
+div.center {text-align:center}
+div.example {margin-left: 3.2em}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="STOXPRED">
+<div class="nav-panel">
+<p>
+Next: <a href="PROTBASE.html" accesskey="n" rel="next">PROTBASE: Searching Through A Protein Database</a>, Previous: <a href="MOBAGWHO.html" accesskey="p" rel="prev">MOBAGWHO: a Simple Mobile Agent</a>, Up: <a href="Some-Applications-and-Techniques.html" accesskey="u" rel="up">Some Applications and Techniques</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="STOXPRED_003a-Stock-Market-Prediction-As-A-Service">3.9 STOXPRED: Stock Market Prediction As A Service</h3>
+<a class="index-entry-id" id="index-STOXPRED-program"></a>
+<a class="index-entry-id" id="index-Yahoo_0021-1"></a>
+<blockquote class="quotation">
+<p><i class="i">Far out in the uncharted backwaters of the unfashionable end of
+the Western Spiral arm of the Galaxy lies a small unregarded yellow sun.</i>
+</p>
+<p><i class="i">Orbiting this at a distance of roughly ninety-two million miles is an
+utterly insignificant little blue-green planet whose ape-descendent life
+forms are so amazingly primitive that they still think digital watches are
+a pretty neat idea.</i>
+</p>
+<p><i class="i">This planet has &mdash; or rather had &mdash; a problem, which was this:
+most of the people living on it were unhappy for pretty much of the time.
+Many solutions were suggested for this problem, but most of these were
+largely concerned with the movements of small green pieces of paper,
+which is odd because it wasn&rsquo;t the small green pieces of paper that
+were unhappy.</i> <br>
+</p></blockquote>
+<div class="center">&mdash; <em class="emph">Douglas Adams, <cite class="cite">The Hitch Hiker&rsquo;s Guide to the Galaxy</cite></em>
+</div>
+<a class="index-entry-id" id="index-cron-utility"></a>
+<p>Valuable services on the Internet are usually <em class="emph">not</em> implemented
+as mobile agents. There are much simpler ways of implementing services.
+All Unix systems provide, for example, the <code class="command">cron</code> service.
+Unix system users can write a list of tasks to be done each day, each
+week, twice a day, or just once. The list is entered into a file named
+<samp class="file">crontab</samp>.  For example, to distribute a newsletter on a daily
+basis this way, use <code class="command">cron</code> for calling a script each day early
+in the morning:
+</p>
+<div class="example">
+<pre class="example-preformatted"># run at 8 am on weekdays, distribute the newsletter
+0 8 * * 1-5   $HOME/bin/daily.job &gt;&gt; $HOME/log/newsletter 2&gt;&amp;1
+</pre></div>
+
+<p>The script first looks for interesting information on the Internet,
+assembles it in a nice form and sends the results via email to
+the customers.
+</p>
+<p>The following is an example of a primitive
+newsletter on stock market prediction. It is a report which first
+tries to predict the change of each share in the Dow Jones Industrial
+Index for the particular day. Then it mentions some especially
+promising shares as well as some shares which look remarkably bad
+on that day. The report ends with the usual disclaimer which tells
+every child <em class="emph">not</em> to try this at home and hurt anybody.
+<a class="index-entry-id" id="index-Dow-Jones-Industrial-Index"></a>
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">Good morning Uncle Scrooge,
+
+This is your daily stock market report for Monday, October 16, 2000.
+Here are the predictions for today:
+
+        AA      neutral
+        GE      up
+        JNJ     down
+        MSFT    neutral
+        &hellip;
+        UTX     up
+        DD      down
+        IBM     up
+        MO      down
+        WMT     up
+        DIS     up
+        INTC    up
+        MRK     down
+        XOM     down
+        EK      down
+        IP      down
+
+The most promising shares for today are these:
+
+        INTC            http://biz.yahoo.com/n/i/intc.html
+
+The stock shares to avoid today are these:
+
+        EK              http://biz.yahoo.com/n/e/ek.html
+        IP              http://biz.yahoo.com/n/i/ip.html
+        DD              http://biz.yahoo.com/n/d/dd.html
+        &hellip;
+</pre></div>
+
+<p>The script as a whole is rather long. In order to ease the pain of
+studying other people&rsquo;s source code, we have broken the script
+up into meaningful parts which are invoked one after the other.
+The basic structure of the script is as follows:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN {
+  Init()
+  ReadQuotes()
+  CleanUp()
+  Prediction()
+  Report()
+  SendMail()
+}
+</pre></div>
+
+<p>The earlier parts store data into variables and arrays which are
+subsequently used by later parts of the script. The <code class="code">Init()</code> function
+first checks if the script is invoked correctly (without any parameters).
+If not, it informs the user of the correct usage. What follows are preparations
+for the retrieval of the historical quote data. The names of the 30 stock
+shares are stored in an array <code class="code">name</code> along with the current date
+in <code class="code">day</code>, <code class="code">month</code>, and <code class="code">year</code>.
+</p>
+<p>All users who are separated
+from the Internet by a firewall and have to direct their Internet accesses
+to a proxy must supply the name of the proxy to this script with the
+&lsquo;<samp class="samp">-v Proxy=<var class="var">name</var></samp>&rsquo; option. For most users, the default proxy and
+port number should suffice.
+</p>
+<div class="example">
+<pre class="example-preformatted">function Init() {
+  if (ARGC != 1) {
+    print &quot;STOXPRED - daily stock share prediction&quot;
+    print &quot;IN:\n    no parameters, nothing on stdin&quot;
+    print &quot;PARAM:\n    -v Proxy=MyProxy -v ProxyPort=80&quot;
+    print &quot;OUT:\n    commented predictions as email&quot;
+    print &quot;JK 09.10.2000&quot;
+    exit
+  }
+  # Remember ticker symbols from Dow Jones Industrial Index
+  StockCount = split(&quot;AA GE JNJ MSFT AXP GM JPM PG BA HD KO \
+    SBC C HON MCD T CAT HWP MMM UTX DD IBM MO WMT DIS INTC \
+    MRK XOM EK IP&quot;, name);
+  # Remember the current date as the end of the time series
+  day   = strftime(&quot;%d&quot;)
+  month = strftime(&quot;%m&quot;)
+  year  = strftime(&quot;%Y&quot;)
+  if (Proxy     == &quot;&quot;)  Proxy     = &quot;chart.yahoo.com&quot;
+  if (ProxyPort ==  0)  ProxyPort = 80
+  YahooData = &quot;/inet/tcp/0/&quot; Proxy &quot;/&quot; ProxyPort
+}
+</pre></div>
+
+<a class="index-entry-id" id="index-CSV-format"></a>
+<p>There are two really interesting parts in the script. One is the
+function which reads the historical stock quotes from an Internet
+server. The other is the one that does the actual prediction. In
+the following function we see how the quotes are read from the
+Yahoo server. The data which comes from the server is in
+CSV format (comma-separated values):
+</p>
+<div class="example">
+<pre class="example-preformatted">Date,Open,High,Low,Close,Volume
+9-Oct-00,22.75,22.75,21.375,22.375,7888500
+6-Oct-00,23.8125,24.9375,21.5625,22,10701100
+5-Oct-00,24.4375,24.625,23.125,23.50,5810300
+</pre></div>
+
+<p>Lines contain values of the same time instant, whereas columns are
+separated by commas and contain the kind of data that is described
+in the header (first) line. At first, <code class="command">gawk</code> is instructed to
+separate columns by commas (&lsquo;<samp class="samp">FS = &quot;,&quot;</samp>&rsquo;). In the loop that follows,
+a connection to the Yahoo server is first opened, then a download takes
+place, and finally the connection is closed. All this happens once for
+each ticker symbol. In the body of this loop, an Internet address is
+built up as a string according to the rules of the Yahoo server. The
+starting and ending date are chosen to be exactly the same, but one year
+apart in the past. All the action is initiated within the <code class="code">printf</code>
+command which transmits the request for data to the Yahoo server.
+</p>
+<p>In the inner loop, the server&rsquo;s data is first read and then scanned
+line by line. Only lines which have six columns and the name of a month
+in the first column contain relevant data. This data is stored
+in the two-dimensional array <code class="code">quote</code>; one dimension
+being time, the other being the ticker symbol. During retrieval of the
+first stock&rsquo;s data, the calendar names of the time instances are stored
+in the array <code class="code">day</code> because we need them later.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">function ReadQuotes() {
+  # Retrieve historical data for each ticker symbol
+  FS = &quot;,&quot;
+  for (stock = 1; stock &lt;= StockCount; stock++) {
+    URL = &quot;http://chart.yahoo.com/table.csv?s=&quot; name[stock] \
+          &quot;&amp;a=&quot; month &quot;&amp;b=&quot; day   &quot;&amp;c=&quot; year-1 \
+          &quot;&amp;d=&quot; month &quot;&amp;e=&quot; day   &quot;&amp;f=&quot; year \
+          &quot;g=d&amp;q=q&amp;y=0&amp;z=&quot; name[stock] &quot;&amp;x=.csv&quot;
+    printf(&quot;GET &quot; URL &quot; HTTP/1.0\r\n\r\n&quot;) |&amp; YahooData
+    while ((YahooData |&amp; getline) &gt; 0) {
+      if (NF == 6 &amp;&amp; $1 ~ /Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec/) {
+        if (stock == 1)
+          days[++daycount] = $1;
+        quote[$1, stock] = $5
+      }
+    }
+    close(YahooData)
+  }
+  FS = &quot; &quot;
+}
+</pre></div>
+
+<p>Now that we <em class="emph">have</em> the data, it can be checked once again to make sure
+that no individual stock is missing or invalid, and that all the stock quotes are
+aligned correctly. Furthermore, we renumber the time instances. The
+most recent day gets day number 1 and all other days get consecutive
+numbers. All quotes are rounded toward the nearest whole number in US Dollars.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">function CleanUp() {
+  # clean up time series; eliminate incomplete data sets
+  for (d = 1; d &lt;= daycount; d++) {
+    for (stock = 1; stock &lt;= StockCount; stock++)
+      if (! ((days[d], stock) in quote))
+          stock = StockCount + 10
+    if (stock &gt; StockCount + 1)
+        continue
+    datacount++
+    for (stock = 1; stock &lt;= StockCount; stock++)
+      data[datacount, stock] = int(0.5 + quote[days[d], stock])
+  }
+  delete quote
+  delete days
+}
+</pre></div>
+
+<p>Now we have arrived at the second really interesting part of the whole affair.
+What we present here is a very primitive prediction algorithm:
+<em class="emph">If a stock fell yesterday, assume it will also fall today; if
+it rose yesterday, assume it will rise today</em>.  (Feel free to replace this
+algorithm with a smarter one.) If a stock changed in the same direction
+on two consecutive days, this is an indication which should be highlighted.
+Two-day advances are stored in <code class="code">hot</code> and two-day declines in
+<code class="code">avoid</code>.
+</p>
+<p>The rest of the function is a sanity check. It counts the number of
+correct predictions in relation to the total number of predictions
+one could have made in the year before.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">function Prediction() {
+  # Predict each ticker symbol by prolonging yesterday's trend
+  for (stock = 1; stock &lt;= StockCount; stock++) {
+    if         (data[1, stock] &gt; data[2, stock]) {
+      predict[stock] = &quot;up&quot;
+    } else if  (data[1, stock] &lt; data[2, stock]) {
+      predict[stock] = &quot;down&quot;
+    } else {
+      predict[stock] = &quot;neutral&quot;
+    }
+    if ((data[1, stock] &gt; data[2, stock]) &amp;&amp; (data[2, stock] &gt; data[3, stock]))
+      hot[stock] = 1
+    if ((data[1, stock] &lt; data[2, stock]) &amp;&amp; (data[2, stock] &lt; data[3, stock]))
+      avoid[stock] = 1
+  }
+  # Do a plausibility check: how many predictions proved correct?
+  for (s = 1; s &lt;= StockCount; s++) {
+    for (d = 1; d &lt;= datacount-2; d++) {
+      if         (data[d+1, s] &gt; data[d+2, s]) {
+        UpCount++
+      } else if  (data[d+1, s] &lt; data[d+2, s]) {
+        DownCount++
+      } else {
+        NeutralCount++
+      }
+      if (((data[d, s]  &gt; data[d+1, s]) &amp;&amp; (data[d+1, s]  &gt; data[d+2, s])) ||
+          ((data[d, s]  &lt; data[d+1, s]) &amp;&amp; (data[d+1, s]  &lt; data[d+2, s])) ||
+          ((data[d, s] == data[d+1, s]) &amp;&amp; (data[d+1, s] == data[d+2, s])))
+        CorrectCount++
+    }
+  }
+}
+</pre></div>
+
+<p>At this point the hard work has been done: the array <code class="code">predict</code>
+contains the predictions for all the ticker symbols. It is up to the
+function <code class="code">Report()</code> to find some nice words to present the
+desired information.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">function Report() {
+  # Generate report
+  report =        &quot;\nThis is your daily &quot;
+  report = report &quot;stock market report for &quot;strftime(&quot;%A, %B %d, %Y&quot;)&quot;.\n&quot;
+  report = report &quot;Here are the predictions for today:\n\n&quot;
+  for (stock = 1; stock &lt;= StockCount; stock++)
+    report = report &quot;\t&quot; name[stock] &quot;\t&quot; predict[stock] &quot;\n&quot;
+  for (stock in hot) {
+    if (HotCount++ == 0)
+      report = report &quot;\nThe most promising shares for today are these:\n\n&quot;
+    report = report &quot;\t&quot; name[stock] &quot;\t\thttp://biz.yahoo.com/n/&quot; \
+      tolower(substr(name[stock], 1, 1)) &quot;/&quot; tolower(name[stock]) &quot;.html\n&quot;
+  }
+  for (stock in avoid) {
+    if (AvoidCount++ == 0)
+      report = report &quot;\nThe stock shares to avoid today are these:\n\n&quot;
+    report = report &quot;\t&quot; name[stock] &quot;\t\thttp://biz.yahoo.com/n/&quot; \
+      tolower(substr(name[stock], 1, 1)) &quot;/&quot; tolower(name[stock]) &quot;.html\n&quot;
+  }
+  report = report &quot;\nThis sums up to &quot; HotCount+0 &quot; winners and &quot; AvoidCount+0
+  report = report &quot; losers. When using this kind\nof prediction scheme for&quot;
+  report = report &quot; the 12 months which lie behind us,\nwe get &quot; UpCount
+  report = report &quot; 'ups' and &quot; DownCount &quot; 'downs' and &quot; NeutralCount
+  report = report &quot; 'neutrals'. Of all\nthese &quot; UpCount+DownCount+NeutralCount
+  report = report &quot; predictions &quot; CorrectCount &quot; proved correct next day.\n&quot;
+  report = report &quot;A success rate of &quot;\
+             int(100*CorrectCount/(UpCount+DownCount+NeutralCount)) &quot;%.\n&quot;
+  report = report &quot;Random choice would have produced a 33% success rate.\n&quot;
+  report = report &quot;Disclaimer: Like every other prediction of the stock\n&quot;
+  report = report &quot;market, this report is, of course, complete nonsense.\n&quot;
+  report = report &quot;If you are stupid enough to believe these predictions\n&quot;
+  report = report &quot;you should visit a doctor who can treat your ailment.&quot;
+}
+</pre></div>
+
+<p>The function <code class="code">SendMail()</code> goes through the list of customers and opens
+a pipe to the <code class="command">mail</code> command for each of them. Each one receives an
+email message with a proper subject heading and is addressed with his full name.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">function SendMail() {
+  # send report to customers
+  customer[&quot;uncle.scrooge@ducktown.gov&quot;] = &quot;Uncle Scrooge&quot;
+  customer[&quot;more@utopia.org&quot;           ] = &quot;Sir Thomas More&quot;
+  customer[&quot;spinoza@denhaag.nl&quot;        ] = &quot;Baruch de Spinoza&quot;
+  customer[&quot;marx@highgate.uk&quot;          ] = &quot;Karl Marx&quot;
+  customer[&quot;keynes@the.long.run&quot;       ] = &quot;John Maynard Keynes&quot;
+  customer[&quot;bierce@devil.hell.org&quot;     ] = &quot;Ambrose Bierce&quot;
+  customer[&quot;laplace@paris.fr&quot;          ] = &quot;Pierre Simon de Laplace&quot;
+  for (c in customer) {
+    MailPipe = &quot;mail -s 'Daily Stock Prediction Newsletter'&quot; c
+    print &quot;Good morning &quot; customer[c] &quot;,&quot; | MailPipe
+    print report &quot;\n.\n&quot; | MailPipe
+    close(MailPipe)
+  }
+}
+</pre></div>
+
+<p>Be patient when running the script by hand.
+Retrieving the data for all the ticker symbols and sending the emails
+may take several minutes to complete, depending upon network traffic
+and the speed of the available Internet link.
+The quality of the prediction algorithm is likely to be disappointing.
+Try to find a better one.
+Should you find one with a success rate of more than 50%, please tell
+us about it! It is only for the sake of curiosity, of course. <code class="code">:-)</code>
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="PROTBASE.html">PROTBASE: Searching Through A Protein Database</a>, Previous: <a href="MOBAGWHO.html">MOBAGWHO: a Simple Mobile Agent</a>, Up: <a href="Some-Applications-and-Techniques.html">Some Applications and Techniques</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>Special File Fields (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="Special File Fields (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="Special File Fields (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Gawk-Special-Files.html" rel="up" title="Gawk Special Files">
+<link href="Comparing-Protocols.html" rel="next" title="Comparing Protocols">
+<link href="Gawk-Special-Files.html" rel="prev" title="Gawk Special Files">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Special-File-Fields">
+<div class="nav-panel">
+<p>
+Next: <a href="Comparing-Protocols.html" accesskey="n" rel="next">Comparing Protocols</a>, Previous: <a href="Gawk-Special-Files.html" accesskey="p" rel="prev"><code class="command">gawk</code>&rsquo;s Networking Mechanisms</a>, Up: <a href="Gawk-Special-Files.html" accesskey="u" rel="up"><code class="command">gawk</code>&rsquo;s Networking Mechanisms</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="The-Fields-of-the-Special-File-Name">2.1.1 The Fields of the Special File Name</h4>
+<p>This section explains the meaning of all of the fields,
+as well as the range of values and the defaults.
+All of the fields are mandatory.  To let the system pick a value,
+or if the field doesn&rsquo;t apply to the protocol, specify it as &lsquo;<samp class="samp">0</samp>&rsquo; (zero):
+</p>
+<dl class="table">
+<dd><a class="index-entry-id" id="index-network-type-field"></a>
+<a class="index-entry-id" id="index-TCP_002fIP-1"></a>
+</dd>
+<dt><var class="var">net-type</var></dt>
+<dd><p>This is one of &lsquo;<samp class="samp">inet4</samp>&rsquo; for IPv4, &lsquo;<samp class="samp">inet6</samp>&rsquo; for IPv6,
+or &lsquo;<samp class="samp">inet</samp>&rsquo; to use the system default (which is likely to be IPv4).
+For the rest of this document, we will use the generic &lsquo;<samp class="samp">/inet</samp>&rsquo;
+in our descriptions of how <code class="command">gawk</code>&rsquo;s networking works.
+</p>
+<a class="index-entry-id" id="index-protocol-field"></a>
+<a class="index-entry-id" id="index-TCP_002fIP-2"></a>
+</dd>
+<dt><var class="var">protocol</var></dt>
+<dd><p>Determines which member of the TCP/IP
+family of protocols is selected to transport the data across the
+network. There are two possible values (always written in lowercase):
+&lsquo;<samp class="samp">tcp</samp>&rsquo; and &lsquo;<samp class="samp">udp</samp>&rsquo;. The exact meaning of each is
+explained later in this section.
+</p>
+</dd>
+<dt id='index-networks-2'><span><var class="var">localport</var><a class="copiable-link" href='Special-File-Fields.html#index-networks-2'> &para;</a></span></dt>
+<dd><p>Determines which port on the local
+machine is used to communicate across the network.  Application-level clients
+usually use &lsquo;<samp class="samp">0</samp>&rsquo; to indicate they do not care which local port is
+used&mdash;instead they specify a remote port to connect to.
+</p>
+<p>It is vital for
+application-level servers to use a number different from &lsquo;<samp class="samp">0</samp>&rsquo; here
+because their service has to be available at a specific publicly known
+port number. It is possible to use a name from <samp class="file">/etc/services</samp> here.
+</p>
+</dd>
+<dt id='index-hostname-field'><span><var class="var">hostname</var><a class="copiable-link" href='Special-File-Fields.html#index-hostname-field'> &para;</a></span></dt>
+<dd><a class="index-entry-id" id="index-servers-1"></a>
+<p>Determines which remote host is to
+be at the other end of the connection.
+Application-level clients must enter a name different from &lsquo;<samp class="samp">0</samp>&rsquo;.
+The name can be either symbolic
+(e.g., &lsquo;<samp class="samp">jpl-devvax.jpl.nasa.gov</samp>&rsquo;) or numeric (e.g., &lsquo;<samp class="samp">128.149.1.143</samp>&rsquo;).
+</p>
+<p>Application-level servers must fill
+this field with a &lsquo;<samp class="samp">0</samp>&rsquo; to indicate their being open for all other hosts
+to connect to them and enforce connection level server behavior this way.
+It is not possible for an application-level server to restrict its
+availability to one remote host by entering a host name here.
+</p>
+</dd>
+<dt><var class="var">remoteport</var></dt>
+<dd><p>Determines which port on the remote
+machine is used to communicate across the network.
+For <samp class="file">/inet/tcp</samp> and <samp class="file">/inet/udp</samp>,
+application-level clients <em class="emph">must</em> use a number
+other than &lsquo;<samp class="samp">0</samp>&rsquo; to indicate to which port on the remote machine
+they want to connect.
+</p>
+<p>Application-level servers must not fill this field with
+a &lsquo;<samp class="samp">0</samp>&rsquo;. Instead they specify a local port to which clients connect.
+It is possible to use a name from <samp class="file">/etc/services</samp> here.
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-networks-3"></a>
+<a class="index-entry-id" id="index-gawk-2"></a>
+<p>Experts in network programming will notice that the usual
+client/server asymmetry found at the level of the socket API is not visible
+here. This is for the sake of simplicity of the high-level concept. If this
+asymmetry is necessary for your application,
+use another language.
+For <code class="command">gawk</code>, it is
+more important to enable users to write a client program with a minimum
+of code. What happens when first accessing a network connection is seen
+in the following pseudocode:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">if ((name of remote host given) &amp;&amp; (other side accepts connection)) {
+  rendez-vous successful; transmit with getline or print
+} else {
+  if ((other side did not accept) &amp;&amp; (localport == 0))
+    exit unsuccessful
+  if (TCP) {
+    set up a server accepting connections
+    this means waiting for the client on the other side to connect
+  } else
+    ready
+}
+</pre></div>
+
+<p>The exact behavior of this algorithm depends on the values of the
+fields of the special file name. When in doubt, <a class="ref" href="Special-File-Fields.html#table_002dinet_002dcomponents">Table 2.1</a>
+gives you the combinations of values and their meaning. If this
+table is too complicated, focus on the three lines printed in
+<strong class="strong">bold</strong>. All the examples in
+<a class="ref" href="Using-Networking.html">Networking With <code class="command">gawk</code></a>,
+use only the
+patterns printed in bold letters.
+</p>
+<div class="float" id="table_002dinet_002dcomponents">
+
+<table class="multitable">
+<thead><tr><th width="15%"><small class="sc">PROTOCOL</small></th><th width="15%"><small class="sc">LOCAL PORT</small></th><th width="15%"><small class="sc">HOST NAME</small></th><th width="15%"><small class="sc">REMOTE PORT</small></th><th width="40%"><small class="sc">RESULTING CONNECTION-LEVEL BEHAVIOR</small></th></tr></thead>
+<tbody><tr><td width="15%"><strong class="strong">tcp</strong></td><td width="15%"><strong class="strong">0</strong></td><td width="15%"><strong class="strong">x</strong></td><td width="15%"><strong class="strong">x</strong></td><td width="40%"><strong class="strong">Dedicated client, fails if immediately connecting to a
+              server on the other side fails</strong></td></tr>
+<tr><td width="15%">udp</td><td width="15%">0</td><td width="15%">x</td><td width="15%">x</td><td width="40%">Dedicated client</td></tr>
+<tr><td width="15%"><strong class="strong">tcp, udp</strong></td><td width="15%"><strong class="strong">x</strong></td><td width="15%"><strong class="strong">x</strong></td><td width="15%"><strong class="strong">x</strong></td><td width="40%"><strong class="strong">Client, switches to dedicated server if necessary</strong></td></tr>
+<tr><td width="15%"><strong class="strong">tcp, udp</strong></td><td width="15%"><strong class="strong">x</strong></td><td width="15%"><strong class="strong">0</strong></td><td width="15%"><strong class="strong">0</strong></td><td width="40%"><strong class="strong">Dedicated server</strong></td></tr>
+<tr><td width="15%">tcp, udp</td><td width="15%">x</td><td width="15%">x</td><td width="15%">0</td><td width="40%">Invalid</td></tr>
+<tr><td width="15%">tcp, udp</td><td width="15%">0</td><td width="15%">0</td><td width="15%">x</td><td width="40%">Invalid</td></tr>
+<tr><td width="15%">tcp, udp</td><td width="15%">x</td><td width="15%">0</td><td width="15%">x</td><td width="40%">Invalid</td></tr>
+<tr><td width="15%">tcp, udp</td><td width="15%">0</td><td width="15%">0</td><td width="15%">0</td><td width="40%">Invalid</td></tr>
+<tr><td width="15%">tcp, udp</td><td width="15%">0</td><td width="15%">x</td><td width="15%">0</td><td width="40%">Invalid</td></tr>
+</tbody>
+</table>
+<div class="caption"><p><strong class="strong">Table 2.1: </strong><code class="code">/inet</code> Special File Components</p></div></div>
+<p>In general, TCP is the preferred mechanism to use.  It is the simplest
+protocol to understand and to use.  Use UDP only if circumstances
+demand low-overhead.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Comparing-Protocols.html">Comparing Protocols</a>, Previous: <a href="Gawk-Special-Files.html"><code class="command">gawk</code>&rsquo;s Networking Mechanisms</a>, Up: <a href="Gawk-Special-Files.html"><code class="command">gawk</code>&rsquo;s Networking Mechanisms</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

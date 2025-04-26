@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Comma Separated Fields (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Comma Separated Fields (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Comma Separated Fields (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Field-Separators.html" rel="up" title="Field Separators">
+<link href="Command-Line-Field-Separator.html" rel="next" title="Command Line Field Separator">
+<link href="Single-Character-Fields.html" rel="prev" title="Single Character Fields">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.center {text-align:center}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Comma-Separated-Fields">
+<div class="nav-panel">
+<p>
+Next: <a href="Command-Line-Field-Separator.html" accesskey="n" rel="next">Setting <code class="code">FS</code> from the Command Line</a>, Previous: <a href="Single-Character-Fields.html" accesskey="p" rel="prev">Making Each Character a Separate Field</a>, Up: <a href="Field-Separators.html" accesskey="u" rel="up">Specifying How Fields Are Separated</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Working-With-Comma-Separated-Value-Files"><span>4.5.4 Working With Comma Separated Value Files<a class="copiable-link" href="Comma-Separated-Fields.html#Working-With-Comma-Separated-Value-Files"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-comma-separated-values-_0028CSV_0029-data-records-and-fields"></a>
+<a class="index-entry-id" id="index-CSV-_0028comma-separated-values_0029-data-records-and-fields"></a>
+<p>Many commonly-used tools use a comma to separate fields, instead of whitespace.
+This is particularly true of popular spreadsheet programs.  There is no
+universally accepted standard for the format of these files, although
+<a class="uref" href="http://www.ietf.org/rfc/rfc4180">RFC 4180</a> lists the common
+practices.
+</p>
+<p>For decades, anyone wishing to work with CSV files and <code class="command">awk</code>
+had to &ldquo;roll their own&rdquo; solution.
+(For an example, see <a class="pxref" href="Splitting-By-Content.html">Defining Fields by Content</a>).
+In 2023, Brian Kernighan decided to add CSV support to his version of
+<code class="command">awk</code>.  In order to keep up, <code class="command">gawk</code> too provides the same
+support as his version.
+To use CSV data, invoke <code class="command">gawk</code> with either of the
+<samp class="option">-k</samp> or <samp class="option">--csv</samp> options.
+</p>
+<p>Fields in CSV files are separated by commas.  In order to allow a comma
+to appear inside a field (i.e., as data), the field may be quoted
+by beginning and ending it with double quotes.  In order to allow a double
+quote inside a field, the field <em class="emph">must</em> be quoted, and two double quotes
+represent an actual double quote.
+The double quote that starts a quoted field must be the first
+character after the comma.
+<a class="ref" href="Comma-Separated-Fields.html#table_002dcsv_002dexamples">Table 4.1</a> shows some examples.
+</p>
+<div class="float" id="table_002dcsv_002dexamples">
+<table class="multitable">
+<thead><tr><th width="30%">Input</th><th width="30%">Field Contents</th></tr></thead>
+<tbody><tr><td width="30%"><code class="code">abc def</code></td><td width="30%"><code class="code">abc def</code></td></tr>
+<tr><td width="30%"><code class="code">&quot;quoted data&quot;</code></td><td width="30%"><code class="code">quoted data</code></td></tr>
+<tr><td width="30%"><code class="code">&quot;quoted, data&quot;</code></td><td width="30%"><code class="code">quoted, data</code></td></tr>
+<tr><td width="30%"><code class="code">&quot;She said &quot;&quot;Stop!&quot;&quot;.&quot;</code></td><td width="30%"><code class="code">She said &quot;Stop!&quot;.</code></td></tr>
+</tbody>
+</table>
+<div class="caption"><p><strong class="strong">Table 4.1: </strong>Examples of CSV data</p></div></div>
+<p>Additionally, and here&rsquo;s where it gets messy, newlines are also
+allowed inside double-quoted fields!
+In order to deal with such things, when processing CSV files,
+<code class="command">gawk</code> scans the input data looking for newlines that
+are not enclosed in double quotes. Thus, use of the <samp class="option">--csv</samp> option
+totally overrides normal record processing with <code class="code">RS</code> (see <a class="pxref" href="Records.html">How Input Is Split into Records</a>),
+as well as field splitting with any of <code class="code">FS</code>, <code class="code">FIELDWIDTHS</code>,
+or <code class="code">FPAT</code>.
+</p>
+<a class="index-entry-id" id="index-Kernighan_002c-Brian-quotes-1"></a>
+<a class="index-entry-id" id="index-sidebar-Carriage_002dReturn_002d_002dLine_002dFeed-Line-Endings-In-CSV-Files"></a>
+<table class="cartouche" border="1"><tr><th>
+Carriage-Return&ndash;Line-Feed Line Endings In CSV Files</th></tr><tr><td>
+<blockquote class="quotation">
+<p><code class="code">\r\n</code> <i class="i">is the invention of the devil.</i>
+</p></blockquote>
+<div class="center">&mdash; <em class="emph">Brian Kernighan</em>
+</div>
+<p>Many CSV files are imported from systems where the line terminator
+for text files is a carriage-return&ndash;line-feed pair
+(CR-LF, &lsquo;<samp class="samp">\r</samp>&rsquo; followed by &lsquo;<samp class="samp">\n</samp>&rsquo;).
+For ease of use, when processing CSV files, <code class="command">gawk</code> converts
+CR-LF pairs into a single newline. That is, the &lsquo;<samp class="samp">\r</samp>&rsquo; is removed.
+</p>
+<p>This occurs only when a CR is paired with an LF; a standalone CR
+is left alone. This behavior is consistent with Windows systems
+which automatically convert CR-LF in files into a plain LF in memory,
+and also with the commonly available <code class="command">unix2dos</code> utility program.
+</p></td></tr></table>
+
+<p>The behavior of the <code class="code">split()</code> function (not formally discussed
+yet, see <a class="ref" href="String-Functions.html">String-Manipulation Functions</a>) differs slightly when processing CSV
+files. When called with two arguments
+(&lsquo;<samp class="samp">split(<var class="var">string</var>, <var class="var">array</var>)</samp>&rsquo;), <code class="code">split()</code>
+does CSV-based splitting.  Otherwise, it behaves normally.
+</p>
+<p>If <samp class="option">--csv</samp> has been used, <code class="code">PROCINFO[&quot;CSV&quot;]</code> will
+exist. Otherwise, it will not. See <a class="xref" href="Auto_002dset.html">Built-in Variables That Convey Information</a>.
+</p>
+<p>Finally, if <samp class="option">--csv</samp> has been used, assigning a value
+to any of <code class="code">FS</code>, <code class="code">FIELDWIDTHS</code>, <code class="code">FPAT</code>, or
+<code class="code">RS</code> generates a warning message.
+</p>
+<p>To be clear, <code class="command">gawk</code> takes
+<a class="uref" href="http://www.ietf.org/rfc/rfc4180">RFC 4180</a> as its
+specification for CSV input data.  There are no mechanisms
+for accepting nonstandard CSV data, such as files that use
+a semicolon instead of a comma as the separator.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Command-Line-Field-Separator.html">Setting <code class="code">FS</code> from the Command Line</a>, Previous: <a href="Single-Character-Fields.html">Making Each Character a Separate Field</a>, Up: <a href="Field-Separators.html">Specifying How Fields Are Separated</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

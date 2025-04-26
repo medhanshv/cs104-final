@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is Edition 1.6 of TCP/IP Internetworking with gawk,
+for the 5.2.0 (or later) version of the GNU
+implementation of AWK.
+
+
+Copyright (C) 2000, 2001, 2002, 2004, 2009, 2010, 2016, 2019, 2020, 2021, 2023
+Free Software Foundation, Inc.
+
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. "A GNU Manual"
+
+b. "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom." -->
+<title>Simple Server (TCP/IP Internetworking With gawk)</title>
+
+<meta name="description" content="Simple Server (TCP/IP Internetworking With gawk)">
+<meta name="keywords" content="Simple Server (TCP/IP Internetworking With gawk)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Using-Networking.html" rel="up" title="Using Networking">
+<link href="Caveats.html" rel="next" title="Caveats">
+<link href="Interacting-Service.html" rel="prev" title="Interacting Service">
+<style type="text/css">
+<!--
+div.example {margin-left: 3.2em}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Simple-Server">
+<div class="nav-panel">
+<p>
+Next: <a href="Caveats.html" accesskey="n" rel="next">Network Programming Caveats</a>, Previous: <a href="Interacting-Service.html" accesskey="p" rel="prev">A Web Service with Interaction</a>, Up: <a href="Using-Networking.html" accesskey="u" rel="up">Networking With <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="A-Simple-Web-Server">2.10 A Simple Web Server</h3>
+<a class="index-entry-id" id="index-web-servers"></a>
+<a class="index-entry-id" id="index-servers-4"></a>
+<p>In the preceding section, we built the core logic for event-driven GUIs.
+In this section, we finally extend the core to a real application.
+No one would actually write a commercial web server in <code class="command">gawk</code>, but
+it is instructive to see that it is feasible in principle.
+</p>
+<a class="index-entry-id" id="index-ELIZA-program"></a>
+<a class="index-entry-id" id="index-Weizenbaum_002c-Joseph"></a>
+<p>The application is ELIZA, the famous program by Joseph Weizenbaum that
+mimics the behavior of a professional psychotherapist when talking to you.
+Weizenbaum would certainly object to this description, but this is part of
+the legend around ELIZA.
+Take the site-independent core logic and append the following code:
+</p>
+<div class="example">
+<pre class="example-preformatted">function SetUpServer() {
+  SetUpEliza()
+  TopHeader = \
+    &quot;&lt;HTML&gt;&lt;title&gt;An HTTP-based System with GAWK&lt;/title&gt;\
+    &lt;HEAD&gt;&lt;META HTTP-EQUIV=\&quot;Content-Type\&quot;\
+    CONTENT=\&quot;text/html; charset=iso-8859-1\&quot;&gt;&lt;/HEAD&gt;\
+    &lt;BODY BGCOLOR=\&quot;#ffffff\&quot; TEXT=\&quot;#000000\&quot;\
+    LINK=\&quot;#0000ff\&quot; VLINK=\&quot;#0000ff\&quot;\
+    ALINK=\&quot;#0000ff\&quot;&gt; &lt;A NAME=\&quot;top\&quot;&gt;&quot;
+  TopDoc    = &quot;\
+   &lt;h2&gt;Please choose one of the following actions:&lt;/h2&gt;\
+   &lt;UL&gt;\
+   &lt;LI&gt;\
+   &lt;A HREF=&quot; MyPrefix &quot;/AboutServer&gt;About this server&lt;/A&gt;\
+   &lt;/LI&gt;&lt;LI&gt;\
+   &lt;A HREF=&quot; MyPrefix &quot;/AboutELIZA&gt;About Eliza&lt;/A&gt;&lt;/LI&gt;\
+   &lt;LI&gt;\
+   &lt;A HREF=&quot; MyPrefix \
+      &quot;/StartELIZA&gt;Start talking to Eliza&lt;/A&gt;&lt;/LI&gt;&lt;/UL&gt;&quot;
+  TopFooter = &quot;&lt;/BODY&gt;&lt;/HTML&gt;&quot;
+}
+</pre></div>
+
+<p><code class="code">SetUpServer()</code> is similar to the previous example,
+except for calling another function, <code class="code">SetUpEliza()</code>.
+This approach can be used to implement other kinds of servers.
+The only changes needed to do so are hidden in the functions
+<code class="code">SetUpServer()</code> and <code class="code">HandleGET()</code>. Perhaps it might be necessary to
+implement other HTTP methods.
+The <code class="command">igawk</code> program that comes with <code class="command">gawk</code>
+may be useful for this process.
+</p>
+<p>When extending this example to a complete application, the first
+thing to do is to implement the function <code class="code">SetUpServer()</code> to
+initialize the HTML pages and some variables. These initializations
+determine the way your HTML pages look (colors, titles, menu
+items, etc.).
+</p>
+<p>The function <code class="code">HandleGET()</code> is a nested case selection that decides
+which page the user wants to see next.  Each nesting level refers to a menu
+level of the GUI. Each case implements a certain action of the menu. At the
+deepest level of case selection, the handler essentially knows what the
+user wants and stores the answer into the variable that holds the HTML
+page contents:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">function HandleGET() {
+  # A real HTTP server would treat some parts of the URI as a file name.
+  # We take parts of the URI as menu choices and go on accordingly.
+  if (MENU[2] == &quot;AboutServer&quot;) {
+    Document    = &quot;This is not a CGI script.\
+      This is an httpd, an HTML file, and a CGI script all \
+      in one GAWK script. It needs no separate www-server, \
+      no installation, and no root privileges.\
+      &lt;p&gt;To run it, do this:&lt;/p&gt;&lt;ul&gt;\
+      &lt;li&gt; start this script with \&quot;gawk -f httpserver.awk\&quot;,&lt;/li&gt;\
+      &lt;li&gt; and on the same host let your www browser open location\
+           \&quot;http://localhost:8080\&quot;&lt;/li&gt;\
+      &lt;/ul&gt;\&lt;p&gt;\ Details of HTTP come from:&lt;/p&gt;&lt;ul&gt;\
+            &lt;li&gt;Hethmon:  Illustrated Guide to HTTP&lt;/p&gt;\
+            &lt;li&gt;RFC 2068&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;JK 14.9.1997&lt;/p&gt;&quot;
+  } else if (MENU[2] == &quot;AboutELIZA&quot;) {
+    Document    = &quot;This is an implementation of the famous ELIZA\
+        program by Joseph Weizenbaum. It is written in GAWK and\
+        uses an HTML GUI.&quot;
+  } else if (MENU[2] == &quot;StartELIZA&quot;) {
+    gsub(/\+/, &quot; &quot;, GETARG[&quot;YouSay&quot;])
+    # Here we also have to substitute coded special characters
+    Document    = &quot;&lt;form method=GET&gt;&quot; \
+      &quot;&lt;h3&gt;&quot; ElizaSays(GETARG[&quot;YouSay&quot;]) &quot;&lt;/h3&gt;\
+      &lt;p&gt;&lt;input type=text name=YouSay value=\&quot;\&quot; size=60&gt;\
+      &lt;br&gt;&lt;input type=submit value=\&quot;Tell her about it\&quot;&gt;&lt;/p&gt;&lt;/form&gt;&quot;
+  }
+}
+</pre></div>
+
+<p>Now we are down to the heart of ELIZA, so you can see how it works.
+Initially the user does not say anything; then ELIZA resets its money
+counter and asks the user to tell what comes to mind open-heartedly.
+The subsequent answers are converted to uppercase characters and stored for
+later comparison. ELIZA presents the bill when being confronted with
+a sentence that contains the phrase &ldquo;shut up.&rdquo; Otherwise, it looks for
+keywords in the sentence, conjugates the rest of the sentence, remembers
+the keyword for later use, and finally selects an answer from the set of
+possible answers:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">function ElizaSays(YouSay) {
+  if (YouSay == &quot;&quot;) {
+    cost = 0
+    answer = &quot;HI, IM ELIZA, TELL ME YOUR PROBLEM&quot;
+  } else {
+    q = toupper(YouSay)
+    gsub(&quot;'&quot;, &quot;&quot;, q)
+    if (q == qold) {
+      answer = &quot;PLEASE DONT REPEAT YOURSELF !&quot;
+    } else {
+      if (index(q, &quot;SHUT UP&quot;) &gt; 0) {
+        answer = &quot;WELL, PLEASE PAY YOUR BILL. ITS EXACTLY ... $&quot;\
+                 int(100*rand()+30+cost/100)
+      } else {
+        qold = q
+        w = &quot;-&quot;                 # no keyword recognized yet
+        for (i in k) {          # search for keywords
+          if (index(q, i) &gt; 0) {
+            w = i
+            break
+          }
+        }
+        if (w == &quot;-&quot;) {         # no keyword, take old subject
+          w    = wold
+          subj = subjold
+        } else {                # find subject
+          subj = substr(q, index(q, w) + length(w)+1)
+          wold = w
+          subjold = subj        #  remember keyword and subject
+        }
+        for (i in conj)
+           gsub(i, conj[i], q)   # conjugation
+        # from all answers to this keyword, select one randomly
+        answer = r[indices[int(split(k[w], indices) * rand()) + 1]]
+        # insert subject into answer
+        gsub(&quot;_&quot;, subj, answer)
+      }
+    }
+  }
+  cost += length(answer) # for later payment : 1 cent per character
+  return answer
+}
+</pre></div>
+
+<p>In the long but simple function <code class="code">SetUpEliza()</code>, you can see tables
+for conjugation, keywords, and answers.<a class="footnote" id="DOCF11" href="Simple-Server.html#FOOT11"><sup>11</sup></a> The associative array <code class="code">k</code>
+contains indices into the array of answers <code class="code">r</code>. To choose an
+answer, ELIZA just picks an index randomly:
+</p>
+<div class="example">
+<pre class="example-preformatted">function SetUpEliza() {
+  srand()
+  wold = &quot;-&quot;
+  subjold = &quot; &quot;
+
+  # table for conjugation
+  conj[&quot; ARE &quot;     ] = &quot; AM &quot;
+  conj[&quot;WERE &quot;     ] = &quot;WAS &quot;
+  conj[&quot; YOU &quot;     ] = &quot; I &quot;
+  conj[&quot;YOUR &quot;     ] = &quot;MY &quot;
+  conj[&quot; IVE &quot;     ] =\
+  conj[&quot; I HAVE &quot;  ] = &quot; YOU HAVE &quot;
+  conj[&quot; YOUVE &quot;   ] =\
+  conj[&quot; YOU HAVE &quot;] = &quot; I HAVE &quot;
+  conj[&quot; IM &quot;      ] =\
+  conj[&quot; I AM &quot;    ] = &quot; YOU ARE &quot;
+  conj[&quot; YOURE &quot;   ] =\
+  conj[&quot; YOU ARE &quot; ] = &quot; I AM &quot;
+
+  # table of all answers
+  r[1]   = &quot;DONT YOU BELIEVE THAT I CAN  _&quot;
+  r[2]   = &quot;PERHAPS YOU WOULD LIKE TO BE ABLE TO _ ?&quot;
+  &hellip;
+</pre></div>
+
+<div class="example">
+<pre class="example-preformatted">  # table for looking up answers that
+  # fit to a certain keyword
+  k[&quot;CAN YOU&quot;]      = &quot;1 2 3&quot;
+  k[&quot;CAN I&quot;]        = &quot;4 5&quot;
+  k[&quot;YOU ARE&quot;]      =\
+  k[&quot;YOURE&quot;]        = &quot;6 7 8 9&quot;
+  &hellip;
+</pre></div>
+<div class="example">
+<pre class="example-preformatted">}
+</pre></div>
+
+<a class="index-entry-id" id="index-Humphrys_002c-Mark"></a>
+<a class="index-entry-id" id="index-ELIZA-program-1"></a>
+<p>Some interesting remarks and details (including the original source code
+of ELIZA) are found on Mark Humphrys&rsquo;s home page
+<a class="uref" href="https://computing.dcu.ie/~humphrys/eliza.html"><cite class="cite">How my program passed the Turing Test</cite></a>.
+Wikipedia provides much background information about
+<a class="uref" href="https://en.wikipedia.org/wiki/ELIZA">ELIZA</a>,
+including the original design of the software and
+its early implementations.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT11" href="Simple-Server.html#DOCF11">(11)</a></h5>
+<p>The version shown
+here is abbreviated.  The full version comes with the <code class="command">gawk</code>
+distribution.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Caveats.html">Network Programming Caveats</a>, Previous: <a href="Interacting-Service.html">A Web Service with Interaction</a>, Up: <a href="Using-Networking.html">Networking With <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

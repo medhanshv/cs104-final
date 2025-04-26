@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Extension Mechanism Outline (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Extension Mechanism Outline (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Extension Mechanism Outline (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Dynamic-Extensions.html" rel="up" title="Dynamic Extensions">
+<link href="Extension-API-Description.html" rel="next" title="Extension API Description">
+<link href="Plugin-License.html" rel="prev" title="Plugin License">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.center {text-align:center}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Extension-Mechanism-Outline">
+<div class="nav-panel">
+<p>
+Next: <a href="Extension-API-Description.html" accesskey="n" rel="next">API Description</a>, Previous: <a href="Plugin-License.html" accesskey="p" rel="prev">Extension Licensing</a>, Up: <a href="Dynamic-Extensions.html" accesskey="u" rel="up">Writing Extensions for <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="How-It-Works-at-a-High-Level"><span>17.3 How It Works at a High Level<a class="copiable-link" href="Extension-Mechanism-Outline.html#How-It-Works-at-a-High-Level"> &para;</a></span></h3>
+
+<p>Communication between
+<code class="command">gawk</code> and an extension is two-way.  First, when an extension
+is loaded, <code class="command">gawk</code> passes it a pointer to a <code class="code">struct</code> whose fields are
+function pointers.
+This is shown in <a class="ref" href="Extension-Mechanism-Outline.html#figure_002dload_002dextension">Figure 17.1</a>.
+</p>
+<div class="float" id="figure_002dload_002dextension">
+<div class="center"><img class="image" src="gawk_api-figure1.png" alt="Loading the extension">
+</div><div class="caption"><p><strong class="strong">Figure 17.1: </strong>Loading the extension</p></div></div>
+
+<p>The extension can call functions inside <code class="command">gawk</code> through these
+function pointers, at runtime, without needing (link-time) access
+to <code class="command">gawk</code>&rsquo;s symbols.  One of these function pointers is to a
+function for &ldquo;registering&rdquo; new functions.
+This is shown in <a class="ref" href="Extension-Mechanism-Outline.html#figure_002dregister_002dnew_002dfunction">Figure 17.2</a>.
+</p>
+<div class="float" id="figure_002dregister_002dnew_002dfunction">
+<div class="center"><img class="image" src="gawk_api-figure2.png" alt="Registering a new Function">
+</div><div class="caption"><p><strong class="strong">Figure 17.2: </strong>Registering a new function</p></div></div>
+
+<p>In the other direction, the extension registers its new functions
+with <code class="command">gawk</code> by passing function pointers to the functions that
+provide the new feature (<code class="code">do_chdir()</code>, for example).  <code class="command">gawk</code>
+associates the function pointer with a name and can then call it, using a
+defined calling convention.
+This is shown in <a class="ref" href="Extension-Mechanism-Outline.html#figure_002dcall_002dnew_002dfunction">Figure 17.3</a>.
+</p>
+<div class="float" id="figure_002dcall_002dnew_002dfunction">
+<div class="center"><img class="image" src="gawk_api-figure3.png" alt="Calling the new function">
+</div><div class="caption"><p><strong class="strong">Figure 17.3: </strong>Calling the new function</p></div></div>
+
+<p>The <code class="code">do_<var class="var">xxx</var>()</code> function, in turn, then uses the function
+pointers in the API <code class="code">struct</code> to do its work, such as updating
+variables or arrays, printing messages, setting <code class="code">ERRNO</code>, and so on.
+</p>
+<p>Convenience macros make calling through the function pointers look
+like regular function calls so that extension code is quite readable
+and understandable.
+</p>
+<p>Although all of this sounds somewhat complicated, the result is that
+extension code is quite straightforward to write and to read. You can
+see this in the sample extension <samp class="file">filefuncs.c</samp> (see <a class="pxref" href="Extension-Example.html">Example: Some File Functions</a>) and also in the <samp class="file">testext.c</samp> code for testing the APIs.
+</p>
+<p>Some other bits and pieces:
+</p>
+<ul class="itemize mark-bullet">
+<li>The API provides access to <code class="command">gawk</code>&rsquo;s <code class="code">do_<var class="var">xxx</var></code> values,
+reflecting command-line options, like <code class="code">do_lint</code>, <code class="code">do_profiling</code>,
+and so on (see <a class="pxref" href="Extension-API-Variables.html">API Variables</a>).
+These are informational: an extension cannot affect their values
+inside <code class="command">gawk</code>.  In addition, attempting to assign to them
+produces a compile-time error.
+
+</li><li>The API also provides major and minor version numbers, so that an
+extension can check if the <code class="command">gawk</code> it is loaded with supports the
+facilities it was compiled with.  (Version mismatches &ldquo;shouldn&rsquo;t&rdquo;
+happen, but we all know how <em class="emph">that</em> goes.)
+See <a class="xref" href="Extension-Versioning.html">API Version Constants and Variables</a> for details.
+</li></ul>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Extension-API-Description.html">API Description</a>, Previous: <a href="Plugin-License.html">Extension Licensing</a>, Up: <a href="Dynamic-Extensions.html">Writing Extensions for <code class="command">gawk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

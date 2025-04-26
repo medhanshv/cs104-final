@@ -1,0 +1,1 @@
+[('bahu', 'noon'), ('damaad', 'jawai'), ('patni', 'voti'), ('sasur', 'saura')]

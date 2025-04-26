@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Gory Details (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Gory Details (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Gory Details (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="String-Functions.html" rel="up" title="String Functions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.center {text-align:center}
+div.display {margin-left: 3.2em}
+pre.display-preformatted {font-family: inherit}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Gory-Details">
+<div class="nav-panel">
+<p>
+Up: <a href="String-Functions.html" accesskey="u" rel="up">String-Manipulation Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="More-about-_005c-and-_0026-with-sub_0028_0029_002c-gsub_0028_0029_002c-and-gensub_0028_0029"><span>9.1.4.1 More about &lsquo;<samp class="samp">\</samp>&rsquo; and &lsquo;<samp class="samp">&amp;</samp>&rsquo; with <code class="code">sub()</code>, <code class="code">gsub()</code>, and <code class="code">gensub()</code><a class="copiable-link" href="Gory-Details.html#More-about-_005c-and-_0026-with-sub_0028_0029_002c-gsub_0028_0029_002c-and-gensub_0028_0029"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-escape-processing-gsub_0028_0029_002fgensub_0028_0029_002fsub_0028_0029-functions"></a>
+<a class="index-entry-id" id="index-sub_0028_0029-function-escape-processing"></a>
+<a class="index-entry-id" id="index-gsub_0028_0029-function-escape-processing"></a>
+<a class="index-entry-id" id="index-gensub_0028_0029-function-_0028gawk_0029-escape-processing"></a>
+<a class="index-entry-id" id="index-_005c-_0028backslash_0029-gsub_0028_0029_002fgensub_0028_0029_002fsub_0028_0029-functions-and"></a>
+<a class="index-entry-id" id="index-backslash-_0028_005c_0029-gsub_0028_0029_002fgensub_0028_0029_002fsub_0028_0029-functions-and"></a>
+<a class="index-entry-id" id="index-_0026-_0028ampersand_0029-gsub_0028_0029_002fgensub_0028_0029_002fsub_0028_0029-functions-and"></a>
+<a class="index-entry-id" id="index-ampersand-_0028_0026_0029-gsub_0028_0029_002fgensub_0028_0029_002fsub_0028_0029-functions-and"></a>
+<a class="index-entry-id" id="index-Spengler_002c-Egon"></a>
+<a class="index-entry-id" id="index-Ghostbusters"></a>
+<blockquote class="quotation">
+<p><i class="i">I collect spores, molds, and fungus.</i>
+</p></blockquote>
+<div class="center">&mdash; <em class="emph">Dr. Egon Spengler (&ldquo;Ghostbusters,&rdquo; 1984)</em>
+</div>
+<blockquote class="quotation">
+<p><b class="b">CAUTION:</b> This subsubsection has been reported to cause headaches.
+You might want to skip it upon first reading.
+</p></blockquote>
+
+<p>When using <code class="code">sub()</code>, <code class="code">gsub()</code>, or <code class="code">gensub()</code>, and trying to get literal
+backslashes and ampersands into the replacement text, you need to remember
+that there are several levels of <em class="dfn">escape processing</em> going on.
+</p>
+<p>First, there is the <em class="dfn">lexical</em> level, which is when <code class="command">awk</code> reads
+your program
+and builds an internal copy of it to execute.
+Then there is the runtime level, which is when <code class="command">awk</code> actually scans the
+replacement string to determine what to generate.
+</p>
+<a class="index-entry-id" id="index-Brian-Kernighan_0027s-awk-13"></a>
+<p>At both levels, <code class="command">awk</code> looks for a defined set of characters that
+can come after a backslash.  At the lexical level, it looks for the
+escape sequences listed in <a class="ref" href="Escape-Sequences.html">Escape Sequences</a>.
+Thus, for every &lsquo;<samp class="samp">\</samp>&rsquo; that <code class="command">awk</code> processes at the runtime
+level, you must type two backslashes at the lexical level.
+When a character that is not valid for an escape sequence follows the
+&lsquo;<samp class="samp">\</samp>&rsquo;, BWK <code class="command">awk</code> and <code class="command">gawk</code> both simply remove the initial
+&lsquo;<samp class="samp">\</samp>&rsquo; and put the next character into the string. Thus, for
+example, <code class="code">&quot;a\qb&quot;</code> is treated as <code class="code">&quot;aqb&quot;</code>.
+</p>
+<p>At the runtime level, the various functions handle sequences of
+&lsquo;<samp class="samp">\</samp>&rsquo; and &lsquo;<samp class="samp">&amp;</samp>&rsquo; differently.  The situation is (sadly) somewhat complex.
+Historically, the <code class="code">sub()</code> and <code class="code">gsub()</code> functions treated the
+two-character sequence &lsquo;<samp class="samp">\&amp;</samp>&rsquo; specially; this sequence was replaced in
+the generated text with a single &lsquo;<samp class="samp">&amp;</samp>&rsquo;.  Any other &lsquo;<samp class="samp">\</samp>&rsquo; within
+the <var class="var">replacement</var> string that did not precede an &lsquo;<samp class="samp">&amp;</samp>&rsquo; was passed
+through unchanged.  This is illustrated in <a class="ref" href="Gory-Details.html#table_002dsub_002descapes">Table 9.1</a>.
+</p>
+<div class="float" id="table_002dsub_002descapes">
+<div class="display">
+<pre class="display-preformatted"> You type         <code class="code">sub()</code> sees          <code class="code">sub()</code> generates
+ &mdash;&mdash;&ndash;         &mdash;&mdash;&mdash;-          &mdash;&mdash;&mdash;&mdash;&mdash;
+     <code class="code">\&amp;</code>              <code class="code">&amp;</code>            The matched text
+    <code class="code">\\&amp;</code>             <code class="code">\&amp;</code>            A literal &lsquo;<samp class="samp">&amp;</samp>&rsquo;
+   <code class="code">\\\&amp;</code>             <code class="code">\&amp;</code>            A literal &lsquo;<samp class="samp">&amp;</samp>&rsquo;
+  <code class="code">\\\\&amp;</code>            <code class="code">\\&amp;</code>            A literal &lsquo;<samp class="samp">\&amp;</samp>&rsquo;
+ <code class="code">\\\\\&amp;</code>            <code class="code">\\&amp;</code>            A literal &lsquo;<samp class="samp">\&amp;</samp>&rsquo;
+<code class="code">\\\\\\&amp;</code>           <code class="code">\\\&amp;</code>            A literal &lsquo;<samp class="samp">\\&amp;</samp>&rsquo;
+    <code class="code">\\q</code>             <code class="code">\q</code>            A literal &lsquo;<samp class="samp">\q</samp>&rsquo;
+</pre></div>
+<div class="caption"><p><strong class="strong">Table 9.1: </strong>Historical escape sequence processing for <code class="code">sub()</code> and <code class="code">gsub()</code></p></div></div>
+<p>This table shows the lexical-level processing, where
+an odd number of backslashes becomes an even number at the runtime level,
+as well as the runtime processing done by <code class="code">sub()</code>.
+(For the sake of simplicity, the rest of the following tables only show the
+case of even numbers of backslashes entered at the lexical level.)
+</p>
+<p>The problem with the historical approach is that there is no way to get
+a literal &lsquo;<samp class="samp">\</samp>&rsquo; followed by the matched text.
+</p>
+<p>Several editions of the POSIX standard attempted to fix this problem
+but weren&rsquo;t successful. The details are irrelevant at this point in time.
+</p>
+<p>At one point, the <code class="command">gawk</code> maintainer submitted
+proposed text for a revised standard that
+reverts to rules that correspond more closely to the original existing
+practice. The proposed rules have special cases that make it possible
+to produce a &lsquo;<samp class="samp">\</samp>&rsquo; preceding the matched text.
+This is shown in
+<a class="ref" href="Gory-Details.html#table_002dsub_002dproposed">Table 9.2</a>.
+</p>
+<div class="float" id="table_002dsub_002dproposed">
+<div class="display">
+<pre class="display-preformatted"> You type         <code class="code">sub()</code> sees         <code class="code">sub()</code> generates
+ &mdash;&mdash;&ndash;         &mdash;&mdash;&mdash;-         &mdash;&mdash;&mdash;&mdash;&mdash;
+<code class="code">\\\\\\&amp;</code>           <code class="code">\\\&amp;</code>            A literal &lsquo;<samp class="samp">\&amp;</samp>&rsquo;
+  <code class="code">\\\\&amp;</code>            <code class="code">\\&amp;</code>            A literal &lsquo;<samp class="samp">\</samp>&rsquo;, followed by the matched text
+    <code class="code">\\&amp;</code>             <code class="code">\&amp;</code>            A literal &lsquo;<samp class="samp">&amp;</samp>&rsquo;
+    <code class="code">\\q</code>             <code class="code">\q</code>            A literal &lsquo;<samp class="samp">\q</samp>&rsquo;
+   <code class="code">\\\\</code>             <code class="code">\\</code>            <code class="code">\\</code>
+</pre></div>
+<div class="caption"><p><strong class="strong">Table 9.2: </strong><code class="command">gawk</code> rules for <code class="code">sub()</code> and backslash</p></div></div>
+<p>In a nutshell, at the runtime level, there are now three special sequences
+of characters (&lsquo;<samp class="samp">\\\&amp;</samp>&rsquo;, &lsquo;<samp class="samp">\\&amp;</samp>&rsquo;, and &lsquo;<samp class="samp">\&amp;</samp>&rsquo;) whereas historically
+there was only one.  However, as in the historical case, any &lsquo;<samp class="samp">\</samp>&rsquo; that
+is not part of one of these three sequences is not special and appears
+in the output literally.
+</p>
+<p><code class="command">gawk</code> 3.0 and 3.1 follow these rules for <code class="code">sub()</code> and
+<code class="code">gsub()</code>.  The POSIX standard took much longer to be revised than
+was expected.  In addition, the <code class="command">gawk</code> maintainer&rsquo;s proposal was
+lost during the standardization process.  The final rules are
+somewhat simpler.  The results are similar except for one case.
+</p>
+<a class="index-entry-id" id="index-POSIX-awk-functions-and-gsub_0028_0029_002fsub_0028_0029"></a>
+<p>The POSIX rules state that &lsquo;<samp class="samp">\&amp;</samp>&rsquo; in the replacement string produces
+a literal &lsquo;<samp class="samp">&amp;</samp>&rsquo;, &lsquo;<samp class="samp">\\</samp>&rsquo; produces a literal &lsquo;<samp class="samp">\</samp>&rsquo;, and &lsquo;<samp class="samp">\</samp>&rsquo; followed
+by anything else is not special; the &lsquo;<samp class="samp">\</samp>&rsquo; is placed straight into the output.
+These rules are presented in <a class="ref" href="Gory-Details.html#table_002dposix_002dsub">Table 9.3</a>.
+</p>
+<div class="float" id="table_002dposix_002dsub">
+<div class="display">
+<pre class="display-preformatted"> You type         <code class="code">sub()</code> sees         <code class="code">sub()</code> generates
+ &mdash;&mdash;&ndash;         &mdash;&mdash;&mdash;-         &mdash;&mdash;&mdash;&mdash;&mdash;
+<code class="code">\\\\\\&amp;</code>           <code class="code">\\\&amp;</code>            A literal &lsquo;<samp class="samp">\&amp;</samp>&rsquo;
+  <code class="code">\\\\&amp;</code>            <code class="code">\\&amp;</code>            A literal &lsquo;<samp class="samp">\</samp>&rsquo;, followed by the matched text
+    <code class="code">\\&amp;</code>             <code class="code">\&amp;</code>            A literal &lsquo;<samp class="samp">&amp;</samp>&rsquo;
+    <code class="code">\\q</code>             <code class="code">\q</code>            A literal &lsquo;<samp class="samp">\q</samp>&rsquo;
+   <code class="code">\\\\</code>             <code class="code">\\</code>            <code class="code">\</code>
+</pre></div>
+<div class="caption"><p><strong class="strong">Table 9.3: </strong>POSIX rules for <code class="code">sub()</code> and <code class="code">gsub()</code></p></div></div>
+<p>The only case where the difference is noticeable is the last one: &lsquo;<samp class="samp">\\\\</samp>&rsquo;
+is seen as &lsquo;<samp class="samp">\\</samp>&rsquo; and produces &lsquo;<samp class="samp">\</samp>&rsquo; instead of &lsquo;<samp class="samp">\\</samp>&rsquo;.
+</p>
+<p>Starting with version 3.1.4, <code class="command">gawk</code> followed the POSIX rules
+when <samp class="option">--posix</samp> was specified (see <a class="pxref" href="Options.html">Command-Line Options</a>). Otherwise,
+it continued to follow the proposed rules, as
+that had been its behavior for many years.
+</p>
+<p>When version 4.0.0 was released, the <code class="command">gawk</code> maintainer
+made the POSIX rules the default, breaking well over a decade&rsquo;s worth
+of backward compatibility.<a class="footnote" id="DOCF53" href="Gory-Details.html#FOOT53"><sup>53</sup></a> Needless to say, this was a bad idea,
+and as of version 4.0.1, <code class="command">gawk</code> resumed its historical
+behavior, and only follows the POSIX rules when <samp class="option">--posix</samp> is given.
+</p>
+<p>The rules for <code class="code">gensub()</code> are considerably simpler. At the runtime
+level, whenever <code class="command">gawk</code> sees a &lsquo;<samp class="samp">\</samp>&rsquo;, if the following character
+is a digit, then the text that matched the corresponding parenthesized
+subexpression is placed in the generated output.  Otherwise,
+no matter what character follows the &lsquo;<samp class="samp">\</samp>&rsquo;, it
+appears in the generated text and the &lsquo;<samp class="samp">\</samp>&rsquo; does not,
+as shown in <a class="ref" href="Gory-Details.html#table_002dgensub_002descapes">Table 9.4</a>.
+</p>
+<div class="float" id="table_002dgensub_002descapes">
+<div class="display">
+<pre class="display-preformatted">  You type          <code class="code">gensub()</code> sees         <code class="code">gensub()</code> generates
+  &mdash;&mdash;&ndash;          &mdash;&mdash;&mdash;&mdash;-         &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;
+      <code class="code">&amp;</code>                    <code class="code">&amp;</code>            The matched text
+    <code class="code">\\&amp;</code>                   <code class="code">\&amp;</code>            A literal &lsquo;<samp class="samp">&amp;</samp>&rsquo;
+   <code class="code">\\\\</code>                   <code class="code">\\</code>            A literal &lsquo;<samp class="samp">\</samp>&rsquo;
+  <code class="code">\\\\&amp;</code>                  <code class="code">\\&amp;</code>            A literal &lsquo;<samp class="samp">\</samp>&rsquo;, then the matched text
+<code class="code">\\\\\\&amp;</code>                 <code class="code">\\\&amp;</code>            A literal &lsquo;<samp class="samp">\&amp;</samp>&rsquo;
+    <code class="code">\\q</code>                   <code class="code">\q</code>            A literal &lsquo;<samp class="samp">q</samp>&rsquo;
+</pre></div>
+<div class="caption"><p><strong class="strong">Table 9.4: </strong>Escape sequence processing for <code class="code">gensub()</code></p></div></div>
+<p>Because of the complexity of the lexical- and runtime-level processing
+and the special cases for <code class="code">sub()</code> and <code class="code">gsub()</code>,
+we recommend the use of <code class="command">gawk</code> and <code class="code">gensub()</code> when you have
+to do substitutions.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT53" href="Gory-Details.html#DOCF53">(53)</a></h5>
+<p>This was rather naive of him, despite
+there being a note in this section indicating that the next major version
+would move to the POSIX rules.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Up: <a href="String-Functions.html">String-Manipulation Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

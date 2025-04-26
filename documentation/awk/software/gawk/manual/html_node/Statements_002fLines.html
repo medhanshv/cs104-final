@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Statements/Lines (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Statements/Lines (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Statements/Lines (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Getting-Started.html" rel="up" title="Getting Started">
+<link href="Other-Features.html" rel="next" title="Other Features">
+<link href="More-Complex.html" rel="prev" title="More Complex">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Statements_002fLines">
+<div class="nav-panel">
+<p>
+Next: <a href="Other-Features.html" accesskey="n" rel="next">Other Features of <code class="command">awk</code></a>, Previous: <a href="More-Complex.html" accesskey="p" rel="prev">A More Complex Example</a>, Up: <a href="Getting-Started.html" accesskey="u" rel="up">Getting Started with <code class="command">awk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="awk-Statements-Versus-Lines"><span>1.6 <code class="command">awk</code> Statements Versus Lines<a class="copiable-link" href="Statements_002fLines.html#awk-Statements-Versus-Lines"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-line-breaks"></a>
+<a class="index-entry-id" id="index-newlines"></a>
+
+<p>Most often, each line in an <code class="command">awk</code> program is a separate statement or
+separate rule, like this:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk '/12/  { print $0 }
+     /21/  { print $0 }' mail-list inventory-shipped
+</pre></div>
+
+<a class="index-entry-id" id="index-gawk-newlines-in"></a>
+<p>However, <code class="command">gawk</code> ignores newlines after any of the following
+symbols and keywords:
+</p>
+<div class="example">
+<pre class="example-preformatted">,    {    ?    :    ||    &amp;&amp;    do    else
+</pre></div>
+
+<p>A newline at any other point is considered the end of the
+statement.<a class="footnote" id="DOCF9" href="Statements_002fLines.html#FOOT9"><sup>9</sup></a>
+</p>
+<a class="index-entry-id" id="index-_005c-_0028backslash_0029-continuing-lines-and"></a>
+<a class="index-entry-id" id="index-backslash-_0028_005c_0029-continuing-lines-and"></a>
+<p>If you would like to split a single statement into two lines at a point
+where a newline would terminate it, you can <em class="dfn">continue</em> it by ending the
+first line with a backslash character (&lsquo;<samp class="samp">\</samp>&rsquo;).  The backslash must be
+the final character on the line in order to be recognized as a continuation
+character.  A backslash followed by a newline is allowed anywhere in the statement, even
+in the middle of a string or regular expression.  For example:
+</p>
+<div class="example">
+<pre class="example-preformatted">awk '/This regular expression is too long, so continue it\
+ on the next line/ { print $1 }'
+</pre></div>
+
+<a class="index-entry-id" id="index-portability-backslash-continuation-and"></a>
+<p>We have generally not used backslash continuation in our sample programs.
+<code class="command">gawk</code> places no limit on the
+length of a line, so backslash continuation is never strictly necessary;
+it just makes programs more readable.  For this same reason, as well as
+for clarity, we have kept most statements short in the programs
+presented throughout the Web page.
+</p>
+<p>Backslash continuation is
+most useful when your <code class="command">awk</code> program is in a separate source file
+instead of entered from the command line.  You should also note that
+many <code class="command">awk</code> implementations are more particular about where you
+may use backslash continuation. For example, they may not allow you to
+split a string constant using backslash continuation.  Thus, for maximum
+portability of your <code class="command">awk</code> programs, it is best not to split your
+lines in the middle of a regular expression or a string.
+</p>
+<a class="index-entry-id" id="index-csh-utility"></a>
+<a class="index-entry-id" id="index-line-continuations-with-C-shell"></a>
+<a class="index-entry-id" id="index-backslash-_0028_005c_0029-continuing-lines-and-in-csh"></a>
+<a class="index-entry-id" id="index-_005c-_0028backslash_0029-continuing-lines-and-in-csh"></a>
+<blockquote class="quotation">
+<p><b class="b">CAUTION:</b> <em class="emph">Backslash continuation does not work as described
+with the C shell.</em>  It works for <code class="command">awk</code> programs in files and
+for one-shot programs, <em class="emph">provided</em> you are using a POSIX-compliant
+shell, such as the Unix Bourne shell or Bash.  But the C shell behaves
+differently!  There you must use two backslashes in a row, followed by
+a newline.  Note also that when using the C shell, <em class="emph">every</em> newline
+in your <code class="command">awk</code> program must be escaped with a backslash. To illustrate:
+</p>
+<div class="example">
+<pre class="example-preformatted">% <kbd class="kbd">awk 'BEGIN { \</kbd>
+? <kbd class="kbd">  print \\</kbd>
+? <kbd class="kbd">      &quot;hello, world&quot; \</kbd>
+? <kbd class="kbd">}'</kbd>
+-| hello, world
+</pre></div>
+
+<p>Here, the &lsquo;<samp class="samp">%</samp>&rsquo; and &lsquo;<samp class="samp">?</samp>&rsquo; are the C shell&rsquo;s primary and secondary
+prompts, analogous to the standard shell&rsquo;s &lsquo;<samp class="samp">$</samp>&rsquo; and &lsquo;<samp class="samp">&gt;</samp>&rsquo;.
+</p>
+<p>Compare the previous example to how it is done with a POSIX-compliant shell:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">awk 'BEGIN {</kbd>
+&gt;   <kbd class="kbd">print \</kbd>
+&gt;       <kbd class="kbd">&quot;hello, world&quot;</kbd>
+&gt; <kbd class="kbd">}'</kbd>
+-| hello, world
+</pre></div>
+</blockquote>
+
+<p><code class="command">awk</code> is a line-oriented language.  Each rule&rsquo;s action has to
+begin on the same line as the pattern.  To have the pattern and action
+on separate lines, you <em class="emph">must</em> use backslash continuation; there
+is no other option.
+</p>
+<a class="index-entry-id" id="index-backslash-_0028_005c_0029-continuing-lines-and-comments-and"></a>
+<a class="index-entry-id" id="index-_005c-_0028backslash_0029-continuing-lines-and-comments-and"></a>
+<a class="index-entry-id" id="index-commenting-backslash-continuation-and"></a>
+<p>Another thing to keep in mind is that backslash continuation and
+comments do not mix. As soon as <code class="command">awk</code> sees the &lsquo;<samp class="samp">#</samp>&rsquo; that
+starts a comment, it ignores <em class="emph">everything</em> on the rest of the
+line. For example:
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">$ <kbd class="kbd">gawk 'BEGIN { print &quot;dont panic&quot; # a friendly \</kbd>
+&gt; <kbd class="kbd">                                   BEGIN rule</kbd>
+&gt; <kbd class="kbd">}'</kbd>
+error&rarr; gawk: cmd. line:2:                BEGIN rule
+error&rarr; gawk: cmd. line:2:                ^ syntax error
+</pre></div></div>
+
+<p>In this case, it looks like the backslash would continue the comment onto the
+next line. However, the backslash-newline combination is never even
+noticed because it is &ldquo;hidden&rdquo; inside the comment. Thus, the
+<code class="code">BEGIN</code> is noted as a syntax error.
+</p>
+<a class="index-entry-id" id="index-dark-corner-backslash-continuation-on-command-line"></a>
+<a class="index-entry-id" id="index-dark-corner-command-line_002c-backslash-continuation-on"></a>
+<p>Backslash continuation comes into play in an additional, unexpected situation.
+Consider:
+</p>
+<div class="example">
+<pre class="example-preformatted">gawk -F'\
+a' '...'
+</pre></div>
+
+<p>This command line assigns a value to <code class="code">FS</code>. But what value?
+There are several possibilities, and in fact different versions of
+<code class="command">awk</code> do different things.  <code class="command">gawk</code> treats this as
+if it were written:
+</p>
+<div class="example">
+<pre class="example-preformatted">BEGIN { FS = &quot;\
+a&quot;
+}
+...
+</pre></div>
+
+<p>In short, the backslash and newline are removed, assigning <code class="code">&quot;a&quot;</code>
+to <code class="code">FS</code>.  This same treatment applies to variable assignments
+made with the <samp class="option">-v</samp> option (see <a class="pxref" href="Options.html">Command-Line Options</a>)
+and to regular command-line variable assignments (see <a class="pxref" href="Assignment-Options.html">Assigning Variables on the Command Line</a>).
+</p>
+<p>If you&rsquo;re interested, see
+<a class="uref" href="https://lists.gnu.org/archive/html/bug-gawk/2022-10/msg00025.html">https://lists.gnu.org/archive/html/bug-gawk/2022-10/msg00025.html</a>
+for a source code patch that allows lines to be continued when inside
+parentheses. This patch was not added to <code class="command">gawk</code> since it would
+quietly decrease the portability of <code class="command">awk</code> programs.
+</p>
+<a class="index-entry-id" id="index-statements-multiple"></a>
+<a class="index-entry-id" id="index-_003b-_0028semicolon_0029-separating-statements-in-actions"></a>
+<a class="index-entry-id" id="index-semicolon-_0028_003b_0029-separating-statements-in-actions"></a>
+<a class="index-entry-id" id="index-_003b-_0028semicolon_0029-separating-rules"></a>
+<a class="index-entry-id" id="index-semicolon-_0028_003b_0029-separating-rules"></a>
+<p>When <code class="command">awk</code> statements within one rule are short, you might want to put
+more than one of them on a line.  This is accomplished by separating the statements
+with a semicolon (&lsquo;<samp class="samp">;</samp>&rsquo;).
+This also applies to the rules themselves.
+Thus, the program shown at the start of this section
+could also be written this way:
+</p>
+<div class="example">
+<pre class="example-preformatted">/12/ { print $0 } ; /21/ { print $0 }
+</pre></div>
+
+<blockquote class="quotation">
+<p><b class="b">NOTE:</b> The requirement that states that rules on the same line must be
+separated with a semicolon was not in the original <code class="command">awk</code>
+language; it was added for consistency with the treatment of statements
+within an action.
+</p></blockquote>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT9" href="Statements_002fLines.html#DOCF9">(9)</a></h5>
+<p>The &lsquo;<samp class="samp">?</samp>&rsquo; and &lsquo;<samp class="samp">:</samp>&rsquo; referred to here is the
+three-operand conditional expression described in
+<a class="ref" href="Conditional-Exp.html">Conditional Expressions</a>.
+Splitting lines after &lsquo;<samp class="samp">?</samp>&rsquo; and &lsquo;<samp class="samp">:</samp>&rsquo; is a minor <code class="command">gawk</code>
+extension; if <samp class="option">--posix</samp> is specified
+(see <a class="pxref" href="Options.html">Command-Line Options</a>), then this extension is disabled.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Other-Features.html">Other Features of <code class="command">awk</code></a>, Previous: <a href="More-Complex.html">A More Complex Example</a>, Up: <a href="Getting-Started.html">Getting Started with <code class="command">awk</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

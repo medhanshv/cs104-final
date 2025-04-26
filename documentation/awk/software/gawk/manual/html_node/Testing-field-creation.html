@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Testing field creation (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Testing field creation (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Testing field creation (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Reading-Files.html" rel="up" title="Reading Files">
+<link href="Multiple-Line.html" rel="next" title="Multiple Line">
+<link href="Splitting-By-Content.html" rel="prev" title="Splitting By Content">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Testing-field-creation">
+<div class="nav-panel">
+<p>
+Next: <a href="Multiple-Line.html" accesskey="n" rel="next">Multiple-Line Records</a>, Previous: <a href="Splitting-By-Content.html" accesskey="p" rel="prev">Defining Fields by Content</a>, Up: <a href="Reading-Files.html" accesskey="u" rel="up">Reading Input Files</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Checking-How-gawk-Is-Splitting-Records"><span>4.8 Checking How <code class="command">gawk</code> Is Splitting Records<a class="copiable-link" href="Testing-field-creation.html#Checking-How-gawk-Is-Splitting-Records"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-gawk-splitting-fields-and"></a>
+<p>As we&rsquo;ve seen, <code class="command">gawk</code> provides three independent methods to split
+input records into fields.  The mechanism used is based on which of the
+three variables&mdash;<code class="code">FS</code>, <code class="code">FIELDWIDTHS</code>, or <code class="code">FPAT</code>&mdash;was
+last assigned to. In addition, an API input parser may choose to override
+the record parsing mechanism; please refer to <a class="ref" href="Input-Parsers.html">Customized Input Parsers</a> for
+further information about this feature.
+</p>
+<p>To restore normal field splitting after using <code class="code">FIELDWIDTHS</code>
+and/or <code class="code">FPAT</code>, simply assign a value to <code class="code">FS</code>.
+You can use &lsquo;<samp class="samp">FS = FS</samp>&rsquo; to do this,
+without having to know the current value of <code class="code">FS</code>.
+</p>
+<p>In order to tell which kind of field splitting is in effect,
+use <code class="code">PROCINFO[&quot;FS&quot;]</code> (see <a class="pxref" href="Auto_002dset.html">Built-in Variables That Convey Information</a>).
+The value is <code class="code">&quot;FS&quot;</code> if regular field splitting is being used,
+<code class="code">&quot;FIELDWIDTHS&quot;</code> if fixed-width field splitting is being used,
+or <code class="code">&quot;FPAT&quot;</code> if content-based field splitting is being used:
+</p>
+<div class="example">
+<pre class="example-preformatted">if (&quot;CSV&quot; in PROCINFO)
+    <var class="var">CSV-based field splitting</var> ...
+else if (PROCINFO[&quot;FS&quot;] == &quot;FS&quot;)
+    <var class="var">regular field splitting</var> ...
+else if (PROCINFO[&quot;FS&quot;] == &quot;FIELDWIDTHS&quot;)
+    <var class="var">fixed-width field splitting</var> ...
+else if (PROCINFO[&quot;FS&quot;] == &quot;FPAT&quot;)
+    <var class="var">content-based field splitting</var> ...
+else
+    <var class="var">API input parser field splitting</var> ... <i class="i">(advanced feature)</i>
+</pre></div>
+
+<p>This information is useful when writing a function that needs to
+temporarily change <code class="code">FS</code>, <code class="code">FIELDWIDTHS</code>, or <code class="code">FPAT</code>, read some records,
+and then restore the original settings (see <a class="pxref" href="Passwd-Functions.html">Reading the User Database</a> for an
+example of such a function).
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Multiple-Line.html">Multiple-Line Records</a>, Previous: <a href="Splitting-By-Content.html">Defining Fields by Content</a>, Up: <a href="Reading-Files.html">Reading Input Files</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>More CSV (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="More CSV (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="More CSV (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Splitting-By-Content.html" rel="up" title="Splitting By Content">
+<link href="FS-versus-FPAT.html" rel="next" title="FS versus FPAT">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="More-CSV">
+<div class="nav-panel">
+<p>
+Next: <a href="FS-versus-FPAT.html" accesskey="n" rel="next"><code class="code">FS</code> Versus <code class="code">FPAT</code>: A Subtle Difference</a>, Up: <a href="Splitting-By-Content.html" accesskey="u" rel="up">Defining Fields by Content</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="More-on-CSV-Files"><span>4.7.1 More on CSV Files<a class="copiable-link" href="More-CSV.html#More-on-CSV-Files"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Collado_002c-Manuel-1"></a>
+<p>Manuel Collado notes that in addition to commas, a CSV field can also
+contain double quotes, that have to be escaped by doubling them. The previously
+described regexps fail to accept quoted fields with both commas and
+double quotes inside. He suggests that the simplest <code class="code">FPAT</code> expression that
+recognizes this kind of fields is <code class="code">/([^,]*)|(&quot;([^&quot;]|&quot;&quot;)+&quot;)/</code>. He
+provides the following input data to test these variants:
+</p>
+<div class="example">
+<pre class="example-preformatted">p,&quot;q,r&quot;,s
+p,&quot;q&quot;&quot;r&quot;,s
+p,&quot;q,&quot;&quot;r&quot;,s
+p,&quot;&quot;,s
+p,,s
+</pre></div>
+
+<p>And here is his test program:
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">BEGIN {
+     fp[0] = &quot;([^,]+)|(\&quot;[^\&quot;]+\&quot;)&quot;
+     fp[1] = &quot;([^,]*)|(\&quot;[^\&quot;]+\&quot;)&quot;
+     fp[2] = &quot;([^,]*)|(\&quot;([^\&quot;]|\&quot;\&quot;)+\&quot;)&quot;
+     FPAT = fp[fpat+0]
+}
+</pre></div><pre class="example-preformatted">
+
+</pre><div class="group"><pre class="example-preformatted">{
+     print &quot;&lt;&quot; $0 &quot;&gt;&quot;
+     printf(&quot;NF = %s &quot;, NF)
+     for (i = 1; i &lt;= NF; i++) {
+         printf(&quot;&lt;%s&gt;&quot;, $i)
+     }
+     print &quot;&quot;
+}
+</pre></div></div>
+
+<p>When run on the third variant, it produces:
+</p>
+<div class="example">
+<pre class="example-preformatted">$ <kbd class="kbd">gawk -v fpat=2 -f test-csv.awk sample.csv</kbd>
+-| &lt;p,&quot;q,r&quot;,s&gt;
+-| NF = 3 &lt;p&gt;&lt;&quot;q,r&quot;&gt;&lt;s&gt;
+-| &lt;p,&quot;q&quot;&quot;r&quot;,s&gt;
+-| NF = 3 &lt;p&gt;&lt;&quot;q&quot;&quot;r&quot;&gt;&lt;s&gt;
+-| &lt;p,&quot;q,&quot;&quot;r&quot;,s&gt;
+-| NF = 3 &lt;p&gt;&lt;&quot;q,&quot;&quot;r&quot;&gt;&lt;s&gt;
+-| &lt;p,&quot;&quot;,s&gt;
+-| NF = 3 &lt;p&gt;&lt;&quot;&quot;&gt;&lt;s&gt;
+-| &lt;p,,s&gt;
+-| NF = 3 &lt;p&gt;&lt;&gt;&lt;s&gt;
+</pre></div>
+
+<a class="index-entry-id" id="index-Collado_002c-Manuel-2"></a>
+<a class="index-entry-id" id="index-CSVMODE-library-for-gawk"></a>
+<a class="index-entry-id" id="index-CSV-_0028comma-separated-values_0029-data-parsing-with-CSVMODE-library"></a>
+<a class="index-entry-id" id="index-Comma-separated-values-_0028CSV_0029-data-parsing-with-FPAT-library"></a>
+<p>In general, using <code class="code">FPAT</code> to do your own CSV parsing is like having
+a bed with a blanket that&rsquo;s not quite big enough. There&rsquo;s always a corner
+that isn&rsquo;t covered. We recommend, instead, that you use Manuel Collado&rsquo;s
+<a class="uref" href="http://mcollado.z15.es/xgawk/"><code class="code">CSVMODE</code> library for <code class="command">gawk</code></a>.
+</p>
+</div>
+
+
+
+</body>
+</html>

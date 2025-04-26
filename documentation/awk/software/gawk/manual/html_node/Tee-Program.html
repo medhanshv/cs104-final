@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Tee Program (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Tee Program (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Tee Program (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Clones.html" rel="up" title="Clones">
+<link href="Uniq-Program.html" rel="next" title="Uniq Program">
+<link href="Split-Program.html" rel="prev" title="Split Program">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+pre.display-preformatted {font-family: inherit}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Tee-Program">
+<div class="nav-panel">
+<p>
+Next: <a href="Uniq-Program.html" accesskey="n" rel="next">Printing Nonduplicated Lines of Text</a>, Previous: <a href="Split-Program.html" accesskey="p" rel="prev">Splitting a Large File into Pieces</a>, Up: <a href="Clones.html" accesskey="u" rel="up">Reinventing Wheels for Fun and Profit</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Duplicating-Output-into-Multiple-Files"><span>11.2.5 Duplicating Output into Multiple Files<a class="copiable-link" href="Tee-Program.html#Duplicating-Output-into-Multiple-Files"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-files-multiple_002c-duplicating-output-into"></a>
+<a class="index-entry-id" id="index-output-duplicating-into-files"></a>
+<a class="index-entry-id" id="index-tee-utility"></a>
+<p>The <code class="code">tee</code> program is known as a &ldquo;pipe fitting.&rdquo;  <code class="code">tee</code> copies
+its standard input to its standard output and also duplicates it to the
+files named on the command line.  Its usage is as follows:
+</p>
+<div class="display">
+<pre class="display-preformatted"><code class="command">tee</code> [<samp class="option">-a</samp>] <var class="var">file</var> ...
+</pre></div>
+
+<p>The <samp class="option">-a</samp> option tells <code class="code">tee</code> to append to the named files, instead of
+truncating them and starting over.
+</p>
+<p>The <code class="code">BEGIN</code> rule first makes a copy of all the command-line arguments
+into an array named <code class="code">copy</code>.
+<code class="code">ARGV[0]</code> is not needed, so it is not copied.
+<code class="code">tee</code> cannot use <code class="code">ARGV</code> directly, because <code class="command">awk</code> attempts to
+process each file name in <code class="code">ARGV</code> as input data.
+</p>
+<a class="index-entry-id" id="index-flag-variables-1"></a>
+<p>If the first argument is <samp class="option">-a</samp>, then the flag variable
+<code class="code">append</code> is set to true, and both <code class="code">ARGV[1]</code> and
+<code class="code">copy[1]</code> are deleted. If <code class="code">ARGC</code> is less than two, then no
+file names were supplied and <code class="code">tee</code> prints a usage message and exits.
+Finally, <code class="command">awk</code> is forced to read the standard input by setting
+<code class="code">ARGV[1]</code> to <code class="code">&quot;-&quot;</code> and <code class="code">ARGC</code> to two:
+</p>
+<a class="index-entry-id" id="index-tee_002eawk-program"></a>
+<div class="example">
+<pre class="example-preformatted"># tee.awk --- tee in awk
+#
+# Copy standard input to all named output files.
+# Append content if -a option is supplied.
+#
+BEGIN {
+    for (i = 1; i &lt; ARGC; i++)
+        copy[i] = ARGV[i]
+
+    if (ARGV[1] == &quot;-a&quot;) {
+        append = 1
+        delete ARGV[1]
+        delete copy[1]
+        ARGC--
+    }
+    if (ARGC &lt; 2) {
+        print &quot;usage: tee [-a] file ...&quot; &gt; &quot;/dev/stderr&quot;
+        exit 1
+    }
+    ARGV[1] = &quot;-&quot;
+    ARGC = 2
+}
+</pre></div>
+
+<p>The following single rule does all the work.  Because there is no pattern, it is
+executed for each line of input.  The body of the rule simply prints the
+line into each file on the command line, and then to the standard output:
+</p>
+<div class="example">
+<pre class="example-preformatted">{
+    # moving the if outside the loop makes it run faster
+    if (append)
+        for (i in copy)
+            print &gt;&gt; copy[i]
+    else
+        for (i in copy)
+            print &gt; copy[i]
+    print
+}
+</pre></div>
+
+<p>It is also possible to write the loop this way:
+</p>
+<div class="example">
+<div class="group"><pre class="example-preformatted">for (i in copy)
+    if (append)
+        print &gt;&gt; copy[i]
+</pre></div><div class="group"><pre class="example-preformatted">    else
+        print &gt; copy[i]
+</pre></div></div>
+
+<p>This is more concise, but it is also less efficient.  The &lsquo;<samp class="samp">if</samp>&rsquo; is
+tested for each record and for each output file.  By duplicating the loop
+body, the &lsquo;<samp class="samp">if</samp>&rsquo; is only tested once for each input record.  If there are
+<var class="var">N</var> input records and <var class="var">M</var> output files, the first method only
+executes <var class="var">N</var> &lsquo;<samp class="samp">if</samp>&rsquo; statements, while the second executes
+<var class="var">N</var><code class="code">*</code><var class="var">M</var> &lsquo;<samp class="samp">if</samp>&rsquo; statements.
+</p>
+<p>Finally, the <code class="code">END</code> rule cleans up by closing all the output files:
+</p>
+<div class="example">
+<pre class="example-preformatted">END {
+    for (i in copy)
+        close(copy[i])
+}
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Uniq-Program.html">Printing Nonduplicated Lines of Text</a>, Previous: <a href="Split-Program.html">Splitting a Large File into Pieces</a>, Up: <a href="Clones.html">Reinventing Wheels for Fun and Profit</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

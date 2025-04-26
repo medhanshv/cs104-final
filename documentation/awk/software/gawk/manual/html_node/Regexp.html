@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Regexp (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Regexp (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Regexp (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Reading-Files.html" rel="next" title="Reading Files">
+<link href="Invoking-Gawk.html" rel="prev" title="Invoking Gawk">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Regexp">
+<div class="nav-panel">
+<p>
+Next: <a href="Reading-Files.html" accesskey="n" rel="next">Reading Input Files</a>, Previous: <a href="Invoking-Gawk.html" accesskey="p" rel="prev">Running <code class="command">awk</code> and <code class="command">gawk</code></a>, Up: <a href="index.html" accesskey="u" rel="up">General Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Regular-Expressions"><span>3 Regular Expressions<a class="copiable-link" href="Regexp.html#Regular-Expressions"> &para;</a></span></h2>
+<a class="index-entry-id" id="index-regexp"></a>
+<a class="index-entry-id" id="index-regular-expressions"></a>
+
+<p>A <em class="dfn">regular expression</em>, or <em class="dfn">regexp</em>, is a way of describing a
+set of strings.
+Because regular expressions are such a fundamental part of <code class="command">awk</code>
+programming, their format and use deserve a separate chapter.
+</p>
+<a class="index-entry-id" id="index-forward-slash-_0028_002f_0029-to-enclose-regular-expressions"></a>
+<a class="index-entry-id" id="index-_002f-_0028forward-slash_0029-to-enclose-regular-expressions"></a>
+<p>A regular expression enclosed in slashes (&lsquo;<samp class="samp">/</samp>&rsquo;)
+is an <code class="command">awk</code> pattern that matches every input record whose text
+belongs to that set.
+The simplest regular expression is a sequence of letters, numbers, or
+both.  Such a regexp matches any string that contains that sequence.
+Thus, the regexp &lsquo;<samp class="samp">foo</samp>&rsquo; matches any string containing &lsquo;<samp class="samp">foo</samp>&rsquo;.
+Thus, the pattern <code class="code">/foo/</code> matches any input record containing
+the three adjacent characters &lsquo;<samp class="samp">foo</samp>&rsquo; <em class="emph">anywhere</em> in the record.  Other
+kinds of regexps let you specify more complicated classes of strings.
+</p>
+<p>Initially, the examples in this chapter are simple.
+As we explain more about how
+regular expressions work, we present more complicated instances.
+</p>
+
+<ul class="mini-toc">
+<li><a href="Regexp-Usage.html" accesskey="1">How to Use Regular Expressions</a></li>
+<li><a href="Escape-Sequences.html" accesskey="2">Escape Sequences</a></li>
+<li><a href="Regexp-Operators.html" accesskey="3">Regular Expression Operators</a></li>
+<li><a href="Bracket-Expressions.html" accesskey="4">Using Bracket Expressions</a></li>
+<li><a href="Leftmost-Longest.html" accesskey="5">How Much Text Matches?</a></li>
+<li><a href="Computed-Regexps.html" accesskey="6">Using Dynamic Regexps</a></li>
+<li><a href="GNU-Regexp-Operators.html" accesskey="7"><code class="command">gawk</code>-Specific Regexp Operators</a></li>
+<li><a href="Case_002dsensitivity.html" accesskey="8">Case Sensitivity in Matching</a></li>
+<li><a href="Regexp-Summary.html" accesskey="9">Summary</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

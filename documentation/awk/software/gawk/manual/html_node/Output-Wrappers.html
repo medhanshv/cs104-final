@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Output Wrappers (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Output Wrappers (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Output Wrappers (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Registration-Functions.html" rel="up" title="Registration Functions">
+<link href="Two_002dway-processors.html" rel="next" title="Two-way processors">
+<link href="Input-Parsers.html" rel="prev" title="Input Parsers">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Output-Wrappers">
+<div class="nav-panel">
+<p>
+Next: <a href="Two_002dway-processors.html" accesskey="n" rel="next">Customized Two-way Processors</a>, Previous: <a href="Input-Parsers.html" accesskey="p" rel="prev">Customized Input Parsers</a>, Up: <a href="Registration-Functions.html" accesskey="u" rel="up">Registration Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Customized-Output-Wrappers"><span>17.4.6.5 Customized Output Wrappers<a class="copiable-link" href="Output-Wrappers.html#Customized-Output-Wrappers"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-customized-output-wrapper"></a>
+
+<a class="index-entry-id" id="index-output-wrapper"></a>
+<p>An <em class="dfn">output wrapper</em> is the mirror image of an input parser.
+It allows an extension to take over the output to a file opened
+with the &lsquo;<samp class="samp">&gt;</samp>&rsquo; or &lsquo;<samp class="samp">&gt;&gt;</samp>&rsquo; I/O redirection operators (see <a class="pxref" href="Redirection.html">Redirecting Output of <code class="code">print</code> and <code class="code">printf</code></a>).
+</p>
+<p>The output wrapper is very similar to the input parser structure:
+</p>
+<div class="example">
+<pre class="example-preformatted">typedef struct awk_output_wrapper {
+    const char *name;   /* name of the wrapper */
+    awk_bool_t (*can_take_file)(const awk_output_buf_t *outbuf);
+    awk_bool_t (*take_control_of)(awk_output_buf_t *outbuf);
+    awk_const struct awk_output_wrapper *awk_const next;  /* for gawk */
+} awk_output_wrapper_t;
+</pre></div>
+
+<p>The members are as follows:
+</p>
+<dl class="table">
+<dt><code class="code">const char *name;</code></dt>
+<dd><p>This is the name of the output wrapper.
+</p>
+</dd>
+<dt><code class="code">awk_bool_t (*can_take_file)(const awk_output_buf_t *outbuf);</code></dt>
+<dd><p>This points to a function that examines the information in
+the <code class="code">awk_output_buf_t</code> structure pointed to by <code class="code">outbuf</code>.
+It should return true if the output wrapper wants to take over the
+file, and false otherwise.  It should not change any state (variable
+values, etc.) within <code class="command">gawk</code>.
+</p>
+</dd>
+<dt><code class="code">awk_bool_t (*take_control_of)(awk_output_buf_t *outbuf);</code></dt>
+<dd><p>The function pointed to by this field is called when <code class="command">gawk</code>
+decides to let the output wrapper take control of the file. It should
+fill in appropriate members of the <code class="code">awk_output_buf_t</code> structure,
+as described next, and return true if successful, false otherwise.
+</p>
+</dd>
+<dt><code class="code">awk_const struct output_wrapper *awk_const next;</code></dt>
+<dd><p>This is for use by <code class="command">gawk</code>;
+therefore it is marked <code class="code">awk_const</code> so that the extension cannot
+modify it.
+</p></dd>
+</dl>
+
+<p>The <code class="code">awk_output_buf_t</code> structure looks like this:
+</p>
+<div class="example">
+<pre class="example-preformatted">typedef struct awk_output_buf {
+    const char *name;   /* name of output file */
+    const char *mode;   /* mode argument to fopen */
+    FILE *fp;           /* stdio file pointer */
+    awk_bool_t redirected;  /* true if a wrapper is active */
+    void *opaque;       /* for use by output wrapper */
+    size_t (*gawk_fwrite)(const void *buf, size_t size, size_t count,
+                FILE *fp, void *opaque);
+    int (*gawk_fflush)(FILE *fp, void *opaque);
+    int (*gawk_ferror)(FILE *fp, void *opaque);
+    int (*gawk_fclose)(FILE *fp, void *opaque);
+} awk_output_buf_t;
+</pre></div>
+
+<p>Here too, your extension will define <code class="code"><var class="var">XXX</var>_can_take_file()</code>
+and <code class="code"><var class="var">XXX</var>_take_control_of()</code> functions that examine and update
+data members in the <code class="code">awk_output_buf_t</code>.
+The data members are as follows:
+</p>
+<dl class="table">
+<dt><code class="code">const char *name;</code></dt>
+<dd><p>The name of the output file.
+</p>
+</dd>
+<dt><code class="code">const char *mode;</code></dt>
+<dd><p>The mode string (as would be used in the second argument to <code class="code">fopen()</code>)
+with which the file was opened.
+</p>
+</dd>
+<dt><code class="code">FILE *fp;</code></dt>
+<dd><p>The <code class="code">FILE</code> pointer from <code class="code">&lt;stdio.h&gt;</code>. <code class="command">gawk</code> opens the file
+before attempting to find an output wrapper.
+</p>
+</dd>
+<dt><code class="code">awk_bool_t redirected;</code></dt>
+<dd><p>This field must be set to true by the <code class="code"><var class="var">XXX</var>_take_control_of()</code> function.
+</p>
+</dd>
+<dt><code class="code">void *opaque;</code></dt>
+<dd><p>This pointer is opaque to <code class="command">gawk</code>. The extension should use it to store
+a pointer to any private data associated with the file.
+</p>
+</dd>
+<dt><code class="code">size_t (*gawk_fwrite)(const void *buf, size_t size, size_t count,</code></dt>
+<dt><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FILE *fp, void *opaque);</code></dt>
+<dt><code class="code">int (*gawk_fflush)(FILE *fp, void *opaque);</code></dt>
+<dt><code class="code">int (*gawk_ferror)(FILE *fp, void *opaque);</code></dt>
+<dt><code class="code">int (*gawk_fclose)(FILE *fp, void *opaque);</code></dt>
+<dd><p>These pointers should be set to point to functions that perform
+the equivalent function as the <code class="code">&lt;stdio.h&gt;</code> functions do, if appropriate.
+<code class="command">gawk</code> uses these function pointers for all output.
+<code class="command">gawk</code> initializes the pointers to point to internal &ldquo;pass-through&rdquo;
+functions that just call the regular <code class="code">&lt;stdio.h&gt;</code> functions, so an
+extension only needs to redefine those functions that are appropriate for
+what it does.
+</p></dd>
+</dl>
+
+<p>The <code class="code"><var class="var">XXX</var>_can_take_file()</code> function should make a decision based
+upon the <code class="code">name</code> and <code class="code">mode</code> fields, and any additional state
+(such as <code class="command">awk</code> variable values) that is appropriate.
+<code class="command">gawk</code> attempts to open the named file for writing.  The <code class="code">fp</code>
+member will be <code class="code">NULL</code> only if it fails.
+</p>
+<p>When <code class="command">gawk</code> calls <code class="code"><var class="var">XXX</var>_take_control_of()</code>, that function should fill
+in the other fields as appropriate, except for <code class="code">fp</code>, which it should just
+use normally if it&rsquo;s not <code class="code">NULL</code>.
+</p>
+<p>You register your output wrapper with the following function:
+</p>
+<dl class="table">
+<dt><code class="code">void register_output_wrapper(awk_output_wrapper_t *output_wrapper);</code></dt>
+<dd><p>Register the output wrapper pointed to by <code class="code">output_wrapper</code> with
+<code class="command">gawk</code>.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Two_002dway-processors.html">Customized Two-way Processors</a>, Previous: <a href="Input-Parsers.html">Customized Input Parsers</a>, Up: <a href="Registration-Functions.html">Registration Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

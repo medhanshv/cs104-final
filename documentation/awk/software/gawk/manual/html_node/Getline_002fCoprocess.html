@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 
+Copyright © 1989, 1991, 1992, 1993, 1996-2005, 2007, 2009-2024 
+
+Free Software Foundation, Inc.
+
+
+
+This is Edition 5.3 of GAWK: Effective AWK Programming: A User's Guide for GNU Awk,
+for the 5.3.1 (or later) version of the GNU
+implementation of AWK.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", with the
+Front-Cover Texts being "A GNU Manual", and with the Back-Cover Texts
+as in (a) below.
+A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+a. The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual." -->
+<title>Getline/Coprocess (The GNU Awk User&rsquo;s Guide)</title>
+
+<meta name="description" content="Getline/Coprocess (The GNU Awk User&rsquo;s Guide)">
+<meta name="keywords" content="Getline/Coprocess (The GNU Awk User&rsquo;s Guide)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Getline.html" rel="up" title="Getline">
+<link href="Getline_002fVariable_002fCoprocess.html" rel="next" title="Getline/Variable/Coprocess">
+<link href="Getline_002fVariable_002fPipe.html" rel="prev" title="Getline/Variable/Pipe">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="../../../gnulib/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Getline_002fCoprocess">
+<div class="nav-panel">
+<p>
+Next: <a href="Getline_002fVariable_002fCoprocess.html" accesskey="n" rel="next">Using <code class="code">getline</code> into a Variable from a Coprocess</a>, Previous: <a href="Getline_002fVariable_002fPipe.html" accesskey="p" rel="prev">Using <code class="code">getline</code> into a Variable from a Pipe</a>, Up: <a href="Getline.html" accesskey="u" rel="up">Explicit Input with <code class="code">getline</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Using-getline-from-a-Coprocess"><span>4.10.7 Using <code class="code">getline</code> from a Coprocess<a class="copiable-link" href="Getline_002fCoprocess.html#Using-getline-from-a-Coprocess"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-coprocesses-getline-from"></a>
+<a class="index-entry-id" id="index-getline-function-coprocesses_002c-using-from"></a>
+<a class="index-entry-id" id="index-_007c-_0028vertical-bar_0029-_007c_0026-operator-_0028I_002fO_0029"></a>
+<a class="index-entry-id" id="index-vertical-bar-_0028_007c_0029-_007c_0026-operator-_0028I_002fO_0029"></a>
+<a class="index-entry-id" id="index-operators-input_002foutput-2"></a>
+<a class="index-entry-id" id="index-differences-in-awk-and-gawk-input_002foutput-operators"></a>
+
+<p>Reading input into <code class="code">getline</code> from a pipe is a one-way operation.
+The command that is started with &lsquo;<samp class="samp"><var class="var">command</var> | getline</samp>&rsquo; only
+sends data <em class="emph">to</em> your <code class="command">awk</code> program.
+</p>
+<p>On occasion, you might want to send data to another program
+for processing and then read the results back.
+<code class="command">gawk</code> allows you to start a <em class="dfn">coprocess</em>, with which two-way
+communications are possible.  This is done with the &lsquo;<samp class="samp">|&amp;</samp>&rsquo;
+operator.
+Typically, you write data to the coprocess first and then
+read the results back, as shown in the following:
+</p>
+<div class="example">
+<pre class="example-preformatted">print &quot;<var class="var">some query</var>&quot; |&amp; &quot;db_server&quot;
+&quot;db_server&quot; |&amp; getline
+</pre></div>
+
+<p>which sends a query to <code class="command">db_server</code> and then reads the results.
+</p>
+<p>The values of <code class="code">NR</code> and
+<code class="code">FNR</code> are not changed,
+because the main input stream is not used.
+However, the record is split into fields in
+the normal manner, thus changing the values of <code class="code">$0</code>, of the other fields,
+and of <code class="code">NF</code> and <code class="code">RT</code>.
+</p>
+<p>Coprocesses are an advanced feature. They are discussed here only because
+this is the section on <code class="code">getline</code>.
+See <a class="xref" href="Two_002dway-I_002fO.html">Two-Way Communications with Another Process</a>,
+where coprocesses are discussed in more detail.
+</p>
+</div>
+
+
+
+</body>
+</html>
